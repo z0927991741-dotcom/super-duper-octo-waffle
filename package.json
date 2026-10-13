@@ -1,0 +1,15 @@
+{
+  "name": "dream-mender",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test tests/core.test.mjs",
+    "test:e2e": "playwright test",
+    "build:standalone": "node scripts/build-standalone.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1"
+  }
+}
