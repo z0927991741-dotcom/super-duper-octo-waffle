@@ -1,19 +1,22 @@
-// 明確標示的測試步行路網；不是屏東實際道路。所有邊皆為公共步道的模擬資料。
-export const ROAD_NODES = Object.fromEntries([-1,0,1].flatMap(y=>[-1,0,1].map(x=>[`${x},${y}`,{id:`${x},${y}`,lat:y*.00065,lng:x*.0007}])));
-export const ROAD_EDGES = [];
-for (const y of [-1,0,1]) for(const x of [-1,0]) ROAD_EDGES.push({id:`h${x}:${y}`,a:`${x},${y}`,b:`${x+1},${y}`,walkable:true});
-for (const x of [-1,0,1]) for(const y of [-1,0]) ROAD_EDGES.push({id:`v${x}:${y}`,a:`${x},${y}`,b:`${x},${y+1}`,walkable:true});
+// 依使用者地圖截圖整理的遊戲示意路網；不是查證後的道路測繪資料。
+// 圖上像素對應到虛構經緯度，只供模擬模式運算。
+export const MAP_LAYOUT = {
+ nodes:{nw:[360,140],book:[570,195],ne:[870,270],west:[260,515],gate:[450,562],east:[770,645],color:[180,775],park:[500,860],southeast:[710,915],start:[120,960]},
+ links:[['nw','book','勝利東路'],['book','ne','勝利東路'],['nw','west','中山路'],['west','color','中山路'],['color','start','中山路'],['west','gate','公園北側道路'],['gate','east','公園北側道路'],['ne','east','仁愛路'],['east','southeast','仁愛路'],['color','park','公園路'],['park','southeast','公園路']]
+};
+export const ROAD_NODES=Object.fromEntries(Object.entries(MAP_LAYOUT.nodes).map(([id,[x,y]])=>[id,{id,lng:x*.0000025,lat:(1000-y)*.000003}]));
+export const ROAD_EDGES=MAP_LAYOUT.links.map(([a,b,name],i)=>({id:'road-'+i,a,b,name,walkable:true}));
 const meters=(a,b)=>Math.hypot(a.lat-b.lat,a.lng-b.lng)*111195;
 const mix=(a,b,t)=>({lat:a.lat+(b.lat-a.lat)*t,lng:a.lng+(b.lng-a.lng)*t});
 export class RoadWalker {
- constructor(){this.node='-1,-1';this.edge=null;this.t=0;this.direction=1;}
+ constructor(){this.node='start';this.edge=null;this.t=0;this.direction=1;}
  read(){return this.edge?mix(ROAD_NODES[this.edge.a],ROAD_NODES[this.edge.b],this.t):{lat:ROAD_NODES[this.node].lat,lng:ROAD_NODES[this.node].lng};}
- move(x,y,budget){if(!x&&!y)return this.read();const requested=Math.abs(x)>Math.abs(y)?{x:Math.sign(x),y:0}:{x:0,y:Math.sign(y)};
+ move(x,y,budget){if(!x&&!y)return this.read();const norm=Math.hypot(x,y);const requested={x:x/norm,y:y/norm};
   for(let guard=0;budget>1e-7&&guard<100;guard++){
-   if(!this.edge){const p=ROAD_NODES[this.node];this.edge=ROAD_EDGES.find(e=>{if(!e.walkable||e.a!==this.node&&e.b!==this.node)return false;const q=ROAD_NODES[e.a===this.node?e.b:e.a];return (q.lng-p.lng)*requested.x+(q.lat-p.lat)*requested.y>0;});if(!this.edge)break;this.direction=this.edge.a===this.node?1:-1;this.t=this.direction===1?0:1;}
+   if(!this.edge){const p=ROAD_NODES[this.node];const choices=ROAD_EDGES.filter(e=>e.walkable&&(e.a===this.node||e.b===this.node)).map(e=>{const q=ROAD_NODES[e.a===this.node?e.b:e.a];const dx=q.lng-p.lng,dy=q.lat-p.lat;return {edge:e,score:(dx*requested.x+dy*requested.y)/Math.hypot(dx,dy)};}).filter(c=>c.score>.35).sort((a,b)=>b.score-a.score);this.edge=choices[0]?.edge;if(!this.edge)break;this.direction=this.edge.a===this.node?1:-1;this.t=this.direction===1?0:1;}
    const a=ROAD_NODES[this.edge.a],b=ROAD_NODES[this.edge.b];const along=(b.lng-a.lng)*requested.x+(b.lat-a.lat)*requested.y;
    // 轉向指令在下一個路口執行；始終沿目前路段走，不橫切街區。
-   if(along!==0)this.direction=Math.sign(along);
+   if(Math.abs(along)/Math.hypot(b.lng-a.lng,b.lat-a.lat)>.65)this.direction=Math.sign(along);
    const length=meters(a,b),remaining=(this.direction===1?1-this.t:this.t)*length;
    const step=Math.min(budget,remaining);this.t+=this.direction*step/length;budget-=step;
    if(remaining-step<1e-6){this.node=this.direction===1?this.edge.b:this.edge.a;this.edge=null;this.t=0;}else break;
