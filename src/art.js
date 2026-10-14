@@ -14,33 +14,45 @@ export function roadMap(){
  const inside=(p,u,v)=>blend(blend(p[0],p[1],u),blend(p[3],p[2],u),v);
  const inset=(p,amount)=>{const center=p[0].map((_,i)=>p.reduce((sum,q)=>sum+q[i],0)/4);return p.map(q=>{const d=Math.hypot(q[0]-center[0],q[1]-center[1]);return blend(q,center,Math.min(.38,amount/d));});};
  const blocks=MAP_BLOCKS.map((p,index)=>{
-  const edge=inset(p,17),parcels=[];
-  for(let x=0;x<2;x++)for(let y=0;y<2;y++){
-   const q=inset([inside(edge,x/2,y/2),inside(edge,(x+1)/2,y/2),inside(edge,(x+1)/2,(y+1)/2),inside(edge,x/2,(y+1)/2)],3);
-   parcels.push(`<polygon points="${points(q)}" fill="${['#e7e4dc','#e7e7e2','#e8e1d1','#dde3dc'][(index+x+y)%4]}" stroke="#cbd0c5" stroke-width="1.4"/><path d="M${points([blend(q[0],q[3],.18),blend(q[1],q[2],.18)]).replace(' ','L')}" stroke="#f8f6ef" stroke-width="2"/>`);
-  }
-  return `<polygon points="${points(inset(p,8))}" fill="#efeee7"/>${parcels.join('')}`;
+  const q=inset(p,18),center=inside(q,.5,.5);
+  const size=Math.min(64,...q.map((v,i)=>Math.hypot(v[0]-q[(i+1)%4][0],v[1]-q[(i+1)%4][1])))*.8;
+  const roof=['#d99399','#96b4c4','#b2a1c7','#dfb16f'][index%4];
+  return `<polygon points="${points(inset(p,9))}" fill="${index%3?'#dbe9cc':'#e5e8ce'}" stroke="#cadcb6" stroke-width="2" stroke-linejoin="round"/>
+  <g class="chibi-house" transform="translate(${center[0]} ${center[1]}) scale(${size/64})">
+  <ellipse cx="3" cy="23" rx="30" ry="12" fill="#7d947c26"/>
+  <rect x="-23" y="-7" width="46" height="31" rx="7" fill="#fff0d3" stroke="#a48e79" stroke-width="2.5"/>
+  <path d="M-29-5Q-31-10-24-14L-3-30Q0-33 4-30L27-12Q33-6 27-4Z" fill="${roof}" stroke="#9b8579" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M-20-11L0-25 20-11" fill="none" stroke="#ffffff55" stroke-width="3" stroke-linecap="round"/>
+  <rect x="-17" y="0" width="11" height="11" rx="3" fill="#a7d4da" stroke="#b79a7b" stroke-width="2"/>
+  <path d="M-11.5 0v11M-17 5.5h11" stroke="#fff9e9" stroke-width="1.5"/>
+  <path d="M5 24V10q0-11 11-11t11 11" transform="translate(-3 4) scale(.65)" fill="#b58e78"/>
+  <circle cx="13" cy="16" r="1.5" fill="#ffe2a2"/>
+  <path d="M-26 25h51" stroke="#d0bba0" stroke-width="4" stroke-linecap="round"/>
+  <g transform="translate(${index%2?-28:28} 9)"><path d="M0 6v14" stroke="#9a8263" stroke-width="3"/><circle cy="-2" r="11" fill="#a8c997" stroke="#91ae7e" stroke-width="2"/><circle cx="-4" cy="-6" r="5" fill="#c7dfad"/></g>
+  </g>`;
  }).join('');
  const roadWidth=e=>e.kind==='path'?8:e.kind==='lane'?12:30;
- const strokes=(border)=>ROAD_EDGES.map(e=>`<path d="M${xy(ROAD_NODES[e.a])}L${xy(ROAD_NODES[e.b])}" stroke="${border?(e.kind==='path'?'#a7c398':'#c9d1cf'):(e.kind==='path'?'#f8f4df':e.kind==='lane'?'#fffef8':'#fafbf5')}" stroke-width="${roadWidth(e)+(border?5:0)}"/>`).join('');
+ const strokes=(border)=>ROAD_EDGES.map(e=>`<path d="M${xy(ROAD_NODES[e.a])}L${xy(ROAD_NODES[e.b])}" stroke="${border?(e.kind==='path'?'#b6ca96':'#cfbba0'):(e.kind==='path'?'#fff1cf':e.kind==='lane'?'#fff6de':'#fff6df')}" stroke-width="${roadWidth(e)+(border?5:0)}"/>`).join('');
  const trees=[[310,630],[335,740],[388,803],[425,622],[550,658],[625,696],[675,810],[601,848],[294,698],[530,724],[655,860],[710,710],[1000,-65],[1050,-120],[1130,-100],[1200,-20],[1250,40],[1320,-60]];
  const labels=[['中山路',295,400,-75,25],['仁愛路',815,485,-75,25],['勝利東路',682,230,14,25],['公園路',366,838,15,25],['天津街',-102,530,-68,22],['林森路',260,1210,14,24],['自由路',1195,800,-79,24],['民生路',930,1064,14,22],['協和路',395,-115,9,22],['青島街',375,350,14,18],['長春街',530,400,-72,20],['濟南街',342,550,14,18],['屏東公園',559,690,0,28],['圖書館園區',1110,-65,0,24],['體育館',665,375,14,22],['文化街區',-38,146,14,20]];
- return `<svg class="road-art" viewBox="-400 -250 1800 1700" preserveAspectRatio="none" aria-label="依參考截圖細化的街廓、公園與可行走巷道示意圖">
- <rect x="-400" y="-250" width="1800" height="1700" fill="#f6f4ec"/>
- <path d="M-400 -170L380 -250 160 1130-400 1300Z" fill="#eee9dc"/><path d="M140 780L1340 1000 1400 1450-310 1450Z" fill="#f2ecda"/>
- <path d="M980 -240L1390 -140 1310 180 1120 155 927 40Z" fill="#cbe5cc"/>
+ return `<svg class="road-art" viewBox="-400 -250 1800 1700" preserveAspectRatio="none" aria-label="Q版屏東街區：彩色小屋、圓樹、公園與可行走步道">
+ <rect x="-400" y="-250" width="1800" height="1700" fill="#e8efd7"/>
+ <path d="M-400 -170L380 -250 160 1130-400 1300Z" fill="#e5edcf"/><path d="M140 780L1340 1000 1400 1450-310 1450Z" fill="#e5edd2"/>
+ <path d="M980 -240L1390 -140 1310 180 1120 155 927 40Z" fill="#c6e0b7"/>
  <path d="M1310 -250Q1190 -80 1230 125T1142 400Q1185 520 1088 690T1025 1010L888 1450" fill="none" stroke="#dcece4" stroke-width="34"/>
- <path d="M1310 -250Q1190 -80 1230 125T1142 400Q1185 520 1088 690T1025 1010L888 1450" fill="none" stroke="#99d0d8" stroke-width="16"/>
+ <path d="M1310 -250Q1190 -80 1230 125T1142 400Q1185 520 1088 690T1025 1010L888 1450" fill="none" stroke="#9bcfd5" stroke-width="22"/>
  ${blocks}
- <path d="M270 532L766 656 707 899 187 762Z" fill="#cce2c1" stroke="#b5cfa9" stroke-width="3"/>
+ <path d="M270 532L766 656 707 899 187 762Z" fill="#c6dfa7" stroke="#9fbf87" stroke-width="3"/>
  <path d="M440 600q90-16 145 38t35 52l-87-12-95-32Z" fill="#bbd9b0"/>
  <path d="M451 716q31-24 38 6t-14 51q-34 4-24-57M570 748q34-10 24 24t-34 19q-16-18 10-43" fill="#9ecfd3" stroke="#88bfc5" stroke-width="3"/>
- <path d="M595 225L835 286 778 505 535 446Z" fill="#e9ebe3" stroke="#cbd1c7" stroke-width="3"/>
- <path d="M605 264l190 48-16 62-190-48Z" fill="#d3d8ce" stroke="#bec8bd" stroke-width="3"/>
+ <path d="M595 225L835 286 778 505 535 446Z" fill="#f7edcf" stroke="#cbb893" stroke-width="3"/>
+ <path d="M605 264l190 48-16 62-190-48Z" fill="#b4c9d7" stroke="#8baab5" stroke-width="3"/>
  <path d="M555 453Q677 424 715 486t-73 54l-105-27Z" fill="#b6d9af" stroke="#d9e7ce" stroke-width="12"/>
  <g fill="none" stroke-linecap="round" stroke-linejoin="round">${strokes(true)}${strokes(false)}</g>
- <g>${trees.map(([x,y],i)=>`<ellipse cx="${x+4}" cy="${y+7}" rx="13" ry="10" fill="#76956822"/><circle cx="${x}" cy="${y}" r="${10+i%4}" fill="#a4c591"/><circle cx="${x-3}" cy="${y-3}" r="6" fill="#b9d5a7"/>`).join('')}</g>
+ <g>${trees.map(([x,y],i)=>`<g class="chibi-tree" transform="translate(${x} ${y})"><ellipse cx="4" cy="15" rx="18" ry="9" fill="#74976428"/><path d="M0 4v15" stroke="#a08b67" stroke-width="5" stroke-linecap="round"/><path d="M-18-3q-8-13 7-19 2-18 18-12 20-1 17 17 12 15-6 21-17 9-36-7" fill="${i%4===0?'#e6b6c5':'#a9ce94'}" stroke="${i%4===0?'#c99aaa':'#8db579'}" stroke-width="2.5"/><ellipse cx="-4" cy="-20" rx="9" ry="5" fill="#fff9d850"/><circle cx="-4" cy="-5" r="1.5" fill="#749463"/><circle cx="6" cy="-5" r="1.5" fill="#749463"/></g>`).join('')}</g>
+ <g fill="#fff3bb" stroke="#e0bd76" stroke-width="1.5">${[[322,660],[600,760],[696,840],[1040,-10]].map(([x,y])=>`<path d="M${x} ${y-7}l2 5 6 2-6 2-2 6-2-6-6-2 6-2Z"/>`).join('')}</g>
+ <g fill="none" stroke="#e9fffa" stroke-width="3" stroke-linecap="round"><path d="M456 736q7-5 14 0m98 30q8-5 16 0M1220 78q8 8 14 0M1090 650q8 8 14 0"/></g>
  <polyline id="route-line" fill="none" stroke="#b87a53" stroke-width="7" stroke-dasharray="10 12" stroke-linecap="round"/>
- <g font-family="sans-serif" text-anchor="middle">${labels.map(([name,x,y,angle,size])=>`<text x="${x}" y="${y}" transform="rotate(${angle} ${x} ${y})" fill="${name.includes('園')?'#61856c':'#788176'}" font-size="${size}" font-weight="500" stroke="#faf9f0" stroke-width="5" paint-order="stroke">${name}</text>`).join('')}</g>
+ <g font-family="sans-serif" text-anchor="middle">${labels.map(([name,x,y,angle,size])=>`<text x="${x}" y="${y}" transform="rotate(${angle} ${x} ${y})" fill="${name.includes('園')?'#5b8157':'#887762'}" font-size="${size}" font-weight="600" stroke="#faf9f0" stroke-width="5" paint-order="stroke">${name}</text>`).join('')}</g>
  </svg>`;
 }

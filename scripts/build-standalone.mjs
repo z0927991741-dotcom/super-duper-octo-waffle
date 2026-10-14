@@ -11,8 +11,8 @@ for(const name of modules){
  let bundled=source.replace(/^import\s+\{[^\n]+\}\s+from\s+'\.\/[^']+';\s*$/gm,'').replace(/^export\s+(?=(?:const|function|class)\b)/gm,'');
  if(/^\s*(?:import|export)\s/m.test(bundled))throw new Error('Unsupported module syntax in '+name);
  if(name==='app'){
-  const images={};for(const id of ['color','gate','book'])images[id]='data:image/jpeg;base64,'+(await readFile(path.join(root,'src','assets',id+'.jpg'))).toString('base64');
-  bundled=bundled.replace('src="./src/assets/${t.id}.jpg"', 'src="${'+JSON.stringify(images)+'[t.id]}"');
+  const images={};for(const id of ['color','gate','book'])images[id]='data:image/png;base64,'+(await readFile(path.join(root,'src','assets',id+'.png'))).toString('base64');
+  bundled=bundled.replace('src="./src/assets/${task.id}.png"', 'src="${'+JSON.stringify(images)+'[task.id]}"');
  }
  chunks.push('// '+name+'.js\n'+bundled);
 }
