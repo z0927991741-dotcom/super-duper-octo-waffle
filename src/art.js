@@ -1,4 +1,4 @@
-import {ROAD_NODES,ROAD_EDGES} from './roads.js';
+import {ROAD_NODES,ROAD_EDGES,MAP_BLOCKS} from './roads.js';
 export function landmark(id){
  const common='<ellipse cx="90" cy="108" rx="84" ry="10" fill="#5a634026"/>';
  let drawing='';
@@ -7,6 +7,40 @@ export function landmark(id){
  else drawing=`<path d="M8 100V43h164v57Z" fill="#a8aa8b" stroke="#6f7968"/><path d="M3 42h174l-6-9H11Z" fill="#526d60"/><path d="M73 101V16h34v85Z" fill="#9c9e81"/><path d="M70 31V14h8v7h8V10h7v11h8V12h9v19" fill="#8a9078"/><g fill="#e9e1c2" stroke="#74816f">${[17,32,47,121,136,151].map(x=>`<path d="M${x} 49h8v18h-8Zm0 27h8v16h-8Z"/>`).join('')}<path d="M79 31h6v40h-6Zm15 0h6v40h-6Z"/></g><path d="M24 48h15v47H24Z" fill="#7aa38c"/><path d="M48 48h13v47H48Z" fill="#cead61"/><path d="M118 48h14v47h-14Z" fill="#bb7f66"/><path d="M143 48h13v47h-13Z" fill="#9d8aae"/><path d="M70 80h42v7H70Z" fill="#ddd1a4"/><path d="M78 89h24v14H78Z" fill="#784d37"/><path d="M90 89v14" stroke="#c9ab78"/><text x="90" y="78" text-anchor="middle" font-size="8" fill="#385b42">屏東美術館</text><path d="M68 105h47" stroke="#cabd97" stroke-width="4"/>`;
  return `<svg viewBox="0 0 180 120" class="landmark" role="img" aria-label="${id==='book'?'書院紅瓦圓門':id==='gate'?'朝陽門磚石拱門':'美術館長形立面'}插畫">${common}${drawing}</svg>`;
 }
-export function roadMap(){const xy=p=>`${p.lng/.0000025},${1000-p.lat/.000003}`;
- return `<svg class="road-art" viewBox="-400 -250 1800 1700" preserveAspectRatio="none" aria-label="依參考截圖繪製的街區示意圖"><rect x="-400" y="-250" width="1800" height="1700" fill="#f3f1e9"/><path d="M945 -210L1370 -105 1240 225 995 157 892 37Z" fill="#c4e3c6"/><path d="M1330 -210Q1200 -50 1230 160T1145 450 1075 730 925 1110L815 1450" fill="none" stroke="#97d4df" stroke-width="22"/><path d="M1040 -140l235 65-88 205-183-45Z M1080 -125l-55 160m68 10 65-157" fill="none" stroke="#97bf9d" stroke-width="5"/><text x="1090" y="-55" text-anchor="middle" fill="#5c8468" font-size="25">圖書館園區</text><path d="M840 990l220 64-65 149-209-67Z" fill="#c9d8ae"/><path d="M-130 20l210 35-65 145-230-61Z" fill="#d6ddbd"/><path d="M275 575L727 679 676 872 222 749Z" fill="#c5d9ad"/><path d="M491 334q210-90 257 100t-219 26Z" fill="#b8d6a9"/><path d="M460 655q75-25 80 50t-60 80q-40-30-20-130" fill="#a2cbd0"/><path d="M330 595q65 65 115 56t155 140M215 709q137-99 330-28" fill="none" stroke="#97bd89" stroke-width="7"/><path d="M415 250L792 345 747 492 367 397Z" fill="#e5e1cf" stroke="#d0cbb5" stroke-width="3"/><text x="590" y="375" text-anchor="middle" fill="#99947a" font-size="30" transform="rotate(14 590 375)">體育館周邊</text><text x="549" y="757" text-anchor="middle" fill="#709467" font-size="38">屏東公園</text>${[[-220,-100],[260,-170],[840,-80],[1040,340],[1140,780],[850,1190],[280,1190],[-270,970],[-340,470],[-5,205],[100,220],[-25,365],[90,400],[-35,580],[65,610],[850,405],[850,730],[330,35],[755,82]].map(([x,y],i)=>`<g transform="translate(${x} ${y}) rotate(14)"><rect width="75" height="100" rx="5" fill="${i%2?'#e3d4b6':'#d5d4bf'}" stroke="#c9c6b0" stroke-width="2"/><path d="M0 25h75M25 0v100" stroke="#eee7d1" stroke-width="6"/></g>`).join('')}${ROAD_EDGES.map(e=>`<polyline points="${xy(ROAD_NODES[e.a])} ${xy(ROAD_NODES[e.b])}" stroke="#d0c8ae" stroke-width="40" fill="none"/><polyline points="${xy(ROAD_NODES[e.a])} ${xy(ROAD_NODES[e.b])}" stroke="#fffbec" stroke-width="31" fill="none"/>`).join('')}<polyline id="route-line" fill="none" stroke="#b67551" stroke-width="8" stroke-dasharray="12 14" stroke-linecap="round"/><g fill="#897d63" font-size="31" font-family="sans-serif"><text x="-150" y="405" transform="rotate(-69 -150 405)">天津街</text><text x="220" y="1275" transform="rotate(14 220 1275)">林森路</text><text x="905" y="1040" transform="rotate(16 905 1040)">民生路周邊</text><text x="1100" y="390" transform="rotate(-76 1100 390)">自由路周邊</text><text x="365" y="-45" transform="rotate(14 365 -45)">協和路周邊</text><text x="360" y="377" transform="rotate(-73 360 377)">中山路</text><text x="845" y="522" transform="rotate(-75 845 522)">仁愛路</text><text x="655" y="260" transform="rotate(14 655 260)">勝利東路</text><text x="332" y="850" transform="rotate(15 332 850)">公園路</text></g><g fill="#759364">${[[323,720],[650,789],[605,662],[685,455],[719,311],[625,51]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="18" opacity=".5"/><circle cx="${x-9}" cy="${y-10}" r="15" fill="#a7bf85"/>`).join('')}</g></svg>`;
+export function roadMap(){
+ const xy=p=>`${p.lng/.0000025},${1000-p.lat/.000003}`;
+ const points=p=>p.map(v=>v.join(',')).join(' ');
+ const blend=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
+ const inside=(p,u,v)=>blend(blend(p[0],p[1],u),blend(p[3],p[2],u),v);
+ const inset=(p,amount)=>{const center=p[0].map((_,i)=>p.reduce((sum,q)=>sum+q[i],0)/4);return p.map(q=>{const d=Math.hypot(q[0]-center[0],q[1]-center[1]);return blend(q,center,Math.min(.38,amount/d));});};
+ const blocks=MAP_BLOCKS.map((p,index)=>{
+  const edge=inset(p,17),parcels=[];
+  for(let x=0;x<2;x++)for(let y=0;y<2;y++){
+   const q=inset([inside(edge,x/2,y/2),inside(edge,(x+1)/2,y/2),inside(edge,(x+1)/2,(y+1)/2),inside(edge,x/2,(y+1)/2)],3);
+   parcels.push(`<polygon points="${points(q)}" fill="${['#e7e4dc','#e7e7e2','#e8e1d1','#dde3dc'][(index+x+y)%4]}" stroke="#cbd0c5" stroke-width="1.4"/><path d="M${points([blend(q[0],q[3],.18),blend(q[1],q[2],.18)]).replace(' ','L')}" stroke="#f8f6ef" stroke-width="2"/>`);
+  }
+  return `<polygon points="${points(inset(p,8))}" fill="#efeee7"/>${parcels.join('')}`;
+ }).join('');
+ const roadWidth=e=>e.kind==='path'?8:e.kind==='lane'?12:30;
+ const strokes=(border)=>ROAD_EDGES.map(e=>`<path d="M${xy(ROAD_NODES[e.a])}L${xy(ROAD_NODES[e.b])}" stroke="${border?(e.kind==='path'?'#a7c398':'#c9d1cf'):(e.kind==='path'?'#f8f4df':e.kind==='lane'?'#fffef8':'#fafbf5')}" stroke-width="${roadWidth(e)+(border?5:0)}"/>`).join('');
+ const trees=[[310,630],[335,740],[388,803],[425,622],[550,658],[625,696],[675,810],[601,848],[294,698],[530,724],[655,860],[710,710],[1000,-65],[1050,-120],[1130,-100],[1200,-20],[1250,40],[1320,-60]];
+ const labels=[['中山路',295,400,-75,25],['仁愛路',815,485,-75,25],['勝利東路',682,230,14,25],['公園路',366,838,15,25],['天津街',-102,530,-68,22],['林森路',260,1210,14,24],['自由路',1195,800,-79,24],['民生路',930,1064,14,22],['協和路',395,-115,9,22],['青島街',375,350,14,18],['長春街',530,400,-72,20],['濟南街',342,550,14,18],['屏東公園',559,690,0,28],['圖書館園區',1110,-65,0,24],['體育館',665,375,14,22],['文化街區',-38,146,14,20]];
+ return `<svg class="road-art" viewBox="-400 -250 1800 1700" preserveAspectRatio="none" aria-label="依參考截圖細化的街廓、公園與可行走巷道示意圖">
+ <rect x="-400" y="-250" width="1800" height="1700" fill="#f6f4ec"/>
+ <path d="M-400 -170L380 -250 160 1130-400 1300Z" fill="#eee9dc"/><path d="M140 780L1340 1000 1400 1450-310 1450Z" fill="#f2ecda"/>
+ <path d="M980 -240L1390 -140 1310 180 1120 155 927 40Z" fill="#cbe5cc"/>
+ <path d="M1310 -250Q1190 -80 1230 125T1142 400Q1185 520 1088 690T1025 1010L888 1450" fill="none" stroke="#dcece4" stroke-width="34"/>
+ <path d="M1310 -250Q1190 -80 1230 125T1142 400Q1185 520 1088 690T1025 1010L888 1450" fill="none" stroke="#99d0d8" stroke-width="16"/>
+ ${blocks}
+ <path d="M270 532L766 656 707 899 187 762Z" fill="#cce2c1" stroke="#b5cfa9" stroke-width="3"/>
+ <path d="M440 600q90-16 145 38t35 52l-87-12-95-32Z" fill="#bbd9b0"/>
+ <path d="M451 716q31-24 38 6t-14 51q-34 4-24-57M570 748q34-10 24 24t-34 19q-16-18 10-43" fill="#9ecfd3" stroke="#88bfc5" stroke-width="3"/>
+ <path d="M595 225L835 286 778 505 535 446Z" fill="#e9ebe3" stroke="#cbd1c7" stroke-width="3"/>
+ <path d="M605 264l190 48-16 62-190-48Z" fill="#d3d8ce" stroke="#bec8bd" stroke-width="3"/>
+ <path d="M555 453Q677 424 715 486t-73 54l-105-27Z" fill="#b6d9af" stroke="#d9e7ce" stroke-width="12"/>
+ <g fill="none" stroke-linecap="round" stroke-linejoin="round">${strokes(true)}${strokes(false)}</g>
+ <g>${trees.map(([x,y],i)=>`<ellipse cx="${x+4}" cy="${y+7}" rx="13" ry="10" fill="#76956822"/><circle cx="${x}" cy="${y}" r="${10+i%4}" fill="#a4c591"/><circle cx="${x-3}" cy="${y-3}" r="6" fill="#b9d5a7"/>`).join('')}</g>
+ <polyline id="route-line" fill="none" stroke="#b87a53" stroke-width="7" stroke-dasharray="10 12" stroke-linecap="round"/>
+ <g font-family="sans-serif" text-anchor="middle">${labels.map(([name,x,y,angle,size])=>`<text x="${x}" y="${y}" transform="rotate(${angle} ${x} ${y})" fill="${name.includes('園')?'#61856c':'#788176'}" font-size="${size}" font-weight="500" stroke="#faf9f0" stroke-width="5" paint-order="stroke">${name}</text>`).join('')}</g>
+ </svg>`;
 }
