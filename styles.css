@@ -89,3 +89,5 @@ header,.explore,.challenge-page,.ending{max-width:600px}.bottom-nav{width:min(10
 .npc-stage:not(.talking) .npc-walker{height:220px;width:128px;max-height:80%;bottom:24px}.is-talking .npc-stage{height:clamp(285px,44svh,430px)}.npc-hero{inset:8px 3% 28px}.npc-hero .npc-art{overflow:hidden}.destination-pointer{max-width:148px;height:48px;box-sizing:border-box}.destination-pointer small{overflow:hidden;text-overflow:ellipsis}
 /* Turn before the enlarged actor reaches the stage edge. */
 @keyframes npc-stroll{0%,5%{left:8%}45%,55%{left:calc(92% - 128px)}95%,100%{left:8%}}
+.memory-pad.flash{outline:5px double #fff8c9;outline-offset:-8px;box-shadow:0 0 0 4px #805f40,0 0 25px #ffe4a7;transform:scale(1.035)}
+@media(prefers-reduced-motion:reduce){.memory-pad.flash{transform:none}}

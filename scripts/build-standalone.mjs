@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
@@ -30,3 +31,10 @@ const html=template.replace('<link rel="stylesheet" href="/styles.css">',()=>'<s
 await mkdir(path.join(root,'dist'),{recursive:true});
 await writeFile(path.join(root,'dist','dream-mender.html'),html);
 console.log('Created dist/dream-mender.html — open directly in a browser.');
+
+const revision=createHash('sha256').update(html).digest('hex').slice(0,12);
+await writeFile(path.join(root,'dist','sw.js'),`const CACHE='dream-mender-${revision}';
+self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.add('./index.html')).then(()=>self.skipWaiting())));
+self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('dream-mender-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',event=>{if(event.request.mode!=='navigate'||new URL(event.request.url).origin!==self.location.origin)return;event.respondWith(fetch(event.request).catch(()=>caches.open(CACHE).then(cache=>cache.match('./index.html'))));});
+`);

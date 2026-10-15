@@ -1,0 +1,3035 @@
+{
+  "tasks": [
+    {
+      "id": "color",
+      "name": "色彩之夢",
+      "place": "屏東美術館外",
+      "length": 4,
+      "radiusMeters": 30,
+      "entranceNode": "color",
+      "test": {
+        "lat": 0.000675,
+        "lng": 0.00045000000000000004
+      },
+      "official": null,
+      "verified": false,
+      "source": null,
+      "icon": "✿",
+      "symbols": [
+        "✿",
+        "☀",
+        "♥",
+        "✦"
+      ],
+      "label": "讓沉睡的花園，再次盛開。",
+      "npc": {
+        "name": "色彩引路人",
+        "greeting": "歡迎來到美術館。我替這裡保管著一些尚未醒來的顏色。"
+      },
+      "dialogue": [
+        {
+          "title": "夢境中的相遇",
+          "text": "歡迎來到美術館。我替這裡保管著一些尚未醒來的顏色。"
+        },
+        {
+          "title": "在美術館，重新看見南方",
+          "text": "2022 年，美術館以「南方女神的逆襲」集結 56 名藝術家的作品，也與臺東、高雄交流典藏。看看入口與長窗，你發現對稱的地方了嗎？",
+          "sourceName": "中央社，2022-12-02（報導存檔核對）",
+          "sourceUrl": "https://www.cna.com.tw/news/acul/202212020184.aspx"
+        },
+        {
+          "title": "一起修補這段記憶",
+          "text": "先觀看 4 次圖案閃爍，再依序點擊。答錯可以重新觀看，不必重新走到這裡。"
+        }
+      ],
+      "art": {
+        "portrait": {
+          "src": "./src/assets/npc/color-portrait-cutout.png",
+          "size": [
+            1376,
+            768
+          ],
+          "box": [
+            490,
+            35,
+            335,
+            733
+          ]
+        },
+        "sheet": {
+          "src": "./src/assets/npc/color-sheet-cutout.png",
+          "size": [
+            1253,
+            848
+          ],
+          "box": [
+            5,
+            290,
+            155,
+            270
+          ]
+        }
+      },
+      "frames": [
+        [
+          5,
+          0,
+          160,
+          280
+        ],
+        [
+          275,
+          0,
+          160,
+          280
+        ],
+        [
+          540,
+          0,
+          160,
+          280
+        ],
+        [
+          825,
+          0,
+          160,
+          280
+        ],
+        [
+          1093,
+          0,
+          160,
+          280
+        ]
+      ],
+      "shots": [
+        [
+          490,
+          35,
+          335,
+          560
+        ],
+        [
+          560,
+          35,
+          270,
+          355
+        ],
+        [
+          600,
+          35,
+          190,
+          225
+        ]
+      ]
+    },
+    {
+      "id": "gate",
+      "name": "古城之夢",
+      "place": "阿猴城門（朝陽門）",
+      "length": 5,
+      "radiusMeters": 30,
+      "entranceNode": "gate",
+      "test": {
+        "lat": 0.001161,
+        "lng": 0.0008875
+      },
+      "official": null,
+      "verified": false,
+      "source": null,
+      "icon": "♜",
+      "symbols": [
+        "♜",
+        "☾",
+        "✧",
+        "⚑"
+      ],
+      "label": "找回古城裡，遺忘的星光。",
+      "npc": {
+        "name": "古城守夢人",
+        "greeting": "旅人，歡迎來到朝陽門。一起聽聽這座城門留下的記憶吧。"
+      },
+      "dialogue": [
+        {
+          "title": "夢境中的相遇",
+          "text": "旅人，歡迎來到朝陽門。一起聽聽這座城門留下的記憶吧。"
+        },
+        {
+          "title": "讀一讀門上的名字",
+          "text": "阿猴城門也叫「朝陽門」。看看門額上的名字，以及紅磚、石牆和拱形門洞，找找它們和插畫的差異。",
+          "sourceName": "景點資料整理與使用者現地照片",
+          "sourceUrl": "https://github.com/wuulong/wuulong-notes-blog/blob/0c1ead8989ed8d041580c83a8a62259539f3cdf2/static/walkgis_prj/features/20260315_%E9%98%BF%E7%8C%B4%E5%9F%8E%E9%96%80(%E6%9C%9D%E9%99%BD%E9%96%80).md"
+        },
+        {
+          "title": "一起修補這段記憶",
+          "text": "先觀看 5 次圖案閃爍，再依序點擊。答錯可以重新觀看，不必重新走到這裡。"
+        }
+      ],
+      "art": {
+        "portrait": {
+          "src": "./src/assets/npc/gate-portrait-cutout.png",
+          "size": [
+            1175,
+            896
+          ],
+          "box": [
+            395,
+            20,
+            540,
+            860
+          ]
+        },
+        "sheet": {
+          "src": "./src/assets/npc/gate-sheet-cutout.png",
+          "size": [
+            1264,
+            848
+          ],
+          "box": [
+            0,
+            0,
+            170,
+            280
+          ]
+        }
+      },
+      "frames": [
+        [
+          0,
+          0,
+          170,
+          280
+        ],
+        [
+          275,
+          0,
+          170,
+          280
+        ],
+        [
+          545,
+          0,
+          170,
+          280
+        ],
+        [
+          815,
+          0,
+          170,
+          280
+        ],
+        [
+          1085,
+          0,
+          170,
+          280
+        ]
+      ],
+      "shots": [
+        [
+          395,
+          20,
+          540,
+          680
+        ],
+        [
+          440,
+          20,
+          360,
+          455
+        ],
+        [
+          480,
+          20,
+          240,
+          300
+        ]
+      ]
+    },
+    {
+      "id": "book",
+      "name": "書本之夢",
+      "place": "屏東書院外",
+      "length": 6,
+      "radiusMeters": 30,
+      "entranceNode": "book",
+      "test": {
+        "lat": 0.00198,
+        "lng": 0.001075
+      },
+      "official": null,
+      "verified": false,
+      "source": null,
+      "icon": "▤",
+      "symbols": [
+        "▤",
+        "✎",
+        "❀",
+        "★"
+      ],
+      "label": "把散落的故事，一頁頁接回。",
+      "npc": {
+        "name": "書院說書人",
+        "greeting": "歡迎來到書院。散落的書頁裡，藏著這座城市的故事。"
+      },
+      "dialogue": [
+        {
+          "title": "夢境中的相遇",
+          "text": "歡迎來到書院。散落的書頁裡，藏著這座城市的故事。"
+        },
+        {
+          "title": "書頁裡留下的地名",
+          "text": "《臺灣通史》記載，屏東書院位於「鳳山阿猴街」，於嘉慶二十年興建。「阿猴」這個舊地名，也出現在我們的旅程裡。",
+          "sourceName": "連橫《臺灣通史》卷十一（維基文庫文字存檔）",
+          "sourceUrl": "https://github.com/michiboo/Classical_Chinese_Wikisource/blob/5acdca0628a0cb664858a0280b23488c194445e3/%E8%87%BA%E7%81%A3%E9%80%9A%E5%8F%B2/%E5%8D%B711.txt"
+        },
+        {
+          "title": "一起修補這段記憶",
+          "text": "先觀看 6 次圖案閃爍，再依序點擊。答錯可以重新觀看，不必重新走到這裡。"
+        }
+      ],
+      "art": {
+        "portrait": {
+          "src": "./src/assets/npc/book-portrait-cutout.png",
+          "size": [
+            442,
+            765
+          ],
+          "box": [
+            25,
+            10,
+            390,
+            745
+          ]
+        },
+        "sheet": {
+          "src": "./src/assets/npc/book-sheet-cutout.png",
+          "size": [
+            1253,
+            848
+          ],
+          "box": [
+            10,
+            290,
+            125,
+            265
+          ]
+        }
+      },
+      "frames": [
+        [
+          0,
+          0,
+          160,
+          280
+        ],
+        [
+          270,
+          0,
+          160,
+          280
+        ],
+        [
+          545,
+          0,
+          160,
+          280
+        ],
+        [
+          825,
+          0,
+          160,
+          280
+        ],
+        [
+          1093,
+          0,
+          160,
+          280
+        ]
+      ],
+      "shots": [
+        [
+          25,
+          10,
+          390,
+          590
+        ],
+        [
+          90,
+          10,
+          270,
+          370
+        ],
+        [
+          130,
+          10,
+          180,
+          250
+        ]
+      ]
+    }
+  ],
+  "settings": {
+    "radiusMeters": 30,
+    "missionSwitchMarginMeters": 8,
+    "mapDetailZoom": 2,
+    "maxAccuracyMeters": 25,
+    "maxAgeMs": 15000,
+    "speedMetersPerSecond": 20,
+    "turnBufferMeters": 12,
+    "turnCorrectionMeters": 3,
+    "reverseDotThreshold": 0.85,
+    "minimumTurnDot": 0.25,
+    "start": {
+      "lat": 0.00012,
+      "lng": 0.0003
+    },
+    "bounds": {
+      "minLat": -0.00135,
+      "maxLat": 0.00375,
+      "minLng": -0.001,
+      "maxLng": 0.0035
+    }
+  },
+  "nodes": {
+    "nw": {
+      "id": "nw",
+      "lng": 0.00067,
+      "lat": 0.00189
+    },
+    "book": {
+      "id": "book",
+      "lng": 0.001075,
+      "lat": 0.00198
+    },
+    "bookRoad": {
+      "id": "bookRoad",
+      "lng": 0.001025,
+      "lat": 0.0017850000000000001
+    },
+    "freeMid": {
+      "id": "freeMid",
+      "lng": 0.001975,
+      "lat": 0.0006000000000000001
+    },
+    "freeSouth": {
+      "id": "freeSouth",
+      "lng": 0.0016500000000000002,
+      "lat": -0.00036
+    },
+    "libraryEntry": {
+      "id": "libraryEntry",
+      "lng": 0.0027250000000000004,
+      "lat": 0.0017100000000000001
+    },
+    "library": {
+      "id": "library",
+      "lng": 0.0028250000000000003,
+      "lat": 0.00267
+    },
+    "temple": {
+      "id": "temple",
+      "lng": -0.00016250000000000002,
+      "lat": -0.0006450000000000001
+    },
+    "ne": {
+      "id": "ne",
+      "lng": 0.0021375,
+      "lat": 0.001395
+    },
+    "west": {
+      "id": "west",
+      "lng": 0.0005750000000000001,
+      "lat": 0.001281
+    },
+    "gate": {
+      "id": "gate",
+      "lng": 0.0008875,
+      "lat": 0.001161
+    },
+    "east": {
+      "id": "east",
+      "lng": 0.0013625000000000002,
+      "lat": 0.000909
+    },
+    "color": {
+      "id": "color",
+      "lng": 0.00045000000000000004,
+      "lat": 0.000675
+    },
+    "park": {
+      "id": "park",
+      "lng": 0.0009125000000000001,
+      "lat": 0.00039
+    },
+    "southeast": {
+      "id": "southeast",
+      "lng": 0.0012000000000000001,
+      "lat": 0.000225
+    },
+    "start": {
+      "id": "start",
+      "lng": 0.00030000000000000003,
+      "lat": 0.00012
+    },
+    "farwest": {
+      "id": "farwest",
+      "lng": -0.000625,
+      "lat": 0.000795
+    },
+    "westnorth": {
+      "id": "westnorth",
+      "lng": -0.00028750000000000005,
+      "lat": 0.00177
+    },
+    "northwest": {
+      "id": "northwest",
+      "lng": 0.0002,
+      "lat": 0.00294
+    },
+    "north": {
+      "id": "north",
+      "lng": 0.0012000000000000001,
+      "lat": 0.00279
+    },
+    "northeast": {
+      "id": "northeast",
+      "lng": 0.0027500000000000003,
+      "lat": 0.00288
+    },
+    "fareast": {
+      "id": "fareast",
+      "lng": 0.0028000000000000004,
+      "lat": 0.0009
+    },
+    "eastpark": {
+      "id": "eastpark",
+      "lng": 0.002625,
+      "lat": -0.00054
+    },
+    "south": {
+      "id": "south",
+      "lng": 0.001,
+      "lat": -0.00096
+    },
+    "southwest": {
+      "id": "southwest",
+      "lng": -0.0004,
+      "lat": -0.00057
+    },
+    "garden": {
+      "id": "garden",
+      "lng": 0.0007000000000000001,
+      "lat": 0.0007650000000000001
+    },
+    "pondWest": {
+      "id": "pondWest",
+      "lng": 0.0006625,
+      "lat": 0.000555
+    },
+    "pondEast": {
+      "id": "pondEast",
+      "lng": 0.0009750000000000001,
+      "lat": 0.000495
+    },
+    "gardenEast": {
+      "id": "gardenEast",
+      "lng": 0.0011375,
+      "lat": 0.00069
+    },
+    "junction-29": {
+      "id": "junction-29",
+      "lng": 0.000788333333215,
+      "lat": 0.001855000000035
+    },
+    "junction-30": {
+      "id": "junction-30",
+      "lng": 0.0008475000000000001,
+      "lat": 0.0018375
+    },
+    "junction-31": {
+      "id": "junction-31",
+      "lng": 0.0009066666667850001,
+      "lat": 0.001819999999965
+    },
+    "junction-32": {
+      "id": "junction-32",
+      "lng": 0.0013958333329625002,
+      "lat": 0.0016550000001300002
+    },
+    "junction-33": {
+      "id": "junction-33",
+      "lng": 0.0017666666670375002,
+      "lat": 0.00152499999987
+    },
+    "junction-34": {
+      "id": "junction-34",
+      "lng": 0.0020518378949375003,
+      "lat": 0.00142502986155
+    },
+    "junction-35": {
+      "id": "junction-35",
+      "lng": 0.0020973026671750002,
+      "lat": 0.00140909164926
+    },
+    "junction-36": {
+      "id": "junction-36",
+      "lng": 0.000638333333365,
+      "lat": 0.001687000000203
+    },
+    "junction-37": {
+      "id": "junction-37",
+      "lng": 0.0006066666666350001,
+      "lat": 0.0014839999997970001
+    },
+    "junction-38": {
+      "id": "junction-38",
+      "lng": 0.000533333333375,
+      "lat": 0.0010790000002020002
+    },
+    "junction-39": {
+      "id": "junction-39",
+      "lng": 0.0004916666666250001,
+      "lat": 0.0008769999997979999
+    },
+    "junction-40": {
+      "id": "junction-40",
+      "lng": 0.000375,
+      "lat": 0.0003975
+    },
+    "junction-41": {
+      "id": "junction-41",
+      "lng": 0.00073125,
+      "lat": 0.001221
+    },
+    "junction-42": {
+      "id": "junction-42",
+      "lng": 0.0020679946109250003,
+      "lat": 0.001351413394722
+    },
+    "junction-43": {
+      "id": "junction-43",
+      "lng": 0.001879166666925,
+      "lat": 0.0012330000001620001
+    },
+    "junction-44": {
+      "id": "junction-44",
+      "lng": 0.0016208333330750002,
+      "lat": 0.001070999999838
+    },
+    "junction-45": {
+      "id": "junction-45",
+      "lng": 0.0013218750000000001,
+      "lat": 0.000738
+    },
+    "junction-46": {
+      "id": "junction-46",
+      "lng": 0.00128125,
+      "lat": 0.000567
+    },
+    "junction-47": {
+      "id": "junction-47",
+      "lng": 0.0012406250000000002,
+      "lat": 0.00039600000000000003
+    },
+    "junction-48": {
+      "id": "junction-48",
+      "lng": 0.0010562500000000001,
+      "lat": 0.0003075
+    },
+    "junction-49": {
+      "id": "junction-49",
+      "lng": -0.0005125000001125001,
+      "lat": 0.0011199999996750001
+    },
+    "junction-50": {
+      "id": "junction-50",
+      "lng": -0.0003999999998875001,
+      "lat": 0.0014450000003250003
+    },
+    "junction-51": {
+      "id": "junction-51",
+      "lng": -0.0001250000001625,
+      "lat": 0.00215999999961
+    },
+    "junction-52": {
+      "id": "junction-52",
+      "lng": 0.00003750000016249999,
+      "lat": 0.00255000000039
+    },
+    "junction-53": {
+      "id": "junction-53",
+      "lng": 0.0005333333330000001,
+      "lat": 0.00289000000005
+    },
+    "junction-54": {
+      "id": "junction-54",
+      "lng": 0.000866666667,
+      "lat": 0.00283999999995
+    },
+    "junction-55": {
+      "id": "junction-55",
+      "lng": 0.0017166666661500001,
+      "lat": 0.00281999999997
+    },
+    "junction-56": {
+      "id": "junction-56",
+      "lng": 0.0022333333338500003,
+      "lat": 0.00285000000003
+    },
+    "junction-57": {
+      "id": "junction-57",
+      "lng": 0.00276666666665,
+      "lat": 0.00222000000066
+    },
+    "junction-58": {
+      "id": "junction-58",
+      "lng": 0.002768902439,
+      "lat": 0.0021314634156000003
+    },
+    "junction-59": {
+      "id": "junction-59",
+      "lng": 0.0027833333333500006,
+      "lat": 0.0015599999993400001
+    },
+    "junction-60": {
+      "id": "junction-60",
+      "lng": 0.00275625,
+      "lat": 0.00054
+    },
+    "junction-61": {
+      "id": "junction-61",
+      "lng": 0.0027125,
+      "lat": 0.00018
+    },
+    "junction-62": {
+      "id": "junction-62",
+      "lng": 0.00266875,
+      "lat": -0.00018
+    },
+    "junction-63": {
+      "id": "junction-63",
+      "lng": 0.0018125,
+      "lat": -0.00075
+    },
+    "junction-64": {
+      "id": "junction-64",
+      "lng": 0.0005333333338,
+      "lat": -0.0008300000001300002
+    },
+    "junction-65": {
+      "id": "junction-65",
+      "lng": 0.00006666666620000002,
+      "lat": -0.0006999999998699998
+    },
+    "junction-66": {
+      "id": "junction-66",
+      "lng": -0.0005125,
+      "lat": 0.0001125
+    },
+    "junction-67": {
+      "id": "junction-67",
+      "lng": -0.00026666666702500005,
+      "lat": 0.0007550000000400001
+    },
+    "junction-68": {
+      "id": "junction-68",
+      "lng": 0.00009166666702499996,
+      "lat": 0.0007149999999599999
+    },
+    "junction-69": {
+      "id": "junction-69",
+      "lng": -2.874999793789357e-13,
+      "lat": 0.001607000000163
+    },
+    "junction-70": {
+      "id": "junction-70",
+      "lng": 0.00014375000000000002,
+      "lat": 0.0015255
+    },
+    "junction-71": {
+      "id": "junction-71",
+      "lng": 0.00028750000028750005,
+      "lat": 0.0014439999998370001
+    },
+    "junction-72": {
+      "id": "junction-72",
+      "lng": 0.0011222835840000002,
+      "lat": 0.00228639762432
+    },
+    "junction-73": {
+      "id": "junction-73",
+      "lng": 0.0022329723858375,
+      "lat": 0.0016264718252550002
+    },
+    "junction-74": {
+      "id": "junction-74",
+      "lng": 0.0023416666664625003,
+      "lat": 0.001889999999505
+    },
+    "junction-75": {
+      "id": "junction-75",
+      "lng": 0.00244375,
+      "lat": 0.0021375
+    },
+    "junction-76": {
+      "id": "junction-76",
+      "lng": 0.0025458333335375,
+      "lat": 0.0023850000004950003
+    },
+    "junction-77": {
+      "id": "junction-77",
+      "lng": 0.0018416666661875004,
+      "lat": 0.000906000000003
+    },
+    "junction-78": {
+      "id": "junction-78",
+      "lng": 0.0020372968145625004,
+      "lat": 0.000904775185161
+    },
+    "junction-79": {
+      "id": "junction-79",
+      "lng": 0.0023208333338125002,
+      "lat": 0.0009029999999970001
+    },
+    "junction-80": {
+      "id": "junction-80",
+      "lng": 0.001674999999525,
+      "lat": -0.00002999999974499997
+    },
+    "junction-81": {
+      "id": "junction-81",
+      "lng": 0.0017483820460500001,
+      "lat": -0.00006939457209000011
+    },
+    "junction-82": {
+      "id": "junction-82",
+      "lng": 0.0021500000004750002,
+      "lat": -0.00028500000025500006
+    },
+    "junction-83": {
+      "id": "junction-83",
+      "lng": 0.0000666666669,
+      "lat": -0.00010999999976999993
+    },
+    "junction-84": {
+      "id": "junction-84",
+      "lng": -0.0001666666669,
+      "lat": -0.00034000000023000007
+    },
+    "junction-85": {
+      "id": "junction-85",
+      "lng": 0.0009416666666375,
+      "lat": -0.000059999999549999986
+    },
+    "junction-86": {
+      "id": "junction-86",
+      "lng": 0.0009708333333625002,
+      "lat": -0.00051000000045
+    },
+    "junction-87": {
+      "id": "junction-87",
+      "lng": 0.0021136460830625003,
+      "lat": 0.0012782992986750002
+    },
+    "junction-88": {
+      "id": "junction-88",
+      "lng": 0.0019845109022125,
+      "lat": 0.0006465302600550001
+    },
+    "junction-89": {
+      "id": "junction-89",
+      "lng": 0.0019065853628,
+      "lat": 0.00039791368704000015
+    },
+    "junction-90": {
+      "id": "junction-90",
+      "lng": 0.0018260077735,
+      "lat": 0.0001598998847999999
+    },
+    "junction-91": {
+      "id": "junction-91",
+      "lng": 0.00162213251685,
+      "lat": -0.00038572383060000016
+    },
+    "junction-92": {
+      "id": "junction-92",
+      "lng": 0.00157988416005,
+      "lat": -0.0004247223138000002
+    },
+    "junction-93": {
+      "id": "junction-93",
+      "lng": 0.0018026608517250002,
+      "lat": 0.0006869433417420001
+    },
+    "junction-94": {
+      "id": "junction-94",
+      "lng": 0.0018444417754375003,
+      "lat": 0.0006658652920650001
+    },
+    "junction-95": {
+      "id": "junction-95",
+      "lng": 0.0020703666859750005,
+      "lat": 0.0006346787948999998
+    },
+    "junction-96": {
+      "id": "junction-96",
+      "lng": 0.0022939397505250003,
+      "lat": 0.0007159780911
+    },
+    "junction-97": {
+      "id": "junction-97",
+      "lng": 0.0024183952238750004,
+      "lat": 0.00154560765195
+    },
+    "junction-98": {
+      "id": "junction-98",
+      "lng": 0.0011125,
+      "lat": 0.0022875
+    },
+    "junction-99": {
+      "id": "junction-99",
+      "lng": 0.00043500000000000006,
+      "lat": 0.002415
+    },
+    "junction-100": {
+      "id": "junction-100",
+      "lng": 0.0006608333333333334,
+      "lat": 0.0023725
+    },
+    "junction-101": {
+      "id": "junction-101",
+      "lng": 0.0008866666666666667,
+      "lat": 0.0023300000000000005
+    },
+    "junction-102": {
+      "id": "junction-102",
+      "lng": 0.0015562500000000001,
+      "lat": 0.0022375000000000003
+    },
+    "junction-103": {
+      "id": "junction-103",
+      "lng": 0.002,
+      "lat": 0.0021875
+    },
+    "junction-104": {
+      "id": "junction-104",
+      "lng": 0.00033791666676375007,
+      "lat": 0.0021185000002965
+    },
+    "junction-105": {
+      "id": "junction-105",
+      "lng": 0.00024083333323625004,
+      "lat": 0.0018219999997035002
+    },
+    "junction-106": {
+      "id": "junction-106",
+      "lng": -0.00008888888880000002,
+      "lat": 0.001323000000284
+    },
+    "junction-107": {
+      "id": "junction-107",
+      "lng": -0.0001777777778666667,
+      "lat": 0.0010389999997160002
+    },
+    "junction-108": {
+      "id": "junction-108",
+      "lng": 0.0002222222222875,
+      "lat": 0.0012010000002429999
+    },
+    "junction-109": {
+      "id": "junction-109",
+      "lng": 0.0001569444443791666,
+      "lat": 0.0009579999997570003
+    },
+    "junction-110": {
+      "id": "junction-110",
+      "lng": -0.00021666666666666674,
+      "lat": 0.00020750000000000025
+    },
+    "junction-111": {
+      "id": "junction-111",
+      "lng": 0.00007916666666666661,
+      "lat": 0.00030249999999999976
+    },
+    "junction-112": {
+      "id": "junction-112",
+      "lng": 0.0005041666664625,
+      "lat": 0.00020999999990999993
+    },
+    "junction-113": {
+      "id": "junction-113",
+      "lng": 0.0007083333335374999,
+      "lat": 0.0003000000000900001
+    },
+    "junction-114": {
+      "id": "junction-114",
+      "lng": 0.00035833333347916666,
+      "lat": -0.00009333333303000018
+    },
+    "junction-115": {
+      "id": "junction-115",
+      "lng": 0.00021249999985416666,
+      "lat": -0.00039666666696999963
+    },
+    "junction-116": {
+      "id": "junction-116",
+      "lng": 0.0006500000000583333,
+      "lat": -0.00007666666628999974
+    },
+    "junction-117": {
+      "id": "junction-117",
+      "lng": 0.0005916666666083333,
+      "lat": -0.00045333333370999984
+    },
+    "junction-118": {
+      "id": "junction-118",
+      "lng": 0.002175000000166667,
+      "lat": 0.0015620000003280002
+    },
+    "junction-119": {
+      "id": "junction-119",
+      "lng": 0.0020083333331666667,
+      "lat": 0.0012339999996719999
+    },
+    "junction-120": {
+      "id": "junction-120",
+      "lng": 0.0024708333334083335,
+      "lat": 0.0018910000004940001
+    },
+    "junction-121": {
+      "id": "junction-121",
+      "lng": 0.0023958333332583332,
+      "lat": 0.001396999999506
+    },
+    "junction-122": {
+      "id": "junction-122",
+      "lng": 0.0018000000000000002,
+      "lat": 0.0006720000000000001
+    },
+    "junction-123": {
+      "id": "junction-123",
+      "lng": 0.0017583333333333333,
+      "lat": 0.000438
+    },
+    "junction-124": {
+      "id": "junction-124",
+      "lng": 0.0017166666666666667,
+      "lat": 0.000204
+    },
+    "junction-125": {
+      "id": "junction-125",
+      "lng": 0.002278125,
+      "lat": 0.000606
+    },
+    "junction-126": {
+      "id": "junction-126",
+      "lng": 0.002235416666666667,
+      "lat": 0.00030900000000000003
+    },
+    "junction-127": {
+      "id": "junction-127",
+      "lng": 0.0021927083333333334,
+      "lat": 0.000012
+    },
+    "junction-128": {
+      "id": "junction-128",
+      "lng": 0.0013083333333333334,
+      "lat": -0.000045
+    },
+    "junction-129": {
+      "id": "junction-129",
+      "lng": 0.0015604166666666668,
+      "lat": -0.0003975
+    },
+    "junction-130": {
+      "id": "junction-130",
+      "lng": 0.0009791666667125002,
+      "lat": 0.0015770000002080001
+    },
+    "junction-131": {
+      "id": "junction-131",
+      "lng": 0.0009333333332875001,
+      "lat": 0.001368999999792
+    },
+    "junction-132": {
+      "id": "junction-132",
+      "lng": 0.00080875000003875,
+      "lat": 0.0016320000002054999
+    },
+    "junction-133": {
+      "id": "junction-133",
+      "lng": 0.00076999999996125,
+      "lat": 0.0014264999997945001
+    }
+  },
+  "edges": [
+    {
+      "kind": "street",
+      "id": "road-0",
+      "a": "nw",
+      "b": "junction-29",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-1",
+      "a": "junction-29",
+      "b": "junction-30",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-2",
+      "a": "junction-30",
+      "b": "junction-31",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-3",
+      "a": "junction-31",
+      "b": "bookRoad",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-4",
+      "a": "bookRoad",
+      "b": "junction-32",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-5",
+      "a": "junction-32",
+      "b": "junction-33",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-6",
+      "a": "junction-33",
+      "b": "junction-34",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-7",
+      "a": "junction-34",
+      "b": "junction-35",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-8",
+      "a": "junction-35",
+      "b": "ne",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-9",
+      "a": "bookRoad",
+      "b": "book",
+      "name": "書院入口",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-10",
+      "a": "nw",
+      "b": "junction-36",
+      "name": "中山路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-11",
+      "a": "junction-36",
+      "b": "junction-37",
+      "name": "中山路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-12",
+      "a": "junction-37",
+      "b": "west",
+      "name": "中山路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-13",
+      "a": "west",
+      "b": "junction-38",
+      "name": "中山路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-14",
+      "a": "junction-38",
+      "b": "junction-39",
+      "name": "中山路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-15",
+      "a": "junction-39",
+      "b": "color",
+      "name": "中山路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-16",
+      "a": "color",
+      "b": "junction-40",
+      "name": "中山路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-17",
+      "a": "junction-40",
+      "b": "start",
+      "name": "中山路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-18",
+      "a": "west",
+      "b": "junction-41",
+      "name": "濟南街",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-19",
+      "a": "junction-41",
+      "b": "gate",
+      "name": "濟南街",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-20",
+      "a": "gate",
+      "b": "east",
+      "name": "公園北側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-21",
+      "a": "ne",
+      "b": "junction-42",
+      "name": "仁愛路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-22",
+      "a": "junction-42",
+      "b": "junction-43",
+      "name": "仁愛路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-23",
+      "a": "junction-43",
+      "b": "junction-44",
+      "name": "仁愛路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-24",
+      "a": "junction-44",
+      "b": "east",
+      "name": "仁愛路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-25",
+      "a": "east",
+      "b": "junction-45",
+      "name": "仁愛路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-26",
+      "a": "junction-45",
+      "b": "junction-46",
+      "name": "仁愛路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-27",
+      "a": "junction-46",
+      "b": "junction-47",
+      "name": "仁愛路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-28",
+      "a": "junction-47",
+      "b": "southeast",
+      "name": "仁愛路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-29",
+      "a": "color",
+      "b": "park",
+      "name": "公園路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-30",
+      "a": "park",
+      "b": "junction-48",
+      "name": "公園路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-31",
+      "a": "junction-48",
+      "b": "southeast",
+      "name": "公園路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-32",
+      "a": "farwest",
+      "b": "junction-49",
+      "name": "街區西側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-33",
+      "a": "junction-49",
+      "b": "junction-50",
+      "name": "街區西側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-34",
+      "a": "junction-50",
+      "b": "westnorth",
+      "name": "街區西側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-35",
+      "a": "westnorth",
+      "b": "junction-51",
+      "name": "街區西側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-36",
+      "a": "junction-51",
+      "b": "junction-52",
+      "name": "街區西側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-37",
+      "a": "junction-52",
+      "b": "northwest",
+      "name": "街區西側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-38",
+      "a": "northwest",
+      "b": "junction-53",
+      "name": "北側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-39",
+      "a": "junction-53",
+      "b": "junction-54",
+      "name": "北側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-40",
+      "a": "junction-54",
+      "b": "north",
+      "name": "北側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-41",
+      "a": "north",
+      "b": "junction-55",
+      "name": "北側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-42",
+      "a": "junction-55",
+      "b": "junction-56",
+      "name": "北側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-43",
+      "a": "junction-56",
+      "b": "northeast",
+      "name": "北側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-44",
+      "a": "northeast",
+      "b": "junction-57",
+      "name": "街區東側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-45",
+      "a": "junction-57",
+      "b": "junction-58",
+      "name": "街區東側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-46",
+      "a": "junction-58",
+      "b": "junction-59",
+      "name": "街區東側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-47",
+      "a": "junction-59",
+      "b": "fareast",
+      "name": "街區東側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-48",
+      "a": "fareast",
+      "b": "junction-60",
+      "name": "街區東側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-49",
+      "a": "junction-60",
+      "b": "junction-61",
+      "name": "街區東側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-50",
+      "a": "junction-61",
+      "b": "junction-62",
+      "name": "街區東側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-51",
+      "a": "junction-62",
+      "b": "eastpark",
+      "name": "街區東側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-52",
+      "a": "eastpark",
+      "b": "junction-63",
+      "name": "南側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-53",
+      "a": "junction-63",
+      "b": "south",
+      "name": "南側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-54",
+      "a": "south",
+      "b": "junction-64",
+      "name": "南側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-55",
+      "a": "junction-64",
+      "b": "junction-65",
+      "name": "南側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-56",
+      "a": "junction-65",
+      "b": "southwest",
+      "name": "南側街道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-57",
+      "a": "southwest",
+      "b": "junction-66",
+      "name": "街區西側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-58",
+      "a": "junction-66",
+      "b": "farwest",
+      "name": "街區西側道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-59",
+      "a": "farwest",
+      "b": "junction-67",
+      "name": "西側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-60",
+      "a": "junction-67",
+      "b": "junction-68",
+      "name": "西側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-61",
+      "a": "junction-68",
+      "b": "color",
+      "name": "西側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-62",
+      "a": "westnorth",
+      "b": "junction-69",
+      "name": "西側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-63",
+      "a": "junction-69",
+      "b": "junction-70",
+      "name": "西側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-64",
+      "a": "junction-70",
+      "b": "junction-71",
+      "name": "西側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-65",
+      "a": "junction-71",
+      "b": "west",
+      "name": "西側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-66",
+      "a": "north",
+      "b": "junction-72",
+      "name": "北側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-67",
+      "a": "junction-72",
+      "b": "book",
+      "name": "北側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-68",
+      "a": "ne",
+      "b": "junction-73",
+      "name": "東北連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-69",
+      "a": "junction-73",
+      "b": "junction-74",
+      "name": "東北連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-70",
+      "a": "junction-74",
+      "b": "junction-75",
+      "name": "東北連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-71",
+      "a": "junction-75",
+      "b": "junction-76",
+      "name": "東北連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-72",
+      "a": "junction-76",
+      "b": "northeast",
+      "name": "東北連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-73",
+      "a": "east",
+      "b": "junction-77",
+      "name": "東側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-74",
+      "a": "junction-77",
+      "b": "junction-78",
+      "name": "東側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-75",
+      "a": "junction-78",
+      "b": "junction-79",
+      "name": "東側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-76",
+      "a": "junction-79",
+      "b": "fareast",
+      "name": "東側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-77",
+      "a": "southeast",
+      "b": "junction-80",
+      "name": "東側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-78",
+      "a": "junction-80",
+      "b": "junction-81",
+      "name": "東側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-79",
+      "a": "junction-81",
+      "b": "junction-82",
+      "name": "東側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-80",
+      "a": "junction-82",
+      "b": "eastpark",
+      "name": "東側連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-81",
+      "a": "start",
+      "b": "junction-83",
+      "name": "西南連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-82",
+      "a": "junction-83",
+      "b": "junction-84",
+      "name": "西南連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-83",
+      "a": "junction-84",
+      "b": "southwest",
+      "name": "西南連接道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-84",
+      "a": "park",
+      "b": "junction-85",
+      "name": "中華路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-85",
+      "a": "junction-85",
+      "b": "junction-86",
+      "name": "中華路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-86",
+      "a": "junction-86",
+      "b": "south",
+      "name": "中華路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-87",
+      "a": "ne",
+      "b": "junction-87",
+      "name": "自由路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-88",
+      "a": "junction-87",
+      "b": "junction-78",
+      "name": "自由路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-89",
+      "a": "junction-78",
+      "b": "junction-88",
+      "name": "自由路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-90",
+      "a": "junction-88",
+      "b": "freeMid",
+      "name": "自由路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-91",
+      "a": "freeMid",
+      "b": "junction-89",
+      "name": "自由路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-92",
+      "a": "junction-89",
+      "b": "junction-90",
+      "name": "自由路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-93",
+      "a": "junction-90",
+      "b": "junction-81",
+      "name": "自由路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-94",
+      "a": "junction-81",
+      "b": "freeSouth",
+      "name": "自由路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-95",
+      "a": "freeSouth",
+      "b": "junction-91",
+      "name": "民生路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-96",
+      "a": "junction-91",
+      "b": "junction-92",
+      "name": "民生路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-97",
+      "a": "junction-92",
+      "b": "south",
+      "name": "民生路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-98",
+      "a": "east",
+      "b": "junction-93",
+      "name": "民生路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-99",
+      "a": "junction-93",
+      "b": "junction-94",
+      "name": "民生路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-100",
+      "a": "junction-94",
+      "b": "freeMid",
+      "name": "民生路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-101",
+      "a": "freeMid",
+      "b": "junction-95",
+      "name": "廣東路189巷",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-102",
+      "a": "junction-95",
+      "b": "junction-96",
+      "name": "廣東路189巷",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-103",
+      "a": "junction-96",
+      "b": "fareast",
+      "name": "廣東路189巷",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-104",
+      "a": "ne",
+      "b": "junction-97",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-105",
+      "a": "junction-97",
+      "b": "libraryEntry",
+      "name": "勝利東路",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-106",
+      "a": "libraryEntry",
+      "b": "junction-58",
+      "name": "千禧公園步道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-107",
+      "a": "junction-58",
+      "b": "library",
+      "name": "千禧公園步道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-108",
+      "a": "library",
+      "b": "northeast",
+      "name": "圖書館園區步道",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-109",
+      "a": "southwest",
+      "b": "temple",
+      "name": "慈鳳宮前道路",
+      "walkable": true
+    },
+    {
+      "kind": "street",
+      "id": "road-110",
+      "a": "temple",
+      "b": "south",
+      "name": "民生路",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-111",
+      "a": "north",
+      "b": "junction-98",
+      "name": "街區連接道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-112",
+      "a": "junction-98",
+      "b": "bookRoad",
+      "name": "街區連接道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-113",
+      "a": "nw",
+      "b": "junction-99",
+      "name": "街區連接道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-114",
+      "a": "junction-99",
+      "b": "northwest",
+      "name": "街區連接道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-115",
+      "a": "junction-53",
+      "b": "junction-100",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-116",
+      "a": "junction-100",
+      "b": "junction-29",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-117",
+      "a": "junction-54",
+      "b": "junction-101",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-118",
+      "a": "junction-101",
+      "b": "junction-31",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-119",
+      "a": "junction-99",
+      "b": "junction-100",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-120",
+      "a": "junction-100",
+      "b": "junction-101",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-121",
+      "a": "junction-101",
+      "b": "junction-98",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-122",
+      "a": "junction-55",
+      "b": "junction-102",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-123",
+      "a": "junction-102",
+      "b": "junction-32",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-124",
+      "a": "junction-56",
+      "b": "junction-103",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-125",
+      "a": "junction-103",
+      "b": "junction-33",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-126",
+      "a": "junction-98",
+      "b": "junction-72",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-127",
+      "a": "junction-72",
+      "b": "junction-102",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-128",
+      "a": "junction-102",
+      "b": "junction-103",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-129",
+      "a": "junction-103",
+      "b": "junction-75",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-130",
+      "a": "junction-99",
+      "b": "junction-104",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-131",
+      "a": "junction-104",
+      "b": "junction-105",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-132",
+      "a": "junction-105",
+      "b": "junction-70",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-133",
+      "a": "junction-52",
+      "b": "junction-104",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-134",
+      "a": "junction-104",
+      "b": "junction-36",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-135",
+      "a": "junction-51",
+      "b": "junction-105",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-136",
+      "a": "junction-105",
+      "b": "junction-37",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-137",
+      "a": "junction-69",
+      "b": "junction-106",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-138",
+      "a": "junction-106",
+      "b": "junction-107",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-139",
+      "a": "junction-107",
+      "b": "junction-67",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-140",
+      "a": "junction-71",
+      "b": "junction-108",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-141",
+      "a": "junction-108",
+      "b": "junction-109",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-142",
+      "a": "junction-109",
+      "b": "junction-68",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-143",
+      "a": "junction-50",
+      "b": "junction-106",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-144",
+      "a": "junction-106",
+      "b": "junction-108",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-145",
+      "a": "junction-108",
+      "b": "junction-38",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-146",
+      "a": "junction-49",
+      "b": "junction-107",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-147",
+      "a": "junction-107",
+      "b": "junction-109",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-148",
+      "a": "junction-109",
+      "b": "junction-39",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-149",
+      "a": "junction-67",
+      "b": "junction-110",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-150",
+      "a": "junction-110",
+      "b": "junction-84",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-151",
+      "a": "junction-68",
+      "b": "junction-111",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-152",
+      "a": "junction-111",
+      "b": "junction-83",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-153",
+      "a": "junction-66",
+      "b": "junction-110",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-154",
+      "a": "junction-110",
+      "b": "junction-111",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-155",
+      "a": "junction-111",
+      "b": "junction-40",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-156",
+      "a": "start",
+      "b": "junction-112",
+      "name": "街區連接道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-157",
+      "a": "junction-112",
+      "b": "junction-113",
+      "name": "街區連接道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-158",
+      "a": "junction-113",
+      "b": "park",
+      "name": "街區連接道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-159",
+      "a": "junction-112",
+      "b": "junction-114",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-160",
+      "a": "junction-114",
+      "b": "junction-115",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-161",
+      "a": "junction-115",
+      "b": "junction-65",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-162",
+      "a": "junction-113",
+      "b": "junction-116",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-163",
+      "a": "junction-116",
+      "b": "junction-117",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-164",
+      "a": "junction-117",
+      "b": "junction-64",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-165",
+      "a": "junction-83",
+      "b": "junction-114",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-166",
+      "a": "junction-114",
+      "b": "junction-116",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-167",
+      "a": "junction-116",
+      "b": "junction-85",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-168",
+      "a": "junction-84",
+      "b": "junction-115",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-169",
+      "a": "junction-115",
+      "b": "junction-117",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-170",
+      "a": "junction-117",
+      "b": "junction-86",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-171",
+      "a": "junction-74",
+      "b": "junction-118",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-172",
+      "a": "junction-118",
+      "b": "junction-35",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-173",
+      "a": "junction-35",
+      "b": "junction-42",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-174",
+      "a": "junction-42",
+      "b": "junction-119",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-175",
+      "a": "junction-119",
+      "b": "junction-77",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-176",
+      "a": "junction-76",
+      "b": "junction-120",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-177",
+      "a": "junction-120",
+      "b": "junction-97",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-178",
+      "a": "junction-97",
+      "b": "junction-121",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-179",
+      "a": "junction-121",
+      "b": "junction-79",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-180",
+      "a": "junction-43",
+      "b": "junction-34",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-181",
+      "a": "junction-34",
+      "b": "junction-118",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-182",
+      "a": "junction-118",
+      "b": "junction-73",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-183",
+      "a": "junction-73",
+      "b": "junction-120",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-184",
+      "a": "junction-120",
+      "b": "junction-57",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-185",
+      "a": "junction-44",
+      "b": "junction-119",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-186",
+      "a": "junction-119",
+      "b": "junction-87",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-187",
+      "a": "junction-87",
+      "b": "junction-121",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-188",
+      "a": "junction-121",
+      "b": "junction-59",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-189",
+      "a": "junction-77",
+      "b": "junction-93",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-190",
+      "a": "junction-93",
+      "b": "junction-122",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-191",
+      "a": "junction-122",
+      "b": "junction-123",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-192",
+      "a": "junction-123",
+      "b": "junction-124",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-193",
+      "a": "junction-124",
+      "b": "junction-80",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-194",
+      "a": "junction-79",
+      "b": "junction-96",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-195",
+      "a": "junction-96",
+      "b": "junction-125",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-196",
+      "a": "junction-125",
+      "b": "junction-126",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-197",
+      "a": "junction-126",
+      "b": "junction-127",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-198",
+      "a": "junction-127",
+      "b": "junction-82",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-199",
+      "a": "junction-45",
+      "b": "junction-122",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-200",
+      "a": "junction-122",
+      "b": "junction-94",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-201",
+      "a": "junction-94",
+      "b": "junction-88",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-202",
+      "a": "junction-88",
+      "b": "junction-95",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-203",
+      "a": "junction-95",
+      "b": "junction-125",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-204",
+      "a": "junction-125",
+      "b": "junction-60",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-205",
+      "a": "junction-46",
+      "b": "junction-123",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-206",
+      "a": "junction-123",
+      "b": "junction-89",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-207",
+      "a": "junction-89",
+      "b": "junction-126",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-208",
+      "a": "junction-126",
+      "b": "junction-61",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-209",
+      "a": "junction-47",
+      "b": "junction-124",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-210",
+      "a": "junction-124",
+      "b": "junction-90",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-211",
+      "a": "junction-90",
+      "b": "junction-127",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-212",
+      "a": "junction-127",
+      "b": "junction-62",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-213",
+      "a": "junction-80",
+      "b": "junction-128",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-214",
+      "a": "junction-128",
+      "b": "junction-85",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-215",
+      "a": "junction-82",
+      "b": "junction-91",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-216",
+      "a": "junction-91",
+      "b": "junction-129",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-217",
+      "a": "junction-129",
+      "b": "junction-86",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-218",
+      "a": "junction-48",
+      "b": "junction-128",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-219",
+      "a": "junction-128",
+      "b": "junction-129",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-220",
+      "a": "junction-129",
+      "b": "junction-92",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-221",
+      "a": "junction-92",
+      "b": "junction-63",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-222",
+      "a": "bookRoad",
+      "b": "junction-130",
+      "name": "街區連接道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-223",
+      "a": "junction-130",
+      "b": "junction-131",
+      "name": "街區連接道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-224",
+      "a": "junction-131",
+      "b": "gate",
+      "name": "街區連接道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-225",
+      "a": "junction-30",
+      "b": "junction-132",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-226",
+      "a": "junction-132",
+      "b": "junction-133",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-227",
+      "a": "junction-133",
+      "b": "junction-41",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-228",
+      "a": "junction-36",
+      "b": "junction-132",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-229",
+      "a": "junction-132",
+      "b": "junction-130",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-230",
+      "a": "junction-37",
+      "b": "junction-133",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "lane",
+      "id": "road-231",
+      "a": "junction-133",
+      "b": "junction-131",
+      "name": "街區巷道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-232",
+      "a": "gate",
+      "b": "garden",
+      "name": "公園步道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-233",
+      "a": "color",
+      "b": "garden",
+      "name": "公園步道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-234",
+      "a": "garden",
+      "b": "pondWest",
+      "name": "公園步道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-235",
+      "a": "pondWest",
+      "b": "park",
+      "name": "公園步道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-236",
+      "a": "garden",
+      "b": "gardenEast",
+      "name": "公園步道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-237",
+      "a": "gardenEast",
+      "b": "east",
+      "name": "公園步道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-238",
+      "a": "gardenEast",
+      "b": "pondEast",
+      "name": "公園步道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-239",
+      "a": "pondEast",
+      "b": "park",
+      "name": "公園步道",
+      "walkable": true
+    },
+    {
+      "kind": "path",
+      "id": "road-240",
+      "a": "pondEast",
+      "b": "southeast",
+      "name": "公園步道",
+      "walkable": true
+    }
+  ],
+  "players": {
+    "male": {
+      "name": "男性玩家",
+      "portrait": "./src/assets/player/male-portrait.png",
+      "sheet": "./src/assets/player/male-sheet.png",
+      "portraitBox": [
+        560,
+        45,
+        290,
+        715
+      ],
+      "centers": [
+        70,
+        355,
+        705,
+        1055,
+        1330
+      ]
+    },
+    "female": {
+      "name": "女性玩家",
+      "portrait": "./src/assets/player/female-portrait.png",
+      "sheet": "./src/assets/player/female-sheet.png",
+      "portraitBox": [
+        560,
+        30,
+        330,
+        730
+      ],
+      "centers": [
+        125,
+        420,
+        705,
+        1000,
+        1295
+      ]
+    }
+  }
+}
