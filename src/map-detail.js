@@ -1,13 +1,13 @@
 // Screenshot-inspired schematic blocks, not surveyed street or building geometry.
 export function refineStreetLayout(layout){
- const blocks=[],roads=layout.links.map(([a,b,name])=>({a:layout.nodes[a],b:layout.nodes[b],name,kind:'street'}));
+ const blocks=[],roads=layout.links.map(([a,b,name,kind='street'])=>({a:layout.nodes[a],b:layout.nodes[b],name,kind}));
  const lerp=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
  const quad=(p,u,v)=>lerp(lerp(p[0],p[1],u),lerp(p[3],p[2],u),v);
  const segment=(a,b,name='街區巷道',kind='lane')=>roads.push({a,b,name,kind});
  // Each block's alley ends connect to an existing road; no painted, inaccessible streets.
  const districts=[
-  ['northwest','north','book','nw',3,2],
-  ['north','northeast','ne','book',3,2],
+  ['northwest','north','bookRoad','nw',3,2],
+  ['north','northeast','ne','bookRoad',3,2],
   ['northwest','nw','west','westnorth',2,3],
   ['westnorth','west','color','farwest',3,3],
   ['farwest','color','start','southwest',3,2],
@@ -15,7 +15,7 @@ export function refineStreetLayout(layout){
   ['ne','northeast','fareast','east',3,3],
   ['east','fareast','eastpark','southeast',3,4],
   ['southeast','eastpark','south','park',3,2],
-  ['nw','book','gate','west',2,3]
+  ['nw','bookRoad','gate','west',2,3]
  ];
  for(const [a,b,c,d,cols,rows] of districts){const p=[a,b,c,d].map(id=>layout.nodes[id]);
   // Complete district borders, including the southern cross street and 長春街.
@@ -25,7 +25,7 @@ export function refineStreetLayout(layout){
   for(let x=0;x<cols;x++)for(let y=0;y<rows;y++)blocks.push([quad(p,x/cols,y/rows),quad(p,(x+1)/cols,y/rows),quad(p,(x+1)/cols,(y+1)/rows),quad(p,x/cols,(y+1)/rows)]);
  }
  // Park paths join the surrounding streets; ponds and lawns remain impassable.
- const parkPoints={garden:[365,686],pondWest:[410,768],pondEast:[562,796],gardenEast:[645,730]};
+ const parkPoints={garden:[280,745],pondWest:[265,815],pondEast:[390,835],gardenEast:[455,770]};
  Object.assign(layout.nodes,parkPoints);
  for(const [a,b] of [['gate','garden'],['color','garden'],['garden','pondWest'],['pondWest','park'],['garden','gardenEast'],['gardenEast','east'],['gardenEast','pondEast'],['pondEast','park'],['pondEast','southeast']])segment(layout.nodes[a],layout.nodes[b],'公園步道','path');
  // Split every intersection, including T junctions, so walker and drawing share geometry.

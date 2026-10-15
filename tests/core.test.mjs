@@ -43,8 +43,8 @@ test('early turn enters the chosen connected path without cutting a corner',()=>
 test('reverse request still permits retracing the same street',()=>{
  const w=new RoadWalker();const initial=w.read();w.move(0,1,8);const forward=w.read();w.move(initial.lng-forward.lng,initial.lat-forward.lat,4);assert.ok(Math.hypot(w.read().lng-initial.lng,w.read().lat-initial.lat)<Math.hypot(forward.lng-initial.lng,forward.lat-initial.lat));assert.ok(roadRoute(w.read(),'color'));
 });
-test('staggered diagonal input corrects a just-entered wrong branch via its junction',()=>{
- const w=new RoadWalker();w.node='color';w.move(1,0,.5);assert.ok(w.edge.a==='park'||w.edge.b==='park');const before=w.read();w.move(1,1,3);assert.ok(w.edge.a==='garden'||w.edge.b==='garden');assert.ok(roadRoute(w.read(),'gate'));assert.ok(Math.hypot(w.read().lng-before.lng,w.read().lat-before.lat)*111195<=3.01);
+test('changed diagonal input corrects a just-entered wrong branch via its junction',()=>{
+ const w=new RoadWalker();w.node='color';w.move(1,-.7,.5);assert.ok(w.edge.a==='park'||w.edge.b==='park');const before=w.read();w.move(1,1,3);assert.ok(w.edge.a==='garden'||w.edge.b==='garden');assert.ok(roadRoute(w.read(),'gate'));assert.ok(Math.hypot(w.read().lng-before.lng,w.read().lat-before.lat)*111195<=3.01);
 });
 
 import {nearbyDream} from '../src/geo.js';
@@ -74,4 +74,11 @@ test('NPC pauses before turning and keeps culture separate from challenge instru
  assert.equal(npcPatrolPose(15000).walking,true);assert.equal(npcPatrolPose(19500).walking,false);
  assert.deepEqual(npcPatrolPose(3000),npcPatrolPose(23000));
  for(const task of TASKS){const pages=npcDialogue(task);assert.equal(pages.length,3);assert.ok(pages[1].sourceUrl);assert.ok(pages[2].text.includes(task.length+' 次'));assert.ok(pages.every(p=>p.text.length<100));}
+});
+
+test('reference-map landmarks share map coordinates and new districts are connected',()=>{
+ const museum=ROAD_NODES.color,gate=ROAD_NODES.gate,book=ROAD_NODES.book;
+ assert.ok(book.lat>gate.lat&&gate.lat>museum.lat);assert.ok(museum.lng<gate.lng&&gate.lng<book.lng);
+ for(const task of TASKS){assert.equal(task.test.lat,ROAD_NODES[task.id].lat);assert.equal(task.test.lng,ROAD_NODES[task.id].lng);}
+ for(const id of ['library','libraryEntry','freeMid','freeSouth','temple'])assert.ok(roadRoute(ROAD_NODES.start,id)?.distance>0);
 });

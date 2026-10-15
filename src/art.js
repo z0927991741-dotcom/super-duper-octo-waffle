@@ -15,7 +15,8 @@ export function roadMap(completed=[]){
  const inset=(p,amount)=>{const center=p[0].map((_,i)=>p.reduce((sum,q)=>sum+q[i],0)/4);return p.map(q=>{const d=Math.hypot(q[0]-center[0],q[1]-center[1]);return blend(q,center,Math.min(.38,amount/d));});};
  const blocks=MAP_BLOCKS.map((p,index)=>{
   const q=inset(p,18),center=inside(q,.5,.5);
-  const size=Math.min(64,...q.map((v,i)=>Math.hypot(v[0]-q[(i+1)%4][0],v[1]-q[(i+1)%4][1])))*.8;
+  const clearance=Math.min(...ROAD_EDGES.map(e=>{const a=ROAD_NODES[e.a],b=ROAD_NODES[e.b],ax=a.lng/.0000025,ay=1000-a.lat/.000003,bx=b.lng/.0000025,by=1000-b.lat/.000003,dx=bx-ax,dy=by-ay,t=Math.max(0,Math.min(1,((center[0]-ax)*dx+(center[1]-ay)*dy)/(dx*dx+dy*dy)));return Math.hypot(center[0]-ax-t*dx,center[1]-ay-t*dy);}));
+  const size=Math.min(Math.max(0,(clearance-20)*1.6),64,...q.map((v,i)=>Math.hypot(v[0]-q[(i+1)%4][0],v[1]-q[(i+1)%4][1])))*.8;
   const roof=['#d99399','#96b4c4','#b2a1c7','#dfb16f'][index%4];
   return `<g class="map-detail" opacity=".58"><polygon points="${points(inset(p,9))}" fill="${index%3?'#dbe9cc':'#e5e8ce'}" stroke="#cadcb6" stroke-width="2" stroke-linejoin="round"/>
   <g class="chibi-house" transform="translate(${center[0]} ${center[1]}) scale(${size/64})">
@@ -33,33 +34,34 @@ export function roadMap(completed=[]){
  }).join('');
  const roadWidth=e=>e.kind==='path'?8:e.kind==='lane'?12:30;
  const strokes=(border)=>ROAD_EDGES.map(e=>`<path class="${e.kind==='lane'||e.kind==='path'?'minor-road':'major-road'}" d="M${xy(ROAD_NODES[e.a])}L${xy(ROAD_NODES[e.b])}" stroke="${border?(e.kind==='path'?'#b6ca96':'#cfbba0'):(e.kind==='path'?'#fff1cf':e.kind==='lane'?'#fff6de':'#fff6df')}" stroke-width="${roadWidth(e)+(border?5:0)}"/>`).join('');
- const trees=[[310,630],[335,740],[388,803],[425,622],[550,658],[625,696],[675,810],[601,848],[294,698],[530,724],[655,860],[710,710],[1000,-65],[1050,-120],[1130,-100],[1200,-20],[1250,40],[1320,-60]];
- const labels=[['中山路',295,400,-75,25],['仁愛路',815,485,-75,25],['勝利東路',682,230,14,25],['公園路',366,838,15,25],['天津街',-102,530,-68,22],['林森路',260,1210,14,24],['自由路',1195,800,-79,24],['民生路',930,1064,14,22],['協和路',395,-115,9,22],['青島街',375,350,14,18],['長春街',530,400,-72,20],['濟南街',342,550,14,18],['屏東公園',559,690,0,28],['圖書館園區',1110,-65,0,24],['體育館',665,375,14,22],['文化街區',-38,146,14,20]];
+ const trees=[[250,730],[275,785],[315,850],[360,740],[400,795],[445,750],[460,860],[310,715],[485,790],[255,855],[920,225],[985,140],[1050,70],[1130,130],[1190,220],[1140,360],[1040,420],[960,380]];
+ const labels=[['中正路',-235,590,-85,24],['忠孝路',-95,540,-75,22],['信義路',-10,430,-75,20],['勝利路',125,320,8,24],['中山路',238,475,-75,25],['仁愛路',545,818,-72,25],['勝利東路',658,475,17,25],['公園路',290,873,15,25],['天津街',70,475,-74,22],['林森路',330,1045,17,24],['自由路',820,810,-74,24],['民生路',960,870,17,22],['協和東路',540,165,15,22],['青島街',80,420,14,18],['長春街',382,515,-75,20],['濟南街',280,584,15,18],['屏東公園',375,788,0,28],['千禧公園',1060,245,0,28],['屏東縣立圖書館',1130,155,0,24],['運動場',420,680,18,19],['屏東女中',665,820,0,20],['屏東孔廟・書院園區',470,265,0,20],['屏東慈鳳宮',-65,1275,0,21],['廣東路',1135,760,-72,22],['中華路',235,1115,-74,19]];
+ const library=`<g class="map-detail" transform="translate(1130 100)"><ellipse cy="24" rx="70" ry="17" fill="#77917d25"/><rect x="-60" y="-24" width="120" height="47" rx="9" fill="#fff4d6" stroke="#a2b0a0" stroke-width="3"/><path d="M-68-25Q0-60 68-25" fill="#91b7b4" stroke="#759797" stroke-width="4"/><path d="M-42-8v22m22-22v22m40-22v22m22-22v22" stroke="#b1d2d8" stroke-width="11"/><path d="M-9 24V-4H9v28" fill="#a68d73"/></g>`;
  const town=`
  <rect x="-400" y="-250" width="1800" height="1700" fill="#e8efd7"/>
  <path d="M-400 -170L380 -250 160 1130-400 1300Z" fill="#e5edcf"/><path d="M140 780L1340 1000 1400 1450-310 1450Z" fill="#e5edd2"/>
- <path d="M980 -240L1390 -140 1310 180 1120 155 927 40Z" fill="#c6e0b7"/>
- <path d="M1310 -250Q1190 -80 1230 125T1142 400Q1185 520 1088 690T1025 1010L888 1450" fill="none" stroke="#dcece4" stroke-width="34"/>
- <path d="M1310 -250Q1190 -80 1230 125T1142 400Q1185 520 1088 690T1025 1010L888 1450" fill="none" stroke="#9bcfd5" stroke-width="22"/>
+ <path d="M895 250L1250-100 1330 70 1165 540 855 465Z" fill="#c6e0b7" stroke="#9bbd92" stroke-width="4"/>${library}<g transform="translate(-135 1130)"><svg width="140" height="94" viewBox="0 0 180 120">${landmark('book')}</svg></g>
+ <path d="M1220 -250Q1230-30 1130 120T1035 390Q990 490 950 570T875 770Q870 890 770 1040L660 1450" fill="none" stroke="#dcece4" stroke-width="34"/>
+ <path d="M1220 -250Q1230-30 1130 120T1035 390Q990 490 950 570T875 770Q870 890 770 1040L660 1450" fill="none" stroke="#9bcfd5" stroke-width="22"/>
  ${blocks}
- <path d="M270 532L766 656 707 899 187 762Z" fill="#c6dfa7" stroke="#9fbf87" stroke-width="3"/>
- <path d="M440 600q90-16 145 38t35 52l-87-12-95-32Z" fill="#bbd9b0"/>
- <path d="M451 716q31-24 38 6t-14 51q-34 4-24-57M570 748q34-10 24 24t-34 19q-16-18 10-43" fill="#9ecfd3" stroke="#88bfc5" stroke-width="3"/>
- <path d="M595 225L835 286 778 505 535 446Z" fill="#f7edcf" stroke="#cbb893" stroke-width="3"/>
- <path d="M605 264l190 48-16 62-190-48Z" fill="#b4c9d7" stroke="#8baab5" stroke-width="3"/>
- <path d="M555 453Q677 424 715 486t-73 54l-105-27Z" fill="#b6d9af" stroke="#d9e7ce" stroke-width="12"/>
+ <path d="M245 590L540 670 470 910 170 790Z" fill="#c6dfa7" stroke="#9fbf87" stroke-width="3"/>
+ <path d="M345 625q68-12 115 25t20 40l-75-10-65-29Z" fill="#bbd9b0"/>
+ <path d="M318 775q24-18 30 5t-11 39q-26 3-19-44M413 804q25-7 18 18t-26 14q-12-14 8-32" fill="#9ecfd3" stroke="#88bfc5" stroke-width="3"/>
+ <path d="M475 465L825 550 770 700 530 645Z" fill="#f7edcf" stroke="#cbb893" stroke-width="3"/>
+ <path d="M530 492l220 54-15 52-220-54Z" fill="#b4c9d7" stroke="#8baab5" stroke-width="3"/>
+ <path d="M380 630Q460 624 475 663t-55 30l-65-23Z" fill="#b6d9af" stroke="#d9e7ce" stroke-width="12"/>
  <g class="district-features" stroke-linejoin="round">
  <g transform="translate(95 720)"><rect x="-54" y="-40" width="104" height="67" rx="19" fill="#f0d6bd" stroke="#c8aa8a" stroke-width="3"/><path d="M-30 9v-30m55 30v-30" stroke="#a89275" stroke-width="5"/><rect x="-42" y="-27" width="26" height="22" rx="4" fill="#e1a3b0" stroke="#fff4d7" stroke-width="4"/><rect x="12" y="-27" width="26" height="22" rx="4" fill="#96bdce" stroke="#fff4d7" stroke-width="4"/></g>
- <g transform="translate(470 510)"><ellipse rx="59" ry="28" fill="#e4cca5" stroke="#c5ab84" stroke-width="3"/><path d="M-48 0h96m-68-12v24m36-24v24" stroke="#d4b58e" stroke-width="2"/><path d="M-47-18v-34m94 34v-34" stroke="#a28b6e" stroke-width="4"/><rect x="-55" y="-50" width="16" height="21" rx="6" fill="#e5ad81"/><rect x="39" y="-50" width="16" height="21" rx="6" fill="#e5ad81"/></g>
- <g transform="translate(579 116)"><rect x="-70" y="-38" width="140" height="63" rx="16" fill="#e8d7be" stroke="#c7ad8c" stroke-width="3"/><path d="M-53 17V-19h106v36" fill="none" stroke="#b79475" stroke-width="9"/><path d="M-60-24h120" stroke="#c98274" stroke-width="13" stroke-linecap="round"/><rect x="-23" y="-14" width="46" height="31" rx="3" fill="#f8edce"/><path d="M0-12v27m-18-17h12m-12 8h12m12-8h12m-12 8h12" stroke="#bd9a78" stroke-width="2"/></g>
- <g fill="#a9c995" stroke="#86a674" stroke-width="2"><circle cx="533" cy="87" r="15"/><circle cx="630" cy="90" r="15"/></g>
+ <g transform="translate(365 570)"><ellipse rx="59" ry="28" fill="#e4cca5" stroke="#c5ab84" stroke-width="3"/><path d="M-48 0h96m-68-12v24m36-24v24" stroke="#d4b58e" stroke-width="2"/><path d="M-47-18v-34m94 34v-34" stroke="#a28b6e" stroke-width="4"/><rect x="-55" y="-50" width="16" height="21" rx="6" fill="#e5ad81"/><rect x="39" y="-50" width="16" height="21" rx="6" fill="#e5ad81"/></g>
+ <g transform="translate(430 285)"><rect x="-70" y="-38" width="140" height="63" rx="16" fill="#e8d7be" stroke="#c7ad8c" stroke-width="3"/><path d="M-53 17V-19h106v36" fill="none" stroke="#b79475" stroke-width="9"/><path d="M-60-24h120" stroke="#c98274" stroke-width="13" stroke-linecap="round"/><rect x="-23" y="-14" width="46" height="31" rx="3" fill="#f8edce"/><path d="M0-12v27m-18-17h12m-12 8h12m12-8h12m-12 8h12" stroke="#bd9a78" stroke-width="2"/></g>
+ <g fill="#a9c995" stroke="#86a674" stroke-width="2"><circle cx="385" cy="255" r="15"/><circle cx="475" cy="260" r="15"/></g>
  </g>
  <g fill="none" stroke-linecap="round" stroke-linejoin="round">${strokes(true)}${strokes(false)}</g>
  <g>${trees.map(([x,y],i)=>`<g class="chibi-tree map-detail" transform="translate(${x} ${y})"><ellipse cx="4" cy="15" rx="18" ry="9" fill="#74976428"/><path d="M0 4v15" stroke="#a08b67" stroke-width="5" stroke-linecap="round"/><path d="M-18-3q-8-13 7-19 2-18 18-12 20-1 17 17 12 15-6 21-17 9-36-7" fill="${i%4===0?'#e6b6c5':'#a9ce94'}" stroke="${i%4===0?'#c99aaa':'#8db579'}" stroke-width="2.5"/><ellipse cx="-4" cy="-20" rx="9" ry="5" fill="#fff9d850"/><circle cx="-4" cy="-5" r="1.5" fill="#749463"/><circle cx="6" cy="-5" r="1.5" fill="#749463"/></g>`).join('')}</g>
  <g fill="#fff3bb" stroke="#e0bd76" stroke-width="1.5">${[[322,660],[600,760],[696,840],[1040,-10]].map(([x,y])=>`<path d="M${x} ${y-7}l2 5 6 2-6 2-2 6-2-6-6-2 6-2Z"/>`).join('')}</g>
- <g fill="none" stroke="#e9fffa" stroke-width="3" stroke-linecap="round"><path d="M456 736q7-5 14 0m98 30q8-5 16 0M1220 78q8 8 14 0M1090 650q8 8 14 0"/></g>
+ <g fill="none" stroke="#e9fffa" stroke-width="3" stroke-linecap="round"><path d="M326 792q7-5 14 0m91 34q8-5 16 0M1150 78q8 8 14 0M899 650q8 8 14 0"/></g>
 
  <g font-family="sans-serif" text-anchor="middle">${labels.map(([name,x,y,angle,size])=>`<text class="${size<24?'map-detail':'major-label'}" x="${x}" y="${y}" transform="rotate(${angle} ${x} ${y})" fill="${name.includes('園')?'#5b8157':'#887762'}" font-size="${size}" font-weight="600" stroke="#faf9f0" stroke-width="5" paint-order="stroke">${name}</text>`).join('')}</g>
  `;
- return `<svg class="road-art" viewBox="-400 -250 1800 1700" preserveAspectRatio="none" aria-label="Q版屏東街區與修復進度"><defs><filter id="dream-grey"><feColorMatrix type="saturate" values="0"/></filter><g id="town-scene">${town}</g>${[['color',180,775,265],['gate',450,562,230],['book',570,195,250]].map(([id,x,y,r])=>`<clipPath id="zone-${id}"><circle cx="${x}" cy="${y}" r="${r}"/></clipPath>`).join('')}</defs><use href="#town-scene" filter="url(#dream-grey)" opacity=".85"/>${['color','gate','book'].map(id=>`<g class="dream-region ${completed.includes(id)?'colored':''}" data-region="${id}" clip-path="url(#zone-${id})"><use href="#town-scene"/></g>`).join('')}<polyline id="route-line" fill="none" stroke="#b87a53" stroke-width="7" stroke-dasharray="10 12" stroke-linecap="round"/><g id="route-chevrons"></g><g id="junction-arrows"></g></svg>`;
+ return `<svg class="road-art" viewBox="-400 -250 1800 1700" preserveAspectRatio="none" aria-label="Q版屏東街區與修復進度"><defs><filter id="dream-grey"><feColorMatrix type="saturate" values="0"/></filter><g id="town-scene">${town}</g>${['color','gate','book'].map(id=>[id,ROAD_NODES[id].lng/.0000025,1000-ROAD_NODES[id].lat/.000003,id==='color'?205:id==='gate'?170:190]).map(([id,x,y,r])=>`<clipPath id="zone-${id}"><circle cx="${x}" cy="${y}" r="${r}"/></clipPath>`).join('')}</defs><use href="#town-scene" opacity=".9"/>${['color','gate','book'].map(id=>`<g clip-path="url(#zone-${id})"><use href="#town-scene" filter="url(#dream-grey)"/></g>`).join('')}${['color','gate','book'].map(id=>`<g class="dream-region ${completed.includes(id)?'colored':''}" data-region="${id}" clip-path="url(#zone-${id})"><use href="#town-scene"/></g>`).join('')}<polyline id="route-line" fill="none" stroke="#b87a53" stroke-width="7" stroke-dasharray="10 12" stroke-linecap="round"/><g id="route-chevrons"></g><g id="junction-arrows"></g></svg>`;
 }
