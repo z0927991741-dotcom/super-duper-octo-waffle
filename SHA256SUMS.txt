@@ -1,0 +1,2 @@
+530c37b18c820186f023bf3d7f5f3d09e9a83150d497ad3afb6a9a8ec50557f7  DreamMender-Web-Windows.zip
+8c137f02ab7eaf92525353d1bacf6b6d6ecf24751a70e9a2f79e6ca305c7a9f4  DreamMender-Web-Android.apk
