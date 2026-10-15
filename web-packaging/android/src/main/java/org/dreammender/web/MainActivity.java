@@ -19,13 +19,14 @@ public class MainActivity extends Activity {
   FrameLayout root=new FrameLayout(this);root.setBackgroundColor(0xfff6f0dd);
   root.setOnApplyWindowInsetsListener((v,insets)->{v.setPadding(insets.getSystemWindowInsetLeft(),insets.getSystemWindowInsetTop(),insets.getSystemWindowInsetRight(),insets.getSystemWindowInsetBottom());return insets;});
   web=new WebView(this);root.addView(web,new FrameLayout.LayoutParams(-1,-1));setContentView(root);root.requestApplyInsets();
-  WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setGeolocationEnabled(true);settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setMediaPlaybackRequiresUserGesture(true);
+  WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setGeolocationEnabled(true);settings.setUserAgentString(settings.getUserAgentString()+" DreamMenderWeb/0.20 (+https://github.com/z0927991741-dotcom/super-duper-octo-waffle)");settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setMediaPlaybackRequiresUserGesture(true);
   web.setWebViewClient(new WebViewClient(){
    @Override public WebResourceResponse shouldInterceptRequest(WebView view,WebResourceRequest r){
     Uri u=r.getUrl();
     if(ORIGIN.equals(u.getScheme()+"://"+u.getHost())&&"/index.html".equals(u.getPath())){
      try{return new WebResourceResponse("text/html","UTF-8",getAssets().open("index.html"));}catch(Exception e){return blocked();}
     }
+    if("https".equals(u.getScheme())&&"tile.openstreetmap.org".equals(u.getHost())&&u.getPort()==-1&&"GET".equals(r.getMethod())&&u.getPath().matches("/\\d+/\\d+/\\d+\\.png")&&u.getQuery()==null)return null;
     return blocked();
    }
    @Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest r){
@@ -37,7 +38,7 @@ public class MainActivity extends Activity {
   web.setWebChromeClient(new WebChromeClient(){
    @Override public void onGeolocationPermissionsShowPrompt(String origin,GeolocationPermissions.Callback callback){
     if(!ORIGIN.equals(origin)&&!(ORIGIN+"/").equals(origin)){callback.invoke(origin,false,false);return;}
-    if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){callback.invoke(origin,true,false);return;}
+    if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED||checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED){callback.invoke(origin,true,false);return;}
     if(pending!=null)pending.invoke(pendingOrigin,false,false);
     pending=callback;pendingOrigin=origin;
     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},42);

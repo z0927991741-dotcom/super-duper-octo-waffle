@@ -3,6 +3,9 @@ android {
  namespace 'org.dreammender.web'
  compileSdk 36
  buildToolsVersion '36.1.0'
- defaultConfig { applicationId 'org.dreammender.pingtung.web'; minSdk 24; targetSdk 36; versionCode 19; versionName '0.19.0' }
- buildTypes { release { minifyEnabled false } }
+ defaultConfig { applicationId 'org.dreammender.pingtung.web'; minSdk 24; targetSdk 36; versionCode 20; versionName '0.20.0'; manifestPlaceholders = [appLabel: '夢境修補員・網頁版'] }
+ buildTypes {
+  release { minifyEnabled false }
+  debug { applicationIdSuffix '.osmpreview'; versionNameSuffix '-osm-preview'; manifestPlaceholders = [appLabel: '夢境修補員・OSM測試'] }
+ }
 }

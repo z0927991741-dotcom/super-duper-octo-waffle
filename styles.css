@@ -91,3 +91,21 @@ header,.explore,.challenge-page,.ending{max-width:600px}.bottom-nav{width:min(10
 @keyframes npc-stroll{0%,5%{left:8%}45%,55%{left:calc(92% - 128px)}95%,100%{left:8%}}
 .memory-pad.flash{outline:5px double #fff8c9;outline-offset:-8px;box-shadow:0 0 0 4px #805f40,0 0 25px #ffe4a7;transform:scale(1.035)}
 @media(prefers-reduced-motion:reduce){.memory-pad.flash{transform:none}}
+
+
+/* Leaflet is scoped to the real GPS map. Simulation art remains unchanged. */
+.real-map > :not(.osm-map):not(.arrival-toast){display:none!important}
+.osm-map{position:absolute;inset:0;z-index:5;background:#e8e4d7;overflow:hidden;text-align:left}
+.osm-viewport{position:absolute;inset:0;background:#e8e4d7}
+.osm-follow{position:absolute;top:12px;left:54px;z-index:1000;min-height:44px;background:#fffaf0;color:#533e32;border:1px solid #aa9681;border-radius:8px;padding:8px;font:inherit}
+.osm-status{position:absolute;bottom:26px;left:8px;right:8px;z-index:1000;margin:0;padding:6px;background:#fffaf0ed;color:#594334;border-radius:6px;font-size:12px;pointer-events:none}
+.osm-map .leaflet-control-attribution{font-size:11px;background:#fff;color:#234b68}
+.osm-map .leaflet-control-attribution a{color:#234b68}
+.osm-map .leaflet-control-zoom a{width:36px;height:36px;line-height:36px}
+
+.explore.is-real{padding-bottom:240px}
+.explore.is-real .map-panel{height:auto;min-height:0}
+.explore.is-real .map-top{position:static;border-radius:0}
+.explore.is-real .map{height:clamp(240px,42svh,420px);min-height:0}
+.explore.is-real .movement{position:static;min-height:0;padding:10px 12px;justify-content:flex-end}
+.explore.is-real #location-status:not(:empty),.explore.is-real .notice{position:static;margin:0;padding:8px 12px;font-size:13px}

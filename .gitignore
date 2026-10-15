@@ -13,3 +13,5 @@ web-packaging/android/build/
 web-packaging/android/local.properties
 web-packaging/android/src/main/assets/
 web-packaging/output/
+
+work/

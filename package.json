@@ -5,11 +5,14 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test tests/core.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/gps.test.mjs",
     "test:e2e": "playwright test",
     "build:standalone": "node scripts/build-standalone.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.61.1"
+  },
+  "dependencies": {
+    "leaflet": "1.9.4"
   }
 }

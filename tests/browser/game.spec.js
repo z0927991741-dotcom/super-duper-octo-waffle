@@ -101,3 +101,6 @@ test('player selection, directional walking, stopping, change and persistence',a
  await page.locator('#change-player').click();await page.locator('[data-choose-player="male"]').click();await page.locator('#cancel-player').click();await expect(page.locator('#player svg')).toHaveAttribute('data-player','female');await page.locator('#change-player').click();await page.locator('[data-choose-player="male"]').click();await page.locator('#confirm-player').click();await expect(page.locator('#player svg')).toHaveAttribute('data-player','male');expect(await page.locator('#coordinates').innerText()).toBe(pos);
  await page.reload();await page.locator('#begin').click();await expect(page.locator('.character-card.chosen')).toBeVisible();await page.locator('#confirm-player').click();await expect(page.locator('#player svg')).toHaveAttribute('data-player','male');await expect(page.locator('#player svg')).toHaveCSS('opacity','1');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'test-results/character-map.png'});
 });
+
+// Never load public map tiles in automated GPS regression tests.
+test.beforeEach(async({page})=>{await page.route('https://tile.openstreetmap.org/**',route=>route.abort());});
