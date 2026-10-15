@@ -82,3 +82,11 @@ test('reference-map landmarks share map coordinates and new districts are connec
  for(const task of TASKS){assert.equal(task.test.lat,ROAD_NODES[task.id].lat);assert.equal(task.test.lng,ROAD_NODES[task.id].lng);}
  for(const id of ['library','libraryEntry','freeMid','freeSouth','temple'])assert.ok(roadRoute(ROAD_NODES.start,id)?.distance>0);
 });
+
+test('destination overlay avoids the full player sprite or yields when space is tight',async()=>{
+ const {avoidPlayerIndicator}=await import('../src/navigation.js');
+ for(const width of [320,390,900])for(const height of [380,550,700])for(const x of [80,width/2,width-80])for(const y of [180,height/2,height-180]){
+  const player={x,y},hint={x,y:y-35,angle:0};const safe=avoidPlayerIndicator(hint,player,width,height);
+  if(safe)assert.ok(safe.x+76<player.x-34||safe.x-76>player.x+34||safe.y+27<player.y-82||safe.y-27>player.y+24);
+ }
+});

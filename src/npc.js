@@ -24,3 +24,16 @@ export function animateNpc(stage,id){
  svg.setAttribute('viewBox',box.join(' '));const rect=svg.querySelector('clipPath rect');['x','y','width','height'].forEach((key,i)=>rect.setAttribute(key,box[i]));
  svg.style.transform=pose.returning?'scaleX(-1)':'scaleX(1)';
 }
+
+// Portrait camera crops in each source image's logical coordinates.
+export const NPC_DIALOGUE_SHOTS={
+ color:[[490,35,335,560],[560,35,270,355],[600,35,190,225]],
+ gate:[[395,20,540,680],[440,20,360,455],[480,20,240,300]],
+ book:[[25,10,390,590],[90,10,270,370],[130,10,180,250]]
+};
+export function focusNpc(svg,id,page,previous){
+ if(!svg)return;const target=NPC_DIALOGUE_SHOTS[id][page];const from=previous||NPC_ART[id].portrait.box;
+ svg.dataset.shot=String(page);svg.setAttribute('viewBox',target.join(' '));
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const start=performance.now();const tick=now=>{if(!svg.isConnected)return;const t=Math.min(1,(now-start)/650),ease=1-(1-t)**3;svg.setAttribute('viewBox',target.map((v,i)=>from[i]+(v-from[i])*ease).join(' '));if(t<1)requestAnimationFrame(tick);};requestAnimationFrame(tick);
+}

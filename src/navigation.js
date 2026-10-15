@@ -18,3 +18,12 @@ export function nearbyJunction(position,radius=12){
   return {...entry,branches:edges.map(edge=>{const other=ROAD_NODES[edge.a===entry.node.id?edge.b:edge.a];return {name:edge.name,dx:(other.lng-entry.node.lng)/.0000025,dy:-(other.lat-entry.node.lat)/.000003};})};
  }return null;
 }
+
+// Reserve the full sprite and its label, not just the player's ground point.
+export function avoidPlayerIndicator(hint,player,width,height){
+ if(!hint)return null;
+ const fits=p=>p.x>=78&&p.x<=width-78&&p.y>=145&&p.y<=height-165;
+ const clear=p=>p.x+76<player.x-34||p.x-76>player.x+34||p.y+27<player.y-82||p.y-27>player.y+24;
+ const options=[hint,{...hint,y:player.y-116},{...hint,y:player.y+60},{...hint,x:player.x-116},{...hint,x:player.x+116}];
+ return options.find(p=>fits(p)&&clear(p))||null;
+}
