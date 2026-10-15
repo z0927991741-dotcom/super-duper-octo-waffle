@@ -1,0 +1,29 @@
+name: 發布網頁同版 Windows 與 Android 安裝包
+on:
+  push:
+    branches: [main]
+    paths: ['web-packaging/release.json', '.github/workflows/publish-web-installers.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: downloads-web-v0.19.0
+          path: installer-payload
+      - name: 還原並驗證安裝包
+        working-directory: installer-payload
+        run: |
+          cat windows.part-* > DreamMender-Web-Windows.zip
+          sha256sum -c SHA256SUMS.txt
+      - name: 發布下載
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release view v0.19.0-web-preview >/dev/null 2>&1 || gh release create v0.19.0-web-preview --target "$GITHUB_SHA" --prerelease --title '夢境修補員｜最後網頁同版 Windows ZIP 與 Android APK' --notes-file web-packaging/RELEASE.md
+          gh release upload v0.19.0-web-preview installer-payload/DreamMender-Web-Windows.zip installer-payload/DreamMender-Web-Android.apk installer-payload/SHA256SUMS.txt web-packaging/README.md --clobber
