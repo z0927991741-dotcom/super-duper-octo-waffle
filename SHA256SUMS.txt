@@ -1,0 +1,3 @@
+c0a54208e6c37ededcbf897fbb8c2296fc9f5b0136bdd0fdd1bac04d16db4410  DreamMender-Windows.zip
+7de66fdb4df02dc448b70c612756eb82653f8c5a123f5499fa8686b2a2c329d1  DreamMender.apk
+c835e1f6008cec2f0eaea0031ae79bbb027777c4687b403484b826f48266f531  DreamMender-Documents.zip
