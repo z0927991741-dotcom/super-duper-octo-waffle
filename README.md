@@ -1,3 +1,5 @@
+> **最新下載：網頁同版 v0.19.0** — [Windows ZIP 與 Android APK](https://github.com/z0927991741-dotcom/super-duper-octo-waffle/releases/tag/v0.19.0-web-preview)。直接使用最後網頁版畫面與玩法；下方 v0.18.0 為先前 Godot 測試版。新版採 Electron／WebView，並非 Godot／Unity 原生版。
+
 # 夢境修補員 · 瀏覽器原型
 
 全繁體中文、米白與磚紅配色的直式文化探索網頁遊戲。只製作網頁版，沒有 Unity 專案、exe 或 apk。

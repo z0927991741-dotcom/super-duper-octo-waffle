@@ -7,3 +7,5 @@
 - 正式座標仍未確認，真實任務鎖定；這版不是已符合老師指定引擎與戶外驗證要求的作業成品。
 
 重跑桌面測試：先建置安裝包，再設定 ELECTRON_PATH 為同版本 Linux Electron，執行 npx playwright test --config playwright.installers.config.js。需 X server（測試預設 DISPLAY=:97），且採獨立暫存 user-data-dir，不會刪除玩家存檔。
+
+手機尺寸以同一份獨立 HTML 跑 Chromium 測試：完成第一個夢境後可不重新整理前往下一個任務、三位 NPC 前景去背與主要對話立繪，2 項均通過。這是瀏覽器測試，不等於 Android 實機測試。
