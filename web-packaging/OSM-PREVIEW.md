@@ -39,7 +39,7 @@ Android 封裝只新增 `https://tile.openstreetmap.org/{z}/{x}/{y}.png` GET 圖
 
 ## 檔案驗證
 
-APK SHA256：`c19ec167b6743afa5e70c27edbd2f9d67b23a22d12bc76e2033e4051b2285c7b`
+APK SHA256：`60e44ec45265460ca693744c4d23aab1027cd01cbdfaeb3db5d6fac8ce33ef8f`
 
 網頁 payload SHA256：`ec45ecc592c2ba0c5ce8237f7d360619acf12d00f8b57c8928500584f9bd1d2f`
 
