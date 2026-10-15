@@ -4,7 +4,7 @@ import path from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
 // These local modules use named exports and one-line static imports only.
 // Concatenate in dependency order; fail if a new unsupported import/export is added.
-const modules=['config','map-detail','roads','geo','location','challenge','storage','joystick','art','camera','map-controls','app'];
+const modules=['config','map-detail','roads','geo','location','challenge','storage','joystick','art','camera','navigation','stories','map-controls','app'];
 const chunks=[];
 for(const name of modules){
  const source=await readFile(path.join(root,'src',name+'.js'),'utf8');

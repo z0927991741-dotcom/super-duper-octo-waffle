@@ -24,3 +24,25 @@ import {cameraFrame} from '../src/camera.js';
 test('memory task difficulty is four, five and six',()=>assert.deepEqual(TASKS.map(t=>t.length),[4,5,6]));
 test('camera follows the player, clamps at world edges and supports overview',()=>{const a=cameraFrame(390,600,{x:30,y:30}),b=cameraFrame(390,600,{x:50,y:60});assert.ok(b.x<a.x&&b.y<a.y);for(const p of [{x:0,y:0},{x:100,y:100}]){const c=cameraFrame(390,600,p);assert.ok(c.x<=0&&c.x>=390-c.worldWidth);assert.ok(c.y<=0&&c.y>=600-c.worldHeight);}const overview=cameraFrame(390,600,{x:50,y:50},{overview:true});assert.ok(overview.worldWidth<=390&&overview.worldHeight<=600);});
 test('expanded streets are reachable from the starting position',()=>{for(const id of Object.keys(ROAD_NODES))assert.ok(roadRoute(ROAD_NODES.start,id));assert.ok(Object.keys(ROAD_NODES).length>=19);});
+
+import {destinationIndicator,routeChevrons,nearbyJunction} from '../src/navigation.js';
+import {ROAD_EDGES} from '../src/roads.js';
+test('off-screen destination indicator stays in unobstructed screen bounds',()=>{
+ const camera={x:-400,y:-500,worldWidth:1400,worldHeight:1300};
+ const marker=destinationIndicator(camera,{x:90,y:10},390,680);assert.ok(marker);assert.ok(marker.x>=38&&marker.x<=290);assert.ok(marker.y>=155&&marker.y<=470);
+ assert.equal(destinationIndicator({x:0,y:0,worldWidth:390,worldHeight:680},{x:50,y:50},390,680),null);
+ const arrows=routeChevrons([[0,0],[100,0],[100,100]]);assert.ok(arrows.length>=4);assert.ok(arrows.every(p=>p.x>=0&&p.x<=100&&p.y>=0&&p.y<=100));assert.ok(arrows.some(p=>p.angle===90));
+});
+test('early turn enters the chosen connected path without cutting a corner',()=>{
+ const w=new RoadWalker();w.node='color';const a=ROAD_NODES.color,b=ROAD_NODES.garden,c=ROAD_NODES.pondWest;
+ const length=Math.hypot(b.lat-a.lat,b.lng-a.lng)*111195;
+ w.move(b.lng-a.lng,b.lat-a.lat,length-3);const before=w.read();w.move(c.lng-b.lng,c.lat-b.lat,6);
+ assert.ok(w.edge.a==='garden'||w.edge.b==='garden');assert.ok(w.edge.a==='pondWest'||w.edge.b==='pondWest');assert.ok(roadRoute(w.read(),'gate'));assert.ok(Math.hypot(w.read().lat-before.lat,w.read().lng-before.lng)*111195<=6.01);
+ assert.ok(nearbyJunction(b).branches.length>=3);w.move(0,0,10);assert.equal(w.turnIntent,null);
+});
+test('reverse request still permits retracing the same street',()=>{
+ const w=new RoadWalker();const initial=w.read();w.move(0,1,8);const forward=w.read();w.move(initial.lng-forward.lng,initial.lat-forward.lat,4);assert.ok(Math.hypot(w.read().lng-initial.lng,w.read().lat-initial.lat)<Math.hypot(forward.lng-initial.lng,forward.lat-initial.lat));assert.ok(roadRoute(w.read(),'color'));
+});
+test('staggered diagonal input corrects a just-entered wrong branch via its junction',()=>{
+ const w=new RoadWalker();w.node='color';w.move(1,0,.5);assert.ok(w.edge.a==='park'||w.edge.b==='park');const before=w.read();w.move(1,1,3);assert.ok(w.edge.a==='garden'||w.edge.b==='garden');assert.ok(roadRoute(w.read(),'gate'));assert.ok(Math.hypot(w.read().lng-before.lng,w.read().lat-before.lat)*111195<=3.01);
+});

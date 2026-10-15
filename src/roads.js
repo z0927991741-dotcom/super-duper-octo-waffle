@@ -1,3 +1,4 @@
+import {SETTINGS} from './config.js';
 import {refineStreetLayout} from './map-detail.js';
 // 依使用者地圖截圖整理的遊戲示意路網；不是查證後的道路測繪資料。
 // 圖上像素對應到虛構經緯度，只供模擬模式運算。
@@ -11,15 +12,26 @@ export const ROAD_EDGES=MAP_LAYOUT.links.map(([a,b,name,kind='street'],i)=>({kin
 const meters=(a,b)=>Math.hypot(a.lat-b.lat,a.lng-b.lng)*111195;
 const mix=(a,b,t)=>({lat:a.lat+(b.lat-a.lat)*t,lng:a.lng+(b.lng-a.lng)*t});
 export class RoadWalker {
- constructor(){this.node='start';this.edge=null;this.t=0;this.direction=1;}
+ constructor(){this.node='start';this.edge=null;this.t=0;this.direction=1;this.turnIntent=null;}
  read(){return this.edge?mix(ROAD_NODES[this.edge.a],ROAD_NODES[this.edge.b],this.t):{lat:ROAD_NODES[this.node].lat,lng:ROAD_NODES[this.node].lng};}
- move(x,y,budget){if(!x&&!y)return this.read();const norm=Math.hypot(x,y);const requested={x:x/norm,y:y/norm};
+ move(x,y,budget){if(!x&&!y){this.turnIntent=null;return this.read();}const norm=Math.hypot(x,y);const requested={x:x/norm,y:y/norm};
   for(let guard=0;budget>1e-7&&guard<100;guard++){
-   if(!this.edge){const p=ROAD_NODES[this.node];const choices=ROAD_EDGES.filter(e=>e.walkable&&(e.a===this.node||e.b===this.node)).map(e=>{const q=ROAD_NODES[e.a===this.node?e.b:e.a];const dx=q.lng-p.lng,dy=q.lat-p.lat;return {edge:e,score:(dx*requested.x+dy*requested.y)/Math.hypot(dx,dy)};}).filter(c=>c.score>.35).sort((a,b)=>b.score-a.score);this.edge=choices[0]?.edge;if(!this.edge)break;this.direction=this.edge.a===this.node?1:-1;this.t=this.direction===1?0:1;}
+   if(!this.edge){const steering=this.turnIntent&&this.turnIntent.x*requested.x+this.turnIntent.y*requested.y>.5?this.turnIntent:requested;this.turnIntent=null;const p=ROAD_NODES[this.node];const choices=ROAD_EDGES.filter(e=>e.walkable&&(e.a===this.node||e.b===this.node)).map(e=>{const q=ROAD_NODES[e.a===this.node?e.b:e.a];const dx=q.lng-p.lng,dy=q.lat-p.lat;return {edge:e,score:(dx*steering.x+dy*steering.y)/Math.hypot(dx,dy)};}).filter(c=>c.score>SETTINGS.minimumTurnDot).sort((a,b)=>b.score-a.score);this.edge=choices[0]?.edge;if(!this.edge)break;this.direction=this.edge.a===this.node?1:-1;this.t=this.direction===1?0:1;}
    const a=ROAD_NODES[this.edge.a],b=ROAD_NODES[this.edge.b];const along=(b.lng-a.lng)*requested.x+(b.lat-a.lat)*requested.y;
    // 轉向指令在下一個路口執行；始終沿目前路段走，不橫切街區。
-   if(Math.abs(along)/Math.hypot(b.lng-a.lng,b.lat-a.lat)>.65)this.direction=Math.sign(along);
+   const forwardDot=along/Math.hypot(b.lng-a.lng,b.lat-a.lat)*this.direction;
+   const origin=ROAD_NODES[this.node];
+   const leavingOrigin=(this.edge.a===this.node&&this.direction===1)||(this.edge.b===this.node&&this.direction===-1);
+   // A diagonal key pair or joystick turn can arrive over two frames. Within 3 m,
+   // retrace to the junction before taking the better branch; never cut the corner.
+   let correcting=false;
+   if(leavingOrigin&&meters(origin,this.read())<=SETTINGS.turnCorrectionMeters){
+    const better=ROAD_EDGES.some(e=>{if(e.id===this.edge.id||e.a!==this.node&&e.b!==this.node)return false;const q=ROAD_NODES[e.a===this.node?e.b:e.a],dx=q.lng-origin.lng,dy=q.lat-origin.lat;const score=(dx*requested.x+dy*requested.y)/Math.hypot(dx,dy);return score>.8&&score>forwardDot+.25;});
+    if(better){this.direction*=-1;this.turnIntent=requested;correcting=true;}
+   }
+   if(!correcting&&forwardDot < -SETTINGS.reverseDotThreshold){this.direction*=-1;this.turnIntent=null;}
    const length=meters(a,b),remaining=(this.direction===1?1-this.t:this.t)*length;
+   if(remaining<=SETTINGS.turnBufferMeters&&forwardDot<.8&&forwardDot>-.5)this.turnIntent=requested;
    const step=Math.min(budget,remaining);this.t+=this.direction*step/length;budget-=step;
    if(remaining-step<1e-6){this.node=this.direction===1?this.edge.b:this.edge.a;this.edge=null;this.t=0;}else break;
   }return this.read();

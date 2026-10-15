@@ -1,0 +1,6 @@
+// Read sources on 2026-10-14. These notes do not verify navigation coordinates.
+export const STORIES={
+ color:{title:'在美術館，重新看見南方',fact:'2022 年，屏東美術館曾以「南方女神的逆襲」集結 56 名藝術家的作品，並與臺東、高雄的美術館交流典藏。熟悉的作品，也能在重新觀看時帶來新的發現。',memory:'你把花園遺失的四道色光重新接起。窗邊的花記起了自己的顏色，城市也亮了一點。',observe:'觀察中央入口和兩側成排的長窗，找找立面有哪些對稱的地方。',sourceName:'中央社，2022-12-02（報導存檔核對）',sourceUrl:'https://www.cna.com.tw/news/acul/202212020184.aspx'},
+ gate:{title:'讀一讀門上的名字',fact:'阿猴城門也稱「朝陽門」，是屏東的古蹟。對照現地照片，可以看見門額上的「朝陽門」三字，以及磚石圍成的拱形門洞；遊戲插畫則是風格化的描繪。',memory:'五點星光沿著拱門排成一列。你替古城找回那盞等候旅人歸來的小燈。',observe:'停步觀察門額、紅磚與石牆，找出和遊戲插畫不同的細節。',sourceName:'景點資料整理與使用者現地照片',sourceUrl:'https://github.com/wuulong/wuulong-notes-blog/blob/0c1ead8989ed8d041580c83a8a62259539f3cdf2/static/walkgis_prj/features/20260315_%E9%98%BF%E7%8C%B4%E5%9F%8E%E9%96%80(%E6%9C%9D%E9%99%BD%E9%96%80).md'},
+ book:{title:'書頁裡留下的地名',fact:'連橫《臺灣通史》卷十一記載，屏東書院位於「鳳山阿猴街」，由吳性誠、劉蔭棠於嘉慶二十年興建。舊書裡的「阿猴」，和今天旅程中的地名彼此呼應。',memory:'六枚散落的符號回到了書頁。你修好的故事，終於可以接著說下去了。',observe:'看看紅瓦屋頂與院落，再想像書頁如何替一個地方留下記憶。',sourceName:'連橫《臺灣通史》卷十一（維基文庫文字存檔）',sourceUrl:'https://github.com/michiboo/Classical_Chinese_Wikisource/blob/5acdca0628a0cb664858a0280b23488c194445e3/%E8%87%BA%E7%81%A3%E9%80%9A%E5%8F%B2/%E5%8D%B711.txt'}
+};
