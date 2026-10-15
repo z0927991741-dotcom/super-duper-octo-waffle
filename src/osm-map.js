@@ -1,4 +1,4 @@
-import {officialReady,entranceReady} from './config.js';
+import {TASKS,officialReady,entranceReady} from './config.js';
 import {positionIssue} from './geo.js';
 
 // Only presentation uses Leaflet. Arrival always uses geo.js, never map pixels.
@@ -19,15 +19,26 @@ export class OsmMap {
   this.map.on('dragstart',()=>{this.follow=false;});
   this.markers=L.layerGroup().addTo(this.map);
   for(const task of tasks){
-   if(officialReady(task))this.landmark(task.official,task.place+'・中心','#967251');
+   if(officialReady(task))this.landmark(task.official,task.place+'・政府參考點','#967251',task);
+   if(task.fieldPoint){this.landmark(task.fieldPoint,task.name+'・私人測試點','#7061a8',task);L.circle([task.fieldPoint.lat,task.fieldPoint.lng],{radius:task.radiusMeters,color:'#7061a8',fillOpacity:.08}).addTo(this.map);}
    if(officialReady(task)&&entranceReady(task))this.landmark(task.entrance,task.place+'・安全入口','#3f8250');
   }
+  const points=tasks.map(t=>t.fieldPoint||t.official).filter(Boolean);
+  const bounds=points.length?points:TASKS.map(t=>t.official);
+  this.map.fitBounds(bounds.map(p=>[p.lat,p.lng]),{padding:[45,65],maxZoom:17,animate:false});this.centered=true;this.tiles.addTo(this.map);
   host.querySelector('.osm-follow').onclick=()=>{this.follow=true;if(this.position&&!positionIssue(this.position)){this.map.setView([this.position.lat,this.position.lng],this.map.getZoom(),{animate:false});}};
   this.observer=new ResizeObserver(()=>{if(!this.destroyed&&host.clientWidth&&host.clientHeight)this.map.invalidateSize({pan:false});});this.observer.observe(host);
  }
- landmark(point,label,color){const text=document.createElement('span');text.textContent=label;window.L.circleMarker([point.lat,point.lng],{radius:8,color,fillOpacity:.8}).bindTooltip(text,{permanent:true,direction:'top'}).addTo(this.map);}
+ landmark(point,label,color,task){
+  const content=document.createElement('div');const title=document.createElement('strong');title.textContent=label;content.append(title);
+  const coordinates=document.createElement('p');coordinates.textContent=point.lat.toFixed(6)+', '+point.lng.toFixed(6);content.append(coordinates);
+  if(task?.source){const link=document.createElement('a');link.href=task.source;link.target='_blank';link.rel='noopener noreferrer';link.textContent='政府座標來源（非安全入口） ↗';content.append(link);}
+  const text=document.createElement('span');text.textContent=label;
+  const marker=task?window.L.marker([point.lat,point.lng],{icon:window.L.divIcon({className:'osm-landmark',html:`<img alt="" src="./src/assets/${task.id}.png">`,iconSize:[52,52],iconAnchor:[26,42]})}):window.L.circleMarker([point.lat,point.lng],{radius:8,color,fillOpacity:.8});
+  marker.bindTooltip(text,{direction:'top'}).bindPopup(content).addTo(this.map);
+ }
  show(point){if(!this.map)return;this.map.setView([point.lat,point.lng],this.centered?this.map.getZoom():17,{animate:false});if(!this.centered){this.centered=true;this.tiles.addTo(this.map);}}
- preview(task){if(!officialReady(task)){this.status.textContent='此景點中心尚未查證，暫不標示。';return;}this.follow=false;this.show(entranceReady(task)?task.entrance:task.official);}
+ preview(task){if(task.fieldPoint){this.follow=false;this.show(task.fieldPoint);return;}if(!officialReady(task)){this.status.textContent='此景點中心尚未查證，暫不標示。';return;}this.follow=false;this.show(entranceReady(task)?task.entrance:task.official);}
  setPosition(position){
   const issue=positionIssue(position);const key=JSON.stringify([position,issue]);if(this.lastKey===key)return;this.lastKey=key;this.position=position;
   if(!this.map)return;

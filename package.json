@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test tests/core.test.mjs tests/gps.test.mjs",
+    "test": "node --test tests/core.test.mjs tests/gps.test.mjs tests/field.test.mjs",
     "test:e2e": "playwright test",
     "build:standalone": "node scripts/build-standalone.mjs"
   },

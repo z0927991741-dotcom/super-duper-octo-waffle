@@ -109,3 +109,7 @@ header,.explore,.challenge-page,.ending{max-width:600px}.bottom-nav{width:min(10
 .explore.is-real .map{height:clamp(240px,42svh,420px);min-height:0}
 .explore.is-real .movement{position:static;min-height:0;padding:10px 12px;justify-content:flex-end}
 .explore.is-real #location-status:not(:empty),.explore.is-real .notice{position:static;margin:0;padding:8px 12px;font-size:13px}
+
+/* GPS web test controls */
+.osm-landmark img{width:52px;height:52px;object-fit:contain;filter:drop-shadow(0 3px 3px #0005)}
+.field-controls{padding:16px;border-top:1px solid #ddd;background:#f7f3ec;border-radius:0 0 16px 16px}.field-controls h2{font-size:18px;margin:0 0 8px}.field-controls p{font-size:13px;line-height:1.6}.field-controls label{display:block;margin:12px 0}.field-controls select{max-width:100%;padding:8px;border:1px solid #c7bda9;border-radius:8px;background:white}.field-controls button{margin:4px 6px 4px 0}.mode-switch{flex-wrap:wrap}.osm-map .leaflet-popup-content{line-height:1.6}

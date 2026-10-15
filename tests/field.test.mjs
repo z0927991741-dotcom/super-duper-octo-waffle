@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {fieldTasks,readFieldPoints,writeFieldPoints} from '../src/field-points.js';
+import {arrival} from '../src/geo.js';
+import {ProgressStore} from '../src/storage.js';
+const data=new Map(),storage={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};
+const point={lat:22.67,lng:120.49,accuracy:8,timestamp:Date.now()};
+writeFieldPoints(storage,{color:point,gate:{...point,lat:999}});
+assert.deepEqual(Object.keys(readFieldPoints(storage)),['color']);
+const task=fieldTasks(readFieldPoints(storage))[0];
+assert.equal(arrival(task,point,'field').allowed,true);
+assert.equal(arrival(task,{...point,lat:22.671},'field').allowed,false);
+assert.equal(arrival(task,{...point,accuracy:80},'field').allowed,false);
+assert.equal(arrival(task,{...point,timestamp:Date.now()-16000},'field').allowed,false);
+assert.equal(arrival(fieldTasks({})[0],point,'field').allowed,false);
+assert.equal(arrival(task,point,'real').allowed,false);
+const store=new ProgressStore(storage);store.award('field','color');store.award('sim','gate');store.reset('field');
+assert.deepEqual(store.read('sim'),['gate']);assert.deepEqual(store.read('real'),[]);
+console.log('Private GPS anchor, arrival validation and isolated saves passed');
