@@ -56,3 +56,12 @@ test('nearest eligible dream is discovered from position, with stable overlap ti
  assert.equal(nearbyDream(tasks,p(.01),'sim').result.allowed,false);assert.equal(nearbyDream(TASKS,p(),'real').result.allowed,false);
  for(const task of TASKS)assert.equal(nearbyDream(TASKS,{...ROAD_NODES[task.id],accuracy:0,timestamp:Date.now()},'sim').task.id,task.id);
 });
+
+import {stableNearbyDream} from '../src/geo.js';
+test('nearby hysteresis prevents boundary flicker but never blocks an eligible arrival',()=>{
+ const tasks=[{id:'a',test:{lat:0,lng:0},radiusMeters:30},{id:'b',test:{lat:0,lng:.0004},radiusMeters:30}];
+ assert.equal(stableNearbyDream(tasks,p(0,.00021),'sim','a').task.id,'a');
+ assert.equal(stableNearbyDream(tasks,p(0,.00025),'sim','a').task.id,'b');
+ assert.equal(stableNearbyDream(tasks,p(0,.00028),'sim','a').task.id,'b');
+ assert.equal(stableNearbyDream(tasks,p(),'real','a').result.allowed,false);
+});

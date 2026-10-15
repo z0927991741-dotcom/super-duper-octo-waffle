@@ -8,3 +8,13 @@ export function arrival(task,pos,mode,now=Date.now()){if(mode==='real'&&!officia
 export function nearbyDream(tasks,pos,mode,now=Date.now()){
  return tasks.map((task,index)=>({task,index,result:arrival(task,pos,mode,now)})).sort((a,b)=>Number(b.result.allowed)-Number(a.result.allowed)||(a.result.distance??Infinity)-(b.result.distance??Infinity)||a.index-b.index)[0]??null;
 }
+
+// Hysteresis never keeps a mission that has left its arrival radius.
+export function stableNearbyDream(tasks,pos,mode,previousId,now=Date.now()){
+ const nearest=nearbyDream(tasks,pos,mode,now);
+ const previous=tasks.find(t=>t.id===previousId);
+ if(!previous||!nearest)return nearest;
+ const result=arrival(previous,pos,mode,now);
+ if(result.allowed===nearest.result.allowed&&result.distance!==null&&nearest.result.distance!==null&&result.distance-nearest.result.distance<SETTINGS.missionSwitchMarginMeters)return {task:previous,result};
+ return nearest;
+}
