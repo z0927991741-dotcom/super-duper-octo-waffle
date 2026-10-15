@@ -26,6 +26,16 @@ jobs:
           npm run build:standalone
           cp dist/dream-mender.html dist/index.html
           touch dist/.nojekyll
+      - name: 取得獨立 GPS 網頁測試版
+        uses: actions/checkout@v4
+        with:
+          ref: c7742465b48ca1f421da3b3f9237b4d56dc2e950
+          path: gps-preview
+      - name: 建立 GPS 測試入口
+        run: |
+          (cd gps-preview && npm run build:standalone)
+          mkdir -p dist/gps-test
+          cp gps-preview/dist/dream-mender.html dist/gps-test/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
