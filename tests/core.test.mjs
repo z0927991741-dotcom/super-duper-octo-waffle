@@ -46,3 +46,13 @@ test('reverse request still permits retracing the same street',()=>{
 test('staggered diagonal input corrects a just-entered wrong branch via its junction',()=>{
  const w=new RoadWalker();w.node='color';w.move(1,0,.5);assert.ok(w.edge.a==='park'||w.edge.b==='park');const before=w.read();w.move(1,1,3);assert.ok(w.edge.a==='garden'||w.edge.b==='garden');assert.ok(roadRoute(w.read(),'gate'));assert.ok(Math.hypot(w.read().lng-before.lng,w.read().lat-before.lat)*111195<=3.01);
 });
+
+import {nearbyDream} from '../src/geo.js';
+test('nearest eligible dream is discovered from position, with stable overlap ties',()=>{
+ const tasks=[{id:'a',test:{lat:0,lng:0},radiusMeters:30},{id:'b',test:{lat:0,lng:.0002},radiusMeters:30}];
+ assert.equal(nearbyDream(tasks,p(0,.00019),'sim').task.id,'b');assert.equal(nearbyDream(tasks,p(0,0),'sim').task.id,'a');
+ assert.equal(nearbyDream([{...tasks[0],radiusMeters:1},tasks[1]],p(0,.00002),'sim').task.id,'b');
+ assert.equal(nearbyDream([tasks[0],{...tasks[0],id:'same'}],p(),'sim').task.id,'a');
+ assert.equal(nearbyDream(tasks,p(.01),'sim').result.allowed,false);assert.equal(nearbyDream(TASKS,p(),'real').result.allowed,false);
+ for(const task of TASKS)assert.equal(nearbyDream(TASKS,{...ROAD_NODES[task.id],accuracy:0,timestamp:Date.now()},'sim').task.id,task.id);
+});
