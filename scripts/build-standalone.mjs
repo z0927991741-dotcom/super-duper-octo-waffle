@@ -7,7 +7,7 @@ const root=fileURLToPath(new URL('../',import.meta.url));
 const modules=['config','map-detail','roads','geo','location','challenge','storage','joystick','art','camera','navigation','stories','npc','map-controls','app'];
 const chunks=[];
 const npcImages={};
-for(const id of ['color','gate','book'])for(const kind of ['portrait','sheet']){const file=`./src/assets/npc/${id}-${kind}.${id==='book'&&kind==='portrait'?'png':'jpg'}`;npcImages[file]='data:image/'+(file.endsWith('.png')?'png':'jpeg')+';base64,'+(await readFile(path.join(root,file))).toString('base64');}
+for(const id of ['color','gate','book'])for(const kind of ['portrait','sheet']){const file=`./src/assets/npc/${id}-${kind}-cutout.png`;npcImages[file]='data:image/'+(file.endsWith('.png')?'png':'jpeg')+';base64,'+(await readFile(path.join(root,file))).toString('base64');}
 for(const name of modules){
  const source=await readFile(path.join(root,'src',name+'.js'),'utf8');
  let bundled=source.replace(/^import\s+\{[^\n]+\}\s+from\s+'\.\/[^']+';\s*$/gm,'').replace(/^export\s+(?=(?:const|function|class)\b)/gm,'');

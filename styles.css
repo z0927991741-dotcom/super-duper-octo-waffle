@@ -45,3 +45,13 @@ header,.explore,.challenge-page,.ending{max-width:600px}.bottom-nav{width:min(10
 .npc-walker .npc-art{animation:none}
 .npc-dialogue{align-items:center}.npc-portrait{flex-basis:105px;height:220px}
 @media(max-width:420px){.npc-portrait{flex-basis:85px;height:195px}}
+/* Opaque characters occupy a dedicated foreground layer. */
+.npc-walker,.npc-portrait,.npc-hero{mix-blend-mode:normal;opacity:1;z-index:3;filter:drop-shadow(0 5px 3px #3f392c30)}
+.npc-landmark{z-index:0}.npc-ground{z-index:1}.npc-nameplate{z-index:4}.npc-cloud{z-index:0}
+.encounter-page.is-talking{padding-top:12px}.is-talking h1{margin:14px 0 5px;font-size:25px}.is-talking .encounter-place{margin-bottom:12px;font-size:15px}
+.npc-stage.talking{height:440px;background:radial-gradient(ellipse at 50% 35%,#fff7dc,#d3e5e4 65%,#e7dabc)}
+.npc-stage.talking .npc-walker{visibility:hidden}.npc-stage.talking .npc-landmark{inset:45px 0 28px;opacity:.48;filter:blur(1px)}
+.npc-hero{position:absolute;inset:8px 10% 29px;display:flex;justify-content:center;align-items:end}.npc-hero .npc-art{height:100%;width:100%}
+.is-talking .npc-dialogue{display:block;position:relative;z-index:5;margin: -5px 0 0;padding:20px 22px;border-radius:0 0 24px 24px;min-height:0;background:#fffaf0;border-top:3px solid #c59a6b;box-shadow:0 8px 24px #6c593112}
+.is-talking .npc-lines h2{font-size:22px}.is-talking .npc-lines p{font-size:18px;line-height:1.85}.is-talking .npc-lines small{font-size:14px}.npc-actions{position:sticky;bottom:0;z-index:6;background:#f5efdf;padding:12px 0;margin:8px 0 0}.npc-actions button{min-height:52px}
+@media(max-width:420px){.npc-stage.talking{height:360px}.npc-hero{inset:8px 8% 28px}.is-talking .npc-dialogue{padding:17px}.is-talking .npc-lines p{font-size:17px}.is-talking .npc-lines h2{font-size:20px}}
