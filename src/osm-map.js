@@ -3,7 +3,8 @@ import {positionIssue} from './geo.js';
 
 // Only presentation uses Leaflet. Arrival always uses geo.js, never map pixels.
 export class OsmMap {
- constructor(host,tasks){
+ constructor(host,tasks,simulation=false){
+  this.simulation=simulation;
   this.host=host;this.tasks=tasks;this.position=null;this.follow=true;this.centered=false;this.destroyed=false;this.tileErrors=0;
   host.innerHTML='<div class="osm-viewport" role="region" aria-label="OpenStreetMap 地圖，可拖曳或縮放"></div><button type="button" class="osm-follow">回到定位</button><p class="osm-status" role="status">啟用定位後顯示地圖；地圖需要網路。</p>';
   this.status=host.querySelector('.osm-status');
@@ -26,6 +27,7 @@ export class OsmMap {
   const points=tasks.map(t=>t.fieldPoint||t.official).filter(Boolean);
   const bounds=points.length?points:TASKS.map(t=>t.official);
   this.map.fitBounds(bounds.map(p=>[p.lat,p.lng]),{padding:[45,65],maxZoom:17,animate:false});this.centered=true;this.tiles.addTo(this.map);
+  if(simulation)host.querySelector('.osm-follow').textContent='回到模擬角色';
   host.querySelector('.osm-follow').onclick=()=>{this.follow=true;if(this.position&&!positionIssue(this.position)){this.map.setView([this.position.lat,this.position.lng],this.map.getZoom(),{animate:false});}};
   this.observer=new ResizeObserver(()=>{if(!this.destroyed&&host.clientWidth&&host.clientHeight)this.map.invalidateSize({pan:false});});this.observer.observe(host);
  }
@@ -47,14 +49,14 @@ export class OsmMap {
    if(this.follow||!this.centered)this.show(position);
    const point=[position.lat,position.lng];
    window.L.circle(point,{radius:position.accuracy,color:'#3777b5',weight:1,fillOpacity:.15,interactive:false,className:'osm-accuracy'}).addTo(this.markers);
-   window.L.circleMarker(point,{radius:8,color:'#fff',weight:2,fillColor:'#3777b5',fillOpacity:1,className:'osm-player'}).bindTooltip('你',{permanent:true,direction:'top'}).addTo(this.markers);
+   window.L.circleMarker(point,{radius:8,color:'#fff',weight:2,fillColor:'#3777b5',fillOpacity:1,className:'osm-player'}).bindTooltip(this.simulation?'模擬角色':'你',{permanent:true,direction:'top'}).addTo(this.markers);
   }
   this.tileStatus();
  }
  tileStatus(){
   if(this.destroyed)return;
   const issue=positionIssue(this.position);
-  this.status.textContent=issue?issue+'；定位有效後顯示玩家位置。':this.tileErrors?'地圖未能完整載入，請確認網路；定位判定仍獨立運作。':this.loading?'正在載入 OpenStreetMap…':'街道參考地圖・不提供步行導航；圓圈表示定位誤差。';
+  this.status.textContent=issue?issue+'；定位有效後顯示玩家位置。':this.tileErrors?'地圖未能完整載入，請確認網路；定位判定仍獨立運作。':this.loading?'正在載入 OpenStreetMap…':this.simulation?'真實街道底圖・虛擬位置；不代表可通行路線。':'街道參考地圖・不提供步行導航；圓圈表示定位誤差。';
  }
  destroy(){this.destroyed=true;this.observer?.disconnect();this.map?.remove();}
 }

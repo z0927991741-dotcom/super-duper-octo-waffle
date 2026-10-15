@@ -23,6 +23,21 @@ with sync_playwright() as p:
  page.add_init_script("""localStorage.setItem('dream-mender:player','male');localStorage.setItem('dream-mender:v1:sim','[\"color\"]');window.calls=0;window.clears=0;Object.defineProperty(navigator,'geolocation',{value:{watchPosition(ok,err){window.calls++;window.gpsOK=ok;window.gpsError=err;return window.calls;},clearWatch(){window.clears++;}}});""")
  page.goto('https://dream-mender.test/')
  page.locator('#begin').click();page.locator('#confirm-player').click()
+ assert page.locator('.mode-switch #gps-mode').is_visible()
+ assert page.locator('#real-mode').count()==0
+ assert page.locator('#joystick').is_visible()
+ assert page.locator('.osm-landmark').count()==3
+ assert page.locator('#start-challenge').is_enabled()
+ start=page.locator('#coordinates').inner_text()
+ page.keyboard.down('ArrowRight');page.wait_for_timeout(1800);page.keyboard.up('ArrowRight')
+ assert page.locator('#coordinates').inner_text()!=start
+ assert page.locator('#start-challenge').is_disabled()
+ page.keyboard.down('ArrowLeft');page.wait_for_timeout(1800);page.keyboard.up('ArrowLeft')
+ assert page.locator('#start-challenge').is_enabled()
+ assert page.evaluate('window.calls')==0
+ page.locator('#gps-mode').click()
+ assert page.locator('.gps-category #real-mode').is_visible()
+ assert page.locator('.gps-category #field-mode').is_visible()
  assert page.locator('#osm-map').is_visible()
  assert page.locator('.osm-landmark').count()==3
  assert page.evaluate('window.calls')==0
@@ -62,10 +77,11 @@ with sync_playwright() as p:
  page.evaluate('window.gpsOK({coords:{latitude:22.67,longitude:120.49,accuracy:8},timestamp:Date.now()})')
  page.locator('#start-challenge').click();page.locator('#npc-talk').wait_for()
  page.locator('#leave-npc').click()
- page.locator('#sim-mode').click();assert page.locator('#osm-map').count()==0
+ page.locator('#sim-mode').click();assert page.locator('#osm-map').is_visible()
  assert page.locator('#joystick').is_visible()
  assert page.locator('.shard.collected').count()==1
  assert page.evaluate('window.clears')>=2
+ page.screenshot(path='work/unified-map-mobile.png')
  assert not errors,errors
  browser.close()
  print(json.dumps({'result':'PASS','pageErrors':errors,'mockTileRequests':len(tiles),'checks':['explicit GPS permission','denial retry','verified reference markers','accuracy stale rejection','zoom recenter','tile error','private capture and walk out/in','NPC challenge entry','separate simulation save']},ensure_ascii=False))

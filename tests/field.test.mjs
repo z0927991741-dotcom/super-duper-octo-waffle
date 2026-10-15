@@ -16,3 +16,11 @@ assert.equal(arrival(task,point,'real').allowed,false);
 const store=new ProgressStore(storage);store.award('field','color');store.award('sim','gate');store.reset('field');
 assert.deepEqual(store.read('sim'),['gate']);assert.deepEqual(store.read('real'),[]);
 console.log('Private GPS anchor, arrival validation and isolated saves passed');
+
+const {GeographicSimLocation,geographicSimulationTasks}=await import('../src/location.js');
+const {TASKS}=await import('../src/config.js');
+const sim=new GeographicSimLocation(TASKS[0].official),tasks=geographicSimulationTasks(TASKS);
+assert.equal(arrival(tasks[0],sim.read(),'sim').allowed,true);
+assert.equal(arrival(tasks[0],sim.move(1,0,2),'sim').allowed,false);
+assert.equal(arrival(tasks[0],sim.move(-1,0,2),'sim').allowed,true);
+for(const t of tasks)assert.deepEqual(t.test,t.official);
