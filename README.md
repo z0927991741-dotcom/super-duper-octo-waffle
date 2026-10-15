@@ -223,3 +223,14 @@ npm run test:e2e
 - 核心測試 23 項與 4 項相關網頁回歸測試通過；瀏覽器斷網後重新載入並進入探索成功；Godot 規則測試及 GUI 三關自動流程通過。Windows EXE 已匯出，Android APK 已編譯且通過 v2／v3 簽章驗證，含 ARM64／x86_64 引擎與定位權限。
 - **尚未完成**：三點正式座標查證（來源網站被環境網路政策阻擋，已存允許網域草稿）、安全入口與 Android 戶外實測、Windows 實體系統驗證、學號姓名與實測證據。因此實地任務仍明示鎖定，不可宣稱已完成全部作業條件。
 - 作業單、操作與實測表、素材來源、兩次協作摘要及座標驗收狀態位於 `docs/`。簽署私人金鑰僅留於工具鏈私有目錄，未提交或包含在發行包。
+
+
+### v0.18.0 測試版下載
+
+- [網頁試玩](https://z0927991741-dotcom.github.io/super-duper-octo-waffle/?v=18)
+- [Windows ZIP](https://raw.githubusercontent.com/z0927991741-dotcom/super-duper-octo-waffle/downloads-v0.18.0/DreamMender-Windows.zip)
+- [Android APK](https://raw.githubusercontent.com/z0927991741-dotcom/super-duper-octo-waffle/downloads-v0.18.0/DreamMender.apk)
+- [作業單及驗證文件](https://raw.githubusercontent.com/z0927991741-dotcom/super-duper-octo-waffle/downloads-v0.18.0/DreamMender-Documents.zip)
+- [SHA256 校驗值](https://raw.githubusercontent.com/z0927991741-dotcom/super-duper-octo-waffle/downloads-v0.18.0/SHA256SUMS.txt)
+
+檔案位於獨立下載分支，原始碼在 main 的 native/。正式座標、安全入口、Windows／Android 實機及戶外 GPS 尚未驗收，請先使用模擬模式；此版不是完整繳交驗收版。
