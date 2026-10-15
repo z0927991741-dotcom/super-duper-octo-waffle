@@ -55,3 +55,21 @@ header,.explore,.challenge-page,.ending{max-width:600px}.bottom-nav{width:min(10
 .is-talking .npc-dialogue{display:block;position:relative;z-index:5;margin: -5px 0 0;padding:20px 22px;border-radius:0 0 24px 24px;min-height:0;background:#fffaf0;border-top:3px solid #c59a6b;box-shadow:0 8px 24px #6c593112}
 .is-talking .npc-lines h2{font-size:22px}.is-talking .npc-lines p{font-size:18px;line-height:1.85}.is-talking .npc-lines small{font-size:14px}.npc-actions{position:sticky;bottom:0;z-index:6;background:#f5efdf;padding:12px 0;margin:8px 0 0}.npc-actions button{min-height:52px}
 @media(max-width:420px){.npc-stage.talking{height:360px}.npc-hero{inset:8px 8% 28px}.is-talking .npc-dialogue{padding:17px}.is-talking .npc-lines p{font-size:17px}.is-talking .npc-lines h2{font-size:20px}}
+/* Rest at each end, turn during the pause, and resume from the saved patrol time. */
+.npc-walker{animation:npc-stroll 20s linear infinite}
+@keyframes npc-stroll{0%,5%{left:8%}45%,55%{left:calc(92% - 90px)}95%,100%{left:8%}}
+.npc-stage{view-transition-name:npc-scene}.npc-hero{view-transition-name:npc-character}
+::view-transition-group(npc-scene),::view-transition-group(npc-character){animation-duration:.3s}
+.arrival-toast{position:absolute;top:100px;left:12px;right:76px;padding:12px;border-radius:15px;background:#fff1bfee;box-shadow:0 4px 18px #735e3540;z-index:10;font-size:16px;font-weight:700;color:#6a5037;pointer-events:none}
+.arrival-toast[hidden]{display:none}.map-pin.arrived>span{filter:drop-shadow(0 0 12px #ffda74);outline:3px solid #e6bd61;border-radius:50%}
+#npc-skip{display:block;width:100%;margin:10px 0;font-size:16px}#npc-close{display:block;margin:4px auto;font-size:14px}
+.is-talking .npc-actions{position:static;margin:0;padding:12px 0;flex-shrink:0}
+.is-talking .npc-dialogue{overflow-y:auto;max-height:250px;scrollbar-gutter:stable;overscroll-behavior:contain}
+.is-talking .npc-stage{height:clamp(240px,41svh,390px)}
+.npc-thanks{display:flex;align-items:center;gap:16px;background:#eaf0dd;border-radius:20px;margin:18px auto;padding:16px;max-width:480px;text-align:left;color:#52604c}.npc-thanks>div{width:85px;height:170px;flex-shrink:0}.npc-thanks p{font-size:17px;line-height:1.7;margin:8px 0}.npc-thanks small{font-size:14px;line-height:1.7;display:block}
+@media(max-width:540px){.encounter-page.is-talking{padding:8px 12px 18px}.is-talking h1{font-size:23px;margin:8px 0 4px}.is-talking .encounter-place{margin-bottom:8px}.is-talking .npc-dialogue{max-height:24svh;min-height:140px;padding:14px 16px}.is-talking .npc-lines p{font-size:17px;line-height:1.7}.is-talking .npc-lines h2{margin:7px 0;font-size:19px}.is-talking .npc-fiction{margin-top:8px}}
+@media(prefers-reduced-motion:reduce){.npc-walker{animation:none}::view-transition-group(*){animation-duration:0s}}
+/* Keep the success action outside the scrollable story, without covering text. */
+.challenge-page:has(.restored) .challenge-board{max-height:max(230px,calc(100svh - 430px));overflow-y:auto;overscroll-behavior:contain;padding-bottom:24px;scrollbar-gutter:stable;margin-bottom:12px}
+.challenge-page:has(.restored)>#next{position:static;transform:none;left:auto;bottom:auto;display:block;width:100%;margin:12px 0 0}
+.challenge-page:has(.restored) .challenge-head p{display:none}

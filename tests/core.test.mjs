@@ -65,3 +65,13 @@ test('nearby hysteresis prevents boundary flicker but never blocks an eligible a
  assert.equal(stableNearbyDream(tasks,p(0,.00028),'sim','a').task.id,'b');
  assert.equal(stableNearbyDream(tasks,p(),'real','a').result.allowed,false);
 });
+
+import {npcPatrolPose,npcDialogue} from '../src/npc.js';
+test('NPC pauses before turning and keeps culture separate from challenge instructions',()=>{
+ assert.equal(npcPatrolPose(500).walking,false);assert.equal(npcPatrolPose(3000).walking,true);
+ assert.equal(npcPatrolPose(9500).walking,false);assert.equal(npcPatrolPose(9500).returning,false);
+ assert.equal(npcPatrolPose(10500).walking,false);assert.equal(npcPatrolPose(10500).returning,true);
+ assert.equal(npcPatrolPose(15000).walking,true);assert.equal(npcPatrolPose(19500).walking,false);
+ assert.deepEqual(npcPatrolPose(3000),npcPatrolPose(23000));
+ for(const task of TASKS){const pages=npcDialogue(task);assert.equal(pages.length,3);assert.ok(pages[1].sourceUrl);assert.ok(pages[2].text.includes(task.length+' 次'));assert.ok(pages.every(p=>p.text.length<100));}
+});
