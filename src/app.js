@@ -137,10 +137,9 @@ function mountFieldControls(){
 function updateRoadGuidance(){
  if(!osmMap||screen!=='explore')return;const now=performance.now();if(now-lastGuidanceAt<1200)return;lastGuidanceAt=now;
  const tasks=activeTasks(),done=store.read(mode),task=tasks.find(t=>t.id===navigationTargetId&&!done.includes(t.id))||tasks.find(t=>t.id===guidanceTask.id&&!done.includes(t.id))||tasks.find(t=>!done.includes(t.id))||selected;
- if(mode!=='sim'){osmMap.setGuidance(null,task,mode==='field'?'私人測試點依實際 GPS 判定，請自行確認安全通路。':'景點位置為參考；正式入口待查核。');return;}
+ if(mode!=='sim'){const target=mode==='field'?task.fieldPoint:task.entrance||task.official,valid=target&&!positionIssue(position);osmMap.setGuidance(valid?{points:[position,target]}:null,task,mode==='field'?'直線僅指方向；私人測試點依實際 GPS 判定。':'直線僅指景點方向；正式入口待查核，請自行確認安全通路。');return;}
  if(!position?.onRoad){osmMap.setGuidance(null,task,'道路資料載入中，稍後可使用圓形搖桿。');return;}
- const route=sim.route(task.id)||osmMap.rasterRoute(position,task.test);
- const result=arrival(task,position,mode);
- const message=movementBlocked?'前方無法通行，請沿道路轉彎。':result.allowed?'已進入 '+task.place+' 的 30 公尺範圍。':route?'前往 '+task.place+'・沿路約 '+Math.ceil(route.distance)+' 公尺・'+route.street:'前往 '+task.place+'・請沿道路；這段道路連線尚未完整。';
- osmMap.setGuidance(route,task,message);
+ const result=arrival(task,position,mode),distance=result.distance;
+ const message=movementBlocked?'前方無法通行，請沿道路轉彎。':result.allowed?'已進入 '+task.place+' 的 30 公尺範圍。':'前往 '+task.place+(distance===null?'':'・直線約 '+Math.ceil(distance)+' 公尺')+'・直線僅指方向，請沿道路走。';
+ osmMap.setGuidance({points:[position,task.test]},task,message);
 }

@@ -1,0 +1,6 @@
+{
+  "version": "0.21.0",
+  "baseWindowsSHA256": "530c37b18c820186f023bf3d7f5f3d09e9a83150d497ad3afb6a9a8ec50557f7",
+  "androidSHA256": "18eee54e443052e0ebfd5b4c18c6e0770ec96abddc8b71030b692ba24192e2c5",
+  "webSHA256": "cac2feb55c8647279473d6fe8d96af4926aeb6f1e8f9a306ba221001951628f1"
+}

@@ -54,7 +54,7 @@ export class OsmMap {
    const p=circle.getLatLng();if(p.lat!==task.test.lat||p.lng!==task.test.lng)circle.setLatLng([task.test.lat,task.test.lng]);
    if(task.simRoadTarget&&!this.arrivalLinks.has(task.id)){
     circle.setTooltipContent('30 公尺模擬抵達範圍・已外移至道路側');
-    const link=window.L.polyline([[task.official.lat,task.official.lng],[task.test.lat,task.test.lng]],{color:'#9b6baf',weight:2,dashArray:'3 5',interactive:false}).addTo(this.map);
+    const link=window.L.polyline([[task.official.lat,task.official.lng],[task.test.lat,task.test.lng]],{color:'#9b6baf',weight:2,opacity:0,interactive:false}).addTo(this.map);
     this.arrivalDots.set(task.id,window.L.circleMarker([task.test.lat,task.test.lng],{radius:4,color:'#9b6baf',fillOpacity:1}).bindTooltip('模擬抵達點・非正式入口').addTo(this.map));
     this.arrivalLinks.set(task.id,link);
    }
@@ -66,7 +66,7 @@ export class OsmMap {
   const previous=this.position;this.position=position;if(!this.map)return;
   if(!position||issue){this.markers.clearLayers();this.actor=null;this.accuracyCircle=null;this.motion={dx:0,dy:0,until:0};this.tileStatus();return;}
   if(previous){const dx=position.lng-previous.lng,dy=position.lat-previous.lat;if(Math.hypot(dx,dy)>1e-10)this.motion={dx,dy,until:performance.now()+(this.simulation?220:900)};}
-  const L=window.L,point=[position.lat,position.lng];
+  const L=window.L,point=[position.lat,position.lng];if(this.routeLine&&this.guidanceTarget)this.routeLine.setLatLngs([point,[this.guidanceTarget.lat,this.guidanceTarget.lng]]);
   if(this.follow&&(!this.simulation||this.initialTilesLoaded)){const p=this.map.latLngToContainerPoint(point),size=this.map.getSize();if(p.x<size.x*.25||p.x>size.x*.75||p.y<size.y*.25||p.y>size.y*.75)this.show(position);}
   if(!this.accuracyCircle)this.accuracyCircle=L.circle(point,{radius:position.accuracy,color:'#9b7656',weight:1,fillOpacity:.12,interactive:false,className:'osm-accuracy'}).addTo(this.markers);
   else this.accuracyCircle.setLatLng(point).setRadius(position.accuracy);
@@ -108,8 +108,8 @@ export class OsmMap {
  }
  roadStep(point,x,y,meters){
   const norm=Math.hypot(x,y);if(!norm||meters<=0)return point;let current={...point},remaining=Math.min(meters,5),angle=Math.atan2(y,x);
-  while(remaining>1e-6){const step=Math.min(.4,remaining);let next=null;
-   for(const offset of [0,Math.PI/12,-Math.PI/12,Math.PI/6,-Math.PI/6,Math.PI/4,-Math.PI/4,Math.PI/3,-Math.PI/3]){
+  while(remaining>1e-6){const step=Math.min(.25,remaining);let next=null;
+   for(const offset of [0,Math.PI/12,-Math.PI/12,Math.PI/6,-Math.PI/6,Math.PI/4,-Math.PI/4,Math.PI/3,-Math.PI/3,Math.PI*5/12,-Math.PI*5/12]){
     const a=angle+offset,candidate={lat:current.lat+Math.sin(a)*step/111195,lng:current.lng+Math.cos(a)*step/(111195*Math.cos(current.lat*Math.PI/180))};
     if(this.isRoad(candidate)){next=candidate;break;}
    }
@@ -137,8 +137,9 @@ export class OsmMap {
   if(!this.routeNote){this.routeNote=document.createElement('p');this.routeNote.className='route-note';this.routeNote.setAttribute('role','status');this.host.append(this.routeNote);}
   this.routeNote.textContent=message;
   if(!route?.points?.length){this.routeLine?.remove();this.routeLine=null;return;}
-  const points=route.points.map(p=>[p.lat,p.lng]);
-  if(this.routeLine)this.routeLine.setLatLngs(points);else this.routeLine=window.L.polyline(points,{color:'#ae7540',weight:5,opacity:.85,dashArray:'5 7',interactive:false,className:'sim-route'}).addTo(this.map);
+  const target=this.simulation?task.test:task.fieldPoint||(entranceReady(task)?task.entrance:task.official);if(!this.position||!target)return;this.guidanceTarget=target;
+  const points=[[this.position.lat,this.position.lng],[target.lat,target.lng]];
+  if(this.routeLine)this.routeLine.setLatLngs(points);else this.routeLine=window.L.polyline(points,{color:'#ae7540',weight:3,opacity:.9,dashArray:'8 6',interactive:false,className:'sim-route'}).addTo(this.map);
  }
  animate(now){const el=this.actor?.getElement();if(!el)return;const moving=now<this.motion.until;animatePlayer(el,this.playerId,moving?this.motion.dx:0,moving?this.motion.dy:0,now,matchMedia('(prefers-reduced-motion: reduce)').matches);}
 

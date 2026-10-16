@@ -23,7 +23,7 @@ export class StreetWalker {
   this.graph=graph;let nearest=null;
   for(const edge of graph.edges){const a=graph.nodes.get(edge.a),b=graph.nodes.get(edge.b),c=Math.cos(start.lat*Math.PI/180),dx=(b.lng-a.lng)*c,dy=b.lat-a.lat,t=Math.max(0,Math.min(1,((start.lng-a.lng)*c*dx+(start.lat-a.lat)*dy)/(dx*dx+dy*dy||1))),point=streetMix(a,b,t),distance=streetMeters(start,point);if(!nearest||distance<nearest.distance)nearest={edge,t,distance};}
   if(!nearest||nearest.distance>200)throw Error('起點附近沒有可用道路');
-  this.edge=nearest.edge;this.t=nearest.t;this.direction=1;this.node=null;
+  this.edge=nearest.edge;this.t=nearest.t;this.direction=1;this.node=null;this.turnIntent=null;
  }
  read(){if(this.node!==null)return {...this.graph.nodes.get(this.node),onRoad:true};return {...streetMix(this.graph.nodes.get(this.edge.a),this.graph.nodes.get(this.edge.b),this.t),onRoad:true};}
  move(x,y,budget){
@@ -31,11 +31,12 @@ export class StreetWalker {
   const direction=(a,b)=>{const dx=(b.lng-a.lng)*Math.cos(a.lat*Math.PI/180),dy=b.lat-a.lat,n=Math.hypot(dx,dy)||1;return {x:dx/n,y:dy/n};};
   for(let guard=0;budget>1e-7&&guard<200;guard++){
    if(this.node!==null){
-    const p=this.graph.nodes.get(this.node),choices=(this.graph.links.get(this.node)||[]).map(edge=>{const q=this.graph.nodes.get(edge.a===this.node?edge.b:edge.a),d=direction(p,q);return {edge,score:d.x*request.x+d.y*request.y};}).filter(c=>c.score>.25).sort((a,b)=>b.score-a.score);
+    const steering=this.turnIntent&&this.turnIntent.x*request.x+this.turnIntent.y*request.y>.5?this.turnIntent:request;this.turnIntent=null;
+    const p=this.graph.nodes.get(this.node),choices=(this.graph.links.get(this.node)||[]).map(edge=>{const q=this.graph.nodes.get(edge.a===this.node?edge.b:edge.a),d=direction(p,q);return {edge,score:d.x*steering.x+d.y*steering.y};}).filter(c=>c.score>.25).sort((a,b)=>b.score-a.score);
     if(!choices.length)break;this.edge=choices[0].edge;this.direction=this.edge.a===this.node?1:-1;this.t=this.direction===1?0:1;this.node=null;
    }
    const a=this.graph.nodes.get(this.edge.a),b=this.graph.nodes.get(this.edge.b),d=direction(a,b),dot=d.x*request.x+d.y*request.y;
-   if(Math.abs(dot)>.55)this.direction=dot>0?1:-1;
+   if(dot*this.direction<-.85){this.direction*=-1;this.turnIntent=null;}else if(Math.abs(dot)<.75)this.turnIntent=request;
    const length=streetMeters(a,b);if(length<1e-6){this.node=this.direction===1?this.edge.b:this.edge.a;continue;}
    const remaining=(this.direction===1?1-this.t:this.t)*length,step=Math.min(budget,remaining);this.t+=this.direction*step/length;budget-=step;
    if(remaining-step<1e-6){this.node=this.direction===1?this.edge.b:this.edge.a;this.t=this.direction===1?1:0;}
