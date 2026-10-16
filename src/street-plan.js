@@ -28,7 +28,7 @@ export function prepareStreetScene(graph,tasks){
   if(previous!==edge.b)edges.push({...edge,a:previous,b:edge.b});
  }
  const links=new Map();for(const e of edges)for(const id of [e.a,e.b]){if(!links.has(id))links.set(id,[]);links.get(id).push(e);}
- const scene={graph:{nodes,edges,links,buildings:graph.buildings||[],coverage:graph.coverage},targets,targetNodes,routeCache:new Map(),source:graph.source||null};
+ const scene={graph:{nodes,edges,links,buildings:graph.buildings||[],coverage:graph.coverage,blocked:graph.blocked},targets,targetNodes,routeCache:new Map(),missionNodes:new Set([...best.ids,...Object.values(targetNodes)]),source:graph.source||null};
  // Every target must remain connected after segment splitting.
  for(const task of tasks)if(!links.has(targetNodes[task.id]))throw Error('景點未接上道路：'+task.id);
  return scene;

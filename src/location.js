@@ -1,3 +1,4 @@
+import {auditMissionRoads} from './road-audit.js';
 import {prepareStreetScene,routeOnStreets,streetDistance} from './street-plan.js';
 import {StreetWalker,loadStreetGraph} from './street-network.js';
 import {SETTINGS,TASKS} from './config.js';
@@ -14,11 +15,12 @@ export class GeographicSimLocation {
   try{
    const graph=await loadStreetGraph(),references=TASKS.map(t=>({...t,official:this.arrivalTargets[t.id]||t.official})),scene=prepareStreetScene(graph,references);
    let spawn=null;
-   for(const edge of scene.graph.edges){const a=scene.graph.nodes.get(edge.a),b=scene.graph.nodes.get(edge.b),count=Math.max(1,Math.ceil(streetDistance(a,b)/8));
+   for(const edge of scene.graph.edges){if(!scene.missionNodes.has(edge.a)||!scene.missionNodes.has(edge.b))continue;const a=scene.graph.nodes.get(edge.a),b=scene.graph.nodes.get(edge.b),count=Math.max(1,Math.ceil(streetDistance(a,b)/8));
     for(let i=0;i<=count;i++){const t=i/count,p={lat:a.lat+(b.lat-a.lat)*t,lng:a.lng+(b.lng-a.lng)*t},d=streetDistance(p,TASKS[0].official);if(d<110||d>200||this.arrivalTargets.color&&streetDistance(p,this.arrivalTargets.color)<80)continue;const score=Math.abs(d-140);if(!spawn||score<spawn.score)spawn={...p,score};}
    }
    if(!spawn)throw Error('道路資料中沒有符合條件的起點');
-   const walker=new StreetWalker(scene.graph,spawn);this.scene=scene;this.walker=walker;this.position=walker.read();this.spawnPlaced=true;
+   for(const task of TASKS){const fixed=this.arrivalTargets[task.id];if(fixed&&streetDistance(fixed,scene.targets[task.id])>task.radiusMeters)throw Error('已保存的'+task.place+'抵達圈與目前道路不相連；保留原圈，請重新載入原道路資料。');}
+   this.audit=auditMissionRoads(scene,TASKS);const walker=new StreetWalker(scene.graph,spawn);this.scene=scene;this.walker=walker;this.position=walker.read();this.spawnPlaced=true;
    for(const task of TASKS)if(!this.arrivalTargets[task.id])this.arrivalTargets[task.id]={...scene.targets[task.id]};
    this.targetsLocked=true;this.saveTargets();
   }catch(error){this.error=error.message;}finally{this.loading=false;}
@@ -30,6 +32,8 @@ export class GeographicSimLocation {
  saveTargets(){try{localStorage.setItem('dream-mender:fixed-sim-targets:v2',JSON.stringify({reference:JSON.stringify(TASKS.map(t=>t.official)),targets:this.arrivalTargets}));}catch{}}
  simulationRoadTargets(tasks){return this.arrivalTargets;}
 
+ get blockReason(){return this.error?'data':!this.ready?'loading':this.walker.lastBlockReason||'';}
+ get blockMessage(){return ({building:'前方是建築物，無法穿越。',boundary:'已到遊戲範圍邊界，請沿範圍內道路行走。','road-end':'這個方向沒有相連道路，請在路口轉向。',data:this.error,loading:'道路與建築物尚未載入，請稍候或重試。'})[this.blockReason]||'請沿道路行走。';}
  get sourceLabel(){return this.scene?(this.scene.source?.kind==='packaged'?'內建道路':'已固定道路快照'):'正在準備道路與建築物';}
  get ready(){return !!this.walker;}
  read(){this.prepareRoad();return {...(this.walker?this.walker.read():this.position),onRoad:!!this.walker,accuracy:0,timestamp:Date.now()};}

@@ -67,7 +67,7 @@ export class OsmMap {
   if(!position||issue||(this.simulation&&!position.onRoad)){this.markers.clearLayers();this.actor=null;this.accuracyCircle=null;this.motion={dx:0,dy:0,until:0};this.tileStatus();return;}
   if(previous){const dx=position.lng-previous.lng,dy=position.lat-previous.lat;if(Math.hypot(dx,dy)>1e-10)this.motion={dx,dy,until:performance.now()+(this.simulation?220:900)};}
   const L=window.L,point=[position.lat,position.lng];
-  if(this.follow&&(!this.simulation||this.initialTilesLoaded)){const p=this.map.latLngToContainerPoint(point),size=this.map.getSize();if(p.x<size.x*.25||p.x>size.x*.75||p.y<size.y*.25||p.y>size.y*.75)this.show(position);}
+  if(this.follow&&(!this.simulation||this.initialTilesLoaded||this.drawnScene)){const p=this.map.latLngToContainerPoint(point),size=this.map.getSize();if(p.x<size.x*.25||p.x>size.x*.75||p.y<size.y*.25||p.y>size.y*.75)this.show(position);}
   if(!this.accuracyCircle)this.accuracyCircle=L.circle(point,{radius:position.accuracy,color:'#9b7656',weight:1,fillOpacity:.12,interactive:false,className:'osm-accuracy'}).addTo(this.markers);
   else this.accuracyCircle.setLatLng(point).setRadius(position.accuracy);
   if(!this.actor){
@@ -79,7 +79,7 @@ export class OsmMap {
  setStreetScene(scene){
   if(!this.map||this.drawnScene===scene)return;this.drawnScene=scene;this.streetGeometry?.remove();const L=window.L;this.streetGeometry=L.layerGroup().addTo(this.map);
   for(const polygon of scene.graph.buildings||[]){const rings=[polygon.outer,...polygon.holes].map(r=>r.map(p=>[p.lat,p.lng]));L.polygon(rings,{color:'#a98f72',weight:1,fillColor:'#e1c8ad',fillOpacity:.6,interactive:false}).addTo(this.streetGeometry);}
-  for(const edge of scene.graph.edges){const a=scene.graph.nodes.get(edge.a),b=scene.graph.nodes.get(edge.b),points=[[a.lat,a.lng],[b.lat,b.lng]],path=['footway','path','steps','cycleway','pedestrian'].includes(edge.kind);L.polyline(points,{color:'#bda580',weight:path?5:10,lineCap:'round',interactive:false}).addTo(this.streetGeometry);L.polyline(points,{color:'#fff8df',weight:path?3:7,lineCap:'round',interactive:false}).addTo(this.streetGeometry);}
+  for(const edge of scene.graph.edges){const a=scene.graph.nodes.get(edge.a),b=scene.graph.nodes.get(edge.b),points=[[a.lat,a.lng],[b.lat,b.lng]],path=['footway','path','steps','cycleway','pedestrian'].includes(edge.kind);L.polyline(points,{color:'#d0a15b',weight:path?6:11,lineCap:'round',interactive:false}).addTo(this.streetGeometry);L.polyline(points,{color:'#fff0c2',weight:path?3:7,lineCap:'round',interactive:false}).addTo(this.streetGeometry);}
   if(scene.graph.coverage){const c=scene.graph.coverage;L.rectangle([[c.south,c.west],[c.north,c.east]],{color:'#ac9774',weight:1,dashArray:'5 5',fill:false,interactive:false}).addTo(this.streetGeometry);}
   this.streetGeometry.eachLayer(layer=>layer.bringToBack?.());
  }
