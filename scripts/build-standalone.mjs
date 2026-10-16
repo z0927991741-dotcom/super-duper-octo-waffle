@@ -5,7 +5,7 @@ import path from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
 // These local modules use named exports and one-line static imports only.
 // Concatenate in dependency order; fail if a new unsupported import/export is added.
-const modules=['config','map-detail','roads','field-points','geo','location','challenge','storage','joystick','art','camera','navigation','stories','npc','player','map-controls','osm-map','app'];
+const modules=['config','map-detail','roads','field-points','geo','location','challenge','storage','joystick','art','camera','navigation','stories','npc','player','map-controls','chibi-map','osm-map','app'];
 const chunks=[];
 const npcImages={};
 for(const id of ['color','gate','book'])for(const kind of ['portrait','sheet']){const file=`./src/assets/npc/${id}-${kind}-cutout.png`;npcImages[file]='data:image/'+(file.endsWith('.png')?'png':'jpeg')+';base64,'+(await readFile(path.join(root,file))).toString('base64');}

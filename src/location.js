@@ -7,6 +7,6 @@ export class RealLocation {constructor(){this.id=null;this.generation=0;}stop(){
 export class GeographicSimLocation {
  constructor(start){this.position={...start};}
  read(){return {...this.position,accuracy:0,timestamp:Date.now()};}
- move(x,y,seconds){const meters=SETTINGS.speedMetersPerSecond*Math.max(0,seconds),norm=Math.max(1,Math.hypot(x,y));this.position.lat-=y/norm*meters/111195;this.position.lng+=x/norm*meters/(111195*Math.cos(this.position.lat*Math.PI/180));return this.read();}
+ move(x,y,seconds){const meters=SETTINGS.speedMetersPerSecond*Math.max(0,seconds),norm=Math.max(1,Math.hypot(x,y));this.position.lat+=y/norm*meters/111195;this.position.lng+=x/norm*meters/(111195*Math.cos(this.position.lat*Math.PI/180));return this.read();}
 }
 export function geographicSimulationTasks(tasks){return tasks.map(t=>({...t,test:{...t.official},entranceNode:null}));}

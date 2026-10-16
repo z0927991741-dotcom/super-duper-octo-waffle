@@ -1,9 +1,12 @@
+import {chibiTileLayer} from './chibi-map.js';
+import {playerArtwork,animatePlayer} from './player.js';
 import {TASKS,officialReady,entranceReady} from './config.js';
 import {positionIssue} from './geo.js';
 
 // Only presentation uses Leaflet. Arrival always uses geo.js, never map pixels.
 export class OsmMap {
- constructor(host,tasks,simulation=false){
+ constructor(host,tasks,simulation=false,playerId='male'){
+  this.playerId=playerId;this.motion={dx:0,dy:0,until:0};
   this.simulation=simulation;
   this.host=host;this.tasks=tasks;this.position=null;this.follow=true;this.centered=false;this.destroyed=false;this.tileErrors=0;
   host.innerHTML='<div class="osm-viewport" role="region" aria-label="OpenStreetMap 地圖，可拖曳或縮放"></div><button type="button" class="osm-follow">回到定位</button><p class="osm-status" role="status">啟用定位後顯示地圖；地圖需要網路。</p>';
@@ -13,7 +16,7 @@ export class OsmMap {
   this.map=L.map(host.querySelector('.osm-viewport'),{minZoom:3,maxZoom:19,zoomControl:true,attributionControl:true,zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false});
   this.map.attributionControl.setPrefix(false);
   this.map.attributionControl.addAttribution('<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>');
-  this.tiles=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,keepBuffer:0,updateWhenIdle:true,referrerPolicy:'strict-origin-when-cross-origin'});
+  this.tiles=chibiTileLayer(L);
   this.tiles.on('loading',()=>{this.loading=true;this.tileErrors=0;this.tileStatus();});
   this.tiles.on('tileerror',()=>{this.tileErrors++;this.tileStatus();});
   this.tiles.on('load',()=>{this.loading=false;this.tileStatus();});
@@ -42,21 +45,26 @@ export class OsmMap {
  show(point){if(!this.map)return;this.map.setView([point.lat,point.lng],this.centered?this.map.getZoom():17,{animate:false});if(!this.centered){this.centered=true;this.tiles.addTo(this.map);}}
  preview(task){if(task.fieldPoint){this.follow=false;this.show(task.fieldPoint);return;}if(!officialReady(task)){this.status.textContent='此景點中心尚未查證，暫不標示。';return;}this.follow=false;this.show(entranceReady(task)?task.entrance:task.official);}
  setPosition(position){
-  const issue=positionIssue(position);const key=JSON.stringify([position,issue]);if(this.lastKey===key)return;this.lastKey=key;this.position=position;
-  if(!this.map)return;
-  this.markers.clearLayers();
-  if(position&&!issue){
-   if(this.follow||!this.centered)this.show(position);
-   const point=[position.lat,position.lng];
-   window.L.circle(point,{radius:position.accuracy,color:'#3777b5',weight:1,fillOpacity:.15,interactive:false,className:'osm-accuracy'}).addTo(this.markers);
-   window.L.circleMarker(point,{radius:8,color:'#fff',weight:2,fillColor:'#3777b5',fillOpacity:1,className:'osm-player'}).bindTooltip(this.simulation?'模擬角色':'你',{permanent:true,direction:'top'}).addTo(this.markers);
-  }
+  const issue=positionIssue(position),key=JSON.stringify([position,issue]);if(this.lastKey===key)return;this.lastKey=key;
+  const previous=this.position;this.position=position;if(!this.map)return;
+  if(!position||issue){this.markers.clearLayers();this.actor=null;this.accuracyCircle=null;this.motion={dx:0,dy:0,until:0};this.tileStatus();return;}
+  if(previous){const dx=position.lng-previous.lng,dy=position.lat-previous.lat;if(Math.hypot(dx,dy)>1e-10)this.motion={dx,dy,until:performance.now()+(this.simulation?220:900)};}
+  const L=window.L,point=[position.lat,position.lng];
+  if(this.follow){const p=this.map.latLngToContainerPoint(point),size=this.map.getSize();if(p.x<size.x*.25||p.x>size.x*.75||p.y<size.y*.25||p.y>size.y*.75)this.show(position);}
+  if(!this.accuracyCircle)this.accuracyCircle=L.circle(point,{radius:position.accuracy,color:'#9b7656',weight:1,fillOpacity:.12,interactive:false,className:'osm-accuracy'}).addTo(this.markers);
+  else this.accuracyCircle.setLatLng(point).setRadius(position.accuracy);
+  if(!this.actor){
+   const art=playerArtwork(this.playerId).replaceAll('player-opaque-','map-player-opaque-');
+   this.actor=L.marker(point,{interactive:false,zIndexOffset:1000,icon:L.divIcon({className:'osm-player map-actor',html:'<div class="map-actor-body">'+art+'</div><small>'+ (this.simulation?'模擬角色':'你')+'</small>',iconSize:[48,72],iconAnchor:[24,65]})}).addTo(this.markers);
+  }else this.actor.setLatLng(point);
   this.tileStatus();
  }
+ animate(now){const el=this.actor?.getElement();if(!el)return;const moving=now<this.motion.until;animatePlayer(el,this.playerId,moving?this.motion.dx:0,moving?this.motion.dy:0,now,matchMedia('(prefers-reduced-motion: reduce)').matches);}
+
  tileStatus(){
   if(this.destroyed)return;
   const issue=positionIssue(this.position);
-  this.status.textContent=issue?issue+'；定位有效後顯示玩家位置。':this.tileErrors?'地圖未能完整載入，請確認網路；定位判定仍獨立運作。':this.loading?'正在載入 OpenStreetMap…':this.simulation?'真實街道底圖・虛擬位置；不代表可通行路線。':'街道參考地圖・不提供步行導航；圓圈表示定位誤差。';
+  this.status.textContent=issue?issue+'；定位有效後顯示玩家位置。':this.tileErrors?'地圖未能完整載入，請確認網路；定位判定仍獨立運作。':this.loading?'正在載入 OpenStreetMap…':this.simulation?'Q 版街道地圖・虛擬位置；不代表可通行路線。':'Q 版街道參考・不提供步行導航；圓圈表示定位誤差。';
  }
  destroy(){this.destroyed=true;this.observer?.disconnect();this.map?.remove();}
 }
