@@ -6,7 +6,7 @@ export class RealLocation {constructor(){this.id=null;this.generation=0;}stop(){
 
 // Simulator stays on connected OSM segments; unavailable geometry never permits free movement.
 export class GeographicSimLocation {
- constructor(start){this.position={...start};this.walker=null;this.loading=false;this.error='';this.roadMap=null;this.rasterReady=false;this.snapVersion=-1;}
+ constructor(start){this.position={...start};this.walker=null;this.loading=false;this.error='';this.roadMap=null;this.rasterReady=false;this.snapVersion=-1;this.arrivalTargets={};}
  attachMap(map){this.roadMap=map;this.snapVersion=-1;this.rasterReady=false;}
  async loadRoads(){if(this.walker||this.loading)return;this.loading=true;this.error='';try{const graph=await loadStreetGraph();this.walker=new StreetWalker(graph,this.position);}catch(error){this.error=error.message;}finally{this.loading=false;}}
  prepareRoad(){
@@ -17,6 +17,18 @@ export class GeographicSimLocation {
   if(this.snapVersion===this.roadMap.roadMaskVersion)return;this.snapVersion=this.roadMap.roadMaskVersion;
   const point=this.roadMap.nearestRoad(this.position);if(point){this.position=point;this.rasterReady=true;}
  }
+ simulationRoadTargets(tasks){
+  const gate=tasks.find(t=>t.id==='gate');if(!gate||this.arrivalTargets.gate)return this.arrivalTargets;
+  let point=null;
+  // This is a simulation target derived from map roads, never a verified entrance.
+  if(this.walker){
+   const graph=this.walker.graph,seen=new Set(),pending=[this.walker.edge.a];
+   while(pending.length){const id=pending.pop();if(seen.has(id))continue;seen.add(id);for(const edge of graph.links.get(id)||[])pending.push(edge.a===id?edge.b:edge.a);}
+   try{const reachable={...graph,edges:graph.edges.filter(e=>seen.has(e.a)&&seen.has(e.b))};point=new StreetWalker(reachable,gate.official).read();}catch{}
+  }
+  if(!point&&this.roadMap&&!this.roadMap.destroyed)point=this.roadMap.nearestRoad(gate.official,100);
+  if(point)this.arrivalTargets.gate={lat:point.lat,lng:point.lng};return this.arrivalTargets;
+ }
  get ready(){this.prepareRoad();return !!this.walker||this.rasterReady;}
  read(){this.prepareRoad();return {...(this.walker?this.walker.read():this.position),onRoad:!!this.walker||this.rasterReady,accuracy:0,timestamp:Date.now()};}
  move(x,y,seconds){
@@ -26,4 +38,4 @@ export class GeographicSimLocation {
   return this.read();
  }
 }
-export function geographicSimulationTasks(tasks){return tasks.map(t=>({...t,test:{...t.official},entranceNode:null,requiresRoad:true}));}
+export function geographicSimulationTasks(tasks,targets={}){return tasks.map(t=>({...t,test:{...(targets[t.id]||t.official)},simRoadTarget:!!targets[t.id],entranceNode:null,requiresRoad:true}));}

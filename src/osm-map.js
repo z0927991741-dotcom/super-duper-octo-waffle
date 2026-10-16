@@ -22,12 +22,12 @@ export class OsmMap {
   this.tiles.on('tileerror',()=>{this.tileErrors++;this.tileStatus();});
   this.tiles.on('load',()=>{this.loading=false;this.tileStatus();});
   this.map.on('dragstart',()=>{this.follow=false;});
-  this.markers=L.layerGroup().addTo(this.map);
+  this.markers=L.layerGroup().addTo(this.map);this.arrivalCircles=new Map();this.arrivalLinks=new Map();
   for(const task of tasks){
    if(officialReady(task))this.landmark(task.official,task.place+'・政府參考點','#967251',task);
    if(task.fieldPoint)this.landmark(task.fieldPoint,task.name+'・私人測試點','#7061a8',task);
-   const target=task.fieldPoint||(entranceReady(task)?task.entrance:officialReady(task)?task.official:null);
-   if(target){const reference=!simulation&&!task.fieldPoint&&!entranceReady(task);const label=reference?'30 公尺景點參考範圍・入口待確認':'30 公尺抵達範圍';L.circle([target.lat,target.lng],{radius:task.radiusMeters,color:reference?'#b17c35':'#9b6baf',weight:2.5,fillColor:reference?'#efca76':'#c9a7e2',fillOpacity:.2,dashArray:reference?'6 5':null,className:'arrival-radius'}).bindTooltip(label).addTo(this.map);}
+   const target=simulation?task.test:task.fieldPoint||(entranceReady(task)?task.entrance:officialReady(task)?task.official:null);
+   if(target){const reference=!simulation&&!task.fieldPoint&&!entranceReady(task);const label=reference?'30 公尺景點參考範圍・入口待確認':'30 公尺抵達範圍';this.arrivalCircles.set(task.id,L.circle([target.lat,target.lng],{radius:task.radiusMeters,color:reference?'#b17c35':'#9b6baf',weight:2.5,fillColor:reference?'#efca76':'#c9a7e2',fillOpacity:.2,dashArray:reference?'6 5':null,className:'arrival-radius'}).bindTooltip(label).addTo(this.map));}
    if(officialReady(task)&&entranceReady(task))this.landmark(task.entrance,task.place+'・安全入口','#3f8250');
   }
   const points=tasks.map(t=>t.fieldPoint||t.official).filter(Boolean);
@@ -46,7 +46,20 @@ export class OsmMap {
   marker.bindTooltip(text,{direction:'top'}).bindPopup(content).addTo(this.map);
  }
  show(point){if(!this.map)return;this.map.setView([point.lat,point.lng],this.centered?this.map.getZoom():17,{animate:false});if(!this.centered){this.centered=true;this.tiles.addTo(this.map);}}
- preview(task){if(task.fieldPoint){this.follow=false;this.show(task.fieldPoint);return;}if(!officialReady(task)){this.status.textContent='此景點中心尚未查證，暫不標示。';return;}this.follow=false;this.show(entranceReady(task)?task.entrance:task.official);}
+ preview(task){if(this.simulation&&task.test){this.follow=false;this.show(task.test);return;}if(task.fieldPoint){this.follow=false;this.show(task.fieldPoint);return;}if(!officialReady(task)){this.status.textContent='此景點中心尚未查證，暫不標示。';return;}this.follow=false;this.show(entranceReady(task)?task.entrance:task.official);}
+ syncArrivalTasks(tasks){
+  if(!this.simulation||!this.map)return;
+  for(const task of tasks){
+   const circle=this.arrivalCircles.get(task.id);if(!circle||!task.test)continue;
+   const p=circle.getLatLng();if(p.lat!==task.test.lat||p.lng!==task.test.lng)circle.setLatLng([task.test.lat,task.test.lng]);
+   if(task.simRoadTarget&&!this.arrivalLinks.has(task.id)){
+    circle.setTooltipContent('30 公尺模擬抵達範圍・已外移至道路側');
+    const link=window.L.polyline([[task.official.lat,task.official.lng],[task.test.lat,task.test.lng]],{color:'#9b6baf',weight:2,dashArray:'3 5',interactive:false}).addTo(this.map);
+    window.L.circleMarker([task.test.lat,task.test.lng],{radius:4,color:'#9b6baf',fillOpacity:1}).bindTooltip('模擬抵達點・非正式入口').addTo(this.map);
+    this.arrivalLinks.set(task.id,link);
+   }
+  }
+ }
  setPosition(position){
   const issue=positionIssue(position),key=JSON.stringify([position,issue]);if(this.lastKey===key)return;this.lastKey=key;
   const previous=this.position;this.position=position;if(!this.map)return;
