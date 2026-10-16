@@ -143,3 +143,5 @@ header,.explore,.challenge-page,.ending{max-width:600px}.bottom-nav{width:min(10
 @media(max-width:360px){.explore.is-real{padding-left:6px;padding-right:6px}.explore.is-sim #joystick{width:88px;height:88px}.explore.is-sim .osm-status{right:108px}.explore.is-real .route-note{font-size:11px}}
 @media(orientation:landscape) and (max-height:550px){.explore.is-real .map{height:360px!important}.explore.is-real .route-note{font-size:11px}}
 
+
+.waiting-actor{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);z-index:1001;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}.waiting-actor[hidden]{display:none}.waiting-actor .player-sprite{width:58px;height:82px}.waiting-actor span{background:#fff8e8ed;color:#715a3f;border:1px solid #c9b58d;border-radius:9px;padding:6px 10px;font:12px/1.5 system-ui;white-space:nowrap}

@@ -11,6 +11,7 @@ export class OsmMap {
   this.host=host;this.tasks=tasks;this.position=null;this.follow=true;this.centered=false;this.destroyed=false;this.tileErrors=0;
   host.innerHTML='<div class="osm-viewport" role="region" aria-label="OpenStreetMap 地圖，可拖曳或縮放"></div><button type="button" class="osm-follow">回到定位</button><p class="osm-status" role="status">啟用定位後顯示地圖；地圖需要網路。</p>';
   this.status=host.querySelector('.osm-status');
+  if(simulation){this.waitingActor=document.createElement('div');this.waitingActor.className='waiting-actor';this.waitingActor.innerHTML=playerArtwork(playerId).replaceAll('player-opaque-','waiting-player-opaque-')+'<span>正在準備道路起點…</span>';host.append(this.waitingActor);}
   const L=window.L;
   if(!L){this.status.textContent='地圖元件未能載入，請重新開啟遊戲。';return;}
   this.map=L.map(host.querySelector('.osm-viewport'),{minZoom:3,maxZoom:19,zoomControl:true,attributionControl:true,zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false});
@@ -63,7 +64,7 @@ export class OsmMap {
  }
  setPosition(position){
   const issue=positionIssue(position),key=JSON.stringify([position,issue]);if(this.lastKey===key)return;this.lastKey=key;
-  const previous=this.position;this.position=position;if(!this.map)return;
+  const previous=this.position;this.position=position;if(!this.map)return;if(this.waitingActor)this.waitingActor.hidden=!!position?.onRoad&&!issue;
   if(!position||issue||(this.simulation&&!position.onRoad)){this.markers.clearLayers();this.actor=null;this.accuracyCircle=null;this.motion={dx:0,dy:0,until:0};this.tileStatus();return;}
   if(previous){const dx=position.lng-previous.lng,dy=position.lat-previous.lat;if(Math.hypot(dx,dy)>1e-10)this.motion={dx,dy,until:performance.now()+(this.simulation?220:900)};}
   const L=window.L,point=[position.lat,position.lng];
@@ -107,14 +108,26 @@ export class OsmMap {
   this.reachableTargets={signature,version:this.roadMaskVersion,visited,targets};return targets;
  }
  simulationStart(reference,fixedTarget){
-  const anchor=this.nearestRoad(reference,100);if(!anchor)return null;
-  this.reachableRoadTargets([{id:'start',official:reference}],anchor,250);
-  const visited=this.reachableTargets?.visited;if(!visited)return null;let best=null;
-  for(const key of visited){const [x,y]=key.split(':').map(Number),p=this.map.unproject([x+.5,y+.5],this.roadAtlasZoom),distance=this.map.distance([p.lat,p.lng],[reference.lat,reference.lng]);
-   if(distance<110||distance>200||fixedTarget&&this.map.distance([p.lat,p.lng],[fixedTarget.lat,fixedTarget.lng])<80)continue;
-   const score=Math.abs(distance-140);if(!best||score<best.score)best={lat:p.lat,lng:p.lng,score};
-  }return best?{lat:best.lat,lng:best.lng}:null;
+  if(this.spawnSearchVersion===this.roadMaskVersion)return this.spawnSearchResult||null;
+  this.spawnSearchVersion=this.roadMaskVersion;
+  const z=this.roadAtlasZoom;if(z===null)return null;const center=this.map.project([reference.lat,reference.lng],z),scale=40075016.686*Math.cos(reference.lat*Math.PI/180)/(256*2**z),anchors=[];
+  for(const tile of this.roadAtlas.values())for(let i=0;i<tile.mask.length;i++){
+   if(!tile.mask[i])continue;const x=tile.x*256+i%256,y=tile.y*256+Math.floor(i/256),distance=Math.hypot(x+.5-center.x,y+.5-center.y)*scale;
+   if(distance<=120)anchors.push({x,y,distance});
+  }
+  anchors.sort((a,b)=>a.distance-b.distance);const checked=new Set();
+  for(const anchor of anchors){
+   if(checked.has(anchor.x+':'+anchor.y))continue;const p=this.map.unproject([anchor.x+.5,anchor.y+.5],z);
+   this.reachableRoadTargets([{id:'start',official:reference}],{lat:p.lat,lng:p.lng},250);
+   const visited=this.reachableTargets?.visited;if(!visited)continue;let best=null;
+   for(const key of visited){checked.add(key);const [x,y]=key.split(':').map(Number),q=this.map.unproject([x+.5,y+.5],z),distance=this.map.distance([q.lat,q.lng],[reference.lat,reference.lng]);
+    if(distance<110||distance>200||fixedTarget&&this.map.distance([q.lat,q.lng],[fixedTarget.lat,fixedTarget.lng])<80)continue;
+    const score=Math.abs(distance-140);if(!best||score<best.score)best={lat:q.lat,lng:q.lng,score};
+   }
+   if(best){this.spawnSearchResult={lat:best.lat,lng:best.lng};return this.spawnSearchResult;}
+  }this.spawnSearchResult=null;return null;
  }
+
  roadStep(point,x,y,meters){
   const norm=Math.hypot(x,y);if(!norm||meters<=0)return point;let current={...point},remaining=Math.min(meters,5),angle=Math.atan2(y,x);
   while(remaining>1e-6){const step=Math.min(.25,remaining);let next=null;
