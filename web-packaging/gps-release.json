@@ -1,6 +1,8 @@
 {
-  "version": "0.21.0",
+  "version": "0.23.0",
   "baseWindowsSHA256": "530c37b18c820186f023bf3d7f5f3d09e9a83150d497ad3afb6a9a8ec50557f7",
-  "androidSHA256": "18eee54e443052e0ebfd5b4c18c6e0770ec96abddc8b71030b692ba24192e2c5",
-  "webSHA256": "cac2feb55c8647279473d6fe8d96af4926aeb6f1e8f9a306ba221001951628f1"
+  "webSourceCommit": "b03ca0bb6bb54ac4a8ac038e4a889191e158bf22",
+  "androidSHA256": "33abb616a8cf2a5c41efd0a6ca339a84a52ecf8445dd9db9090b043378348e1f",
+  "androidCertificateSHA256": "31c3b0a7351e194656befe710c4377258d658ffe64c1c0a8c4db9b7abfac8335",
+  "webSHA256": "616f708258662cd7f6264c0a394cbb544f360f2bb2a118c0846c6564b579f408"
 }
