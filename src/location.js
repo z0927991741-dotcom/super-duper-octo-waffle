@@ -20,17 +20,12 @@ export class GeographicSimLocation {
  }
  route(taskId){return this.scene&&this.walker?routeOnStreets(this.scene,this.walker,taskId):null;}
  simulationRoadTargets(tasks){
-  if(this.scene)return this.arrivalTargets;for(const gate of tasks){if(this.arrivalTargets[gate.id])continue;
-  let point=null;
-  // This is a simulation target derived from map roads, never a verified entrance.
-  if(this.walker){
-   const graph=this.walker.graph,seen=new Set(),pending=[this.walker.edge.a];
-   while(pending.length){const id=pending.pop();if(seen.has(id))continue;seen.add(id);for(const edge of graph.links.get(id)||[])pending.push(edge.a===id?edge.b:edge.a);}
-   try{const reachable={...graph,edges:graph.edges.filter(e=>seen.has(e.a)&&seen.has(e.b))};point=new StreetWalker(reachable,gate.official).read();}catch{}
-  }
-  if(!point&&this.roadMap&&!this.roadMap.destroyed)point=this.roadMap.nearestRoad(gate.official,100);
-  if(point)this.arrivalTargets[gate.id]={lat:point.lat,lng:point.lng};}return this.arrivalTargets;
+  if(this.scene)return this.arrivalTargets;
+  this.prepareRoad();
+  if(this.rasterReady&&this.roadMap&&!this.roadMap.destroyed){const reachable=this.roadMap.reachableRoadTargets(tasks,this.position);this.arrivalTargets={...reachable};}
+  return this.arrivalTargets;
  }
+
  get sourceLabel(){return this.scene?(this.scene.source?.kind==='packaged'?'內建道路':'已固定道路快照'):'地圖道路備援';}
  get ready(){this.prepareRoad();return !!this.walker||this.rasterReady;}
  read(){this.prepareRoad();return {...(this.walker?this.walker.read():this.position),onRoad:!!this.walker||this.rasterReady,accuracy:0,timestamp:Date.now()};}
