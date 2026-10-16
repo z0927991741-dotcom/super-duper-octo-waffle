@@ -26,7 +26,7 @@ export class OsmMap {
   for(const task of tasks){
    if(officialReady(task))this.landmark(task.official,task.place+'・政府參考點','#967251',task);
    if(task.fieldPoint)this.landmark(task.fieldPoint,task.name+'・私人測試點','#7061a8',task);
-   const target=simulation?task.test:task.fieldPoint||(entranceReady(task)?task.entrance:officialReady(task)?task.official:null);
+   const target=simulation?(task.simTargetReady===false?null:task.test):task.fieldPoint||(entranceReady(task)?task.entrance:officialReady(task)?task.official:null);
    if(target){const reference=!simulation&&!task.fieldPoint&&!entranceReady(task);const label=reference?'30 公尺景點參考範圍・入口待確認':'30 公尺抵達範圍';this.arrivalCircles.set(task.id,L.circle([target.lat,target.lng],{radius:task.radiusMeters,color:reference?'#b17c35':'#9b6baf',weight:2.5,fillColor:reference?'#efca76':'#c9a7e2',fillOpacity:.2,dashArray:reference?'6 5':null,className:'arrival-radius'}).bindTooltip(label).addTo(this.map));}
    if(officialReady(task)&&entranceReady(task))this.landmark(task.entrance,task.place+'・安全入口','#3f8250');
   }
@@ -50,7 +50,7 @@ export class OsmMap {
  syncArrivalTasks(tasks){
   if(!this.simulation||!this.map)return;
   for(const task of tasks){
-   const circle=this.arrivalCircles.get(task.id);if(!circle||!task.test)continue;
+   if(task.simTargetReady===false||!task.test)continue;let circle=this.arrivalCircles.get(task.id);if(!circle){circle=window.L.circle([task.test.lat,task.test.lng],{radius:task.radiusMeters,color:'#9b6baf',weight:2.5,fillColor:'#c9a7e2',fillOpacity:.2,className:'arrival-radius'}).bindTooltip('固定 30 公尺模擬抵達範圍').addTo(this.map);this.arrivalCircles.set(task.id,circle);}
    const p=circle.getLatLng();if(p.lat!==task.test.lat||p.lng!==task.test.lng)circle.setLatLng([task.test.lat,task.test.lng]);
    if(task.simRoadTarget&&!this.arrivalLinks.has(task.id)){
     circle.setTooltipContent('30 公尺模擬抵達範圍・已外移至道路側');
@@ -66,7 +66,7 @@ export class OsmMap {
   const previous=this.position;this.position=position;if(!this.map)return;
   if(!position||issue){this.markers.clearLayers();this.actor=null;this.accuracyCircle=null;this.motion={dx:0,dy:0,until:0};this.tileStatus();return;}
   if(previous){const dx=position.lng-previous.lng,dy=position.lat-previous.lat;if(Math.hypot(dx,dy)>1e-10)this.motion={dx,dy,until:performance.now()+(this.simulation?220:900)};}
-  const L=window.L,point=[position.lat,position.lng];if(this.routeLine&&this.guidanceTarget)this.routeLine.setLatLngs([point,[this.guidanceTarget.lat,this.guidanceTarget.lng]]);
+  const L=window.L,point=[position.lat,position.lng];
   if(this.follow&&(!this.simulation||this.initialTilesLoaded)){const p=this.map.latLngToContainerPoint(point),size=this.map.getSize();if(p.x<size.x*.25||p.x>size.x*.75||p.y<size.y*.25||p.y>size.y*.75)this.show(position);}
   if(!this.accuracyCircle)this.accuracyCircle=L.circle(point,{radius:position.accuracy,color:'#9b7656',weight:1,fillOpacity:.12,interactive:false,className:'osm-accuracy'}).addTo(this.markers);
   else this.accuracyCircle.setLatLng(point).setRadius(position.accuracy);
@@ -109,9 +109,9 @@ export class OsmMap {
  roadStep(point,x,y,meters){
   const norm=Math.hypot(x,y);if(!norm||meters<=0)return point;let current={...point},remaining=Math.min(meters,5),angle=Math.atan2(y,x);
   while(remaining>1e-6){const step=Math.min(.25,remaining);let next=null;
-   for(const offset of [0,Math.PI/12,-Math.PI/12,Math.PI/6,-Math.PI/6,Math.PI/4,-Math.PI/4,Math.PI/3,-Math.PI/3,Math.PI*5/12,-Math.PI*5/12]){
+   for(const offset of [0,Math.PI/12,-Math.PI/12,Math.PI/6,-Math.PI/6,Math.PI/4,-Math.PI/4,Math.PI/3,-Math.PI/3,Math.PI*5/12,-Math.PI*5/12,Math.PI/2,-Math.PI/2]){
     const a=angle+offset,candidate={lat:current.lat+Math.sin(a)*step/111195,lng:current.lng+Math.cos(a)*step/(111195*Math.cos(current.lat*Math.PI/180))};
-    if(this.isRoad(candidate)){next=candidate;break;}
+    if(this.isRoad(candidate)&&this.isRoad({lat:current.lat,lng:candidate.lng})&&this.isRoad({lat:candidate.lat,lng:current.lng})){next=candidate;break;}
    }
    if(!next)break;current=next;remaining-=step;
   }return current;
@@ -138,7 +138,7 @@ export class OsmMap {
   this.routeNote.textContent=message;
   if(!route?.points?.length){this.routeLine?.remove();this.routeLine=null;return;}
   const target=this.simulation?task.test:task.fieldPoint||(entranceReady(task)?task.entrance:task.official);if(!this.position||!target)return;this.guidanceTarget=target;
-  const points=[[this.position.lat,this.position.lng],[target.lat,target.lng]];
+  const points=route.points.map(p=>[p.lat,p.lng]);
   if(this.routeLine)this.routeLine.setLatLngs(points);else this.routeLine=window.L.polyline(points,{color:'#ae7540',weight:3,opacity:.9,dashArray:'8 6',interactive:false,className:'sim-route'}).addTo(this.map);
  }
  animate(now){const el=this.actor?.getElement();if(!el)return;const moving=now<this.motion.until;animatePlayer(el,this.playerId,moving?this.motion.dx:0,moving?this.motion.dy:0,now,matchMedia('(prefers-reduced-motion: reduce)').matches);}
