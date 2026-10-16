@@ -5,11 +5,11 @@ import path from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
 // These local modules use named exports and one-line static imports only.
 // Concatenate in dependency order; fail if a new unsupported import/export is added.
-const modules=['config','map-detail','roads','field-points','geo','street-snapshot','building-collision','street-network','street-plan','road-audit','road-data-tools','location','challenge','storage','joystick','art','camera','navigation','stories','npc','player','map-controls','chibi-map','vector-style','vector-map','osm-map','entrance-review','app'];
+const modules=['config','map-detail','roads','field-points','geo','street-snapshot','building-collision','street-network','street-plan','road-audit','road-data-tools','location','challenge','storage','joystick','art','camera','navigation','stories','npc','player','map-controls','chibi-map','vector-style','vector-map','walking-music','osm-map','entrance-review','app'];
 const chunks=[];
 const npcImages={};
 for(const id of ['color','gate','book'])for(const kind of ['portrait','sheet']){const file=`./src/assets/npc/${id}-${kind}-cutout.png`;npcImages[file]='data:image/'+(file.endsWith('.png')?'png':'jpeg')+';base64,'+(await readFile(path.join(root,file))).toString('base64');}
-for(const id of ['color','gate','book']){const ext=id==='book'?'png':'jpg',file=`./src/assets/npc/${id}-completion.${ext}`;npcImages[file]='data:image/'+(ext==='jpg'?'jpeg':'png')+';base64,'+(await readFile(path.join(root,file))).toString('base64');}
+for(const id of ['color','gate','book']){const ext='png',file=`./src/assets/npc/${id}-completion-cutout.${ext}`;npcImages[file]='data:image/'+(ext==='jpg'?'jpeg':'png')+';base64,'+(await readFile(path.join(root,file))).toString('base64');}
 for(const id of ['male','female'])for(const kind of ['portrait','sheet']){const file=`./src/assets/player/${id}-${kind}.png`;npcImages[file]='data:image/png;base64,'+(await readFile(path.join(root,file))).toString('base64');}
 for(const name of modules){
  const source=await readFile(path.join(root,'src',name+'.js'),'utf8');

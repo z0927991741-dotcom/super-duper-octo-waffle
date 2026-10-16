@@ -154,3 +154,7 @@ header,.explore,.challenge-page,.ending{max-width:600px}.bottom-nav{width:min(10
 @media(max-width:480px){.repair-thanks-dialog[open]{display:block;padding:18px}.thanks-portrait{width:90px;height:150px;margin:auto}.repair-thanks-dialog h2{font-size:20px}.repair-thanks-dialog .thanks-line{font-size:17px;min-height:90px}}
 
 .npc-completion-art{display:block;width:100%;height:100%;object-fit:contain;background:#fff;border-radius:12px}.repair-thanks-dialog[open]{display:block}.repair-thanks-dialog .thanks-portrait{width:min(100%,340px);height:210px;margin:0 auto 14px}.npc-thanks>div{width:120px;height:130px}.repair-thanks-dialog .thanks-line{min-height:70px}@media(max-width:480px){.repair-thanks-dialog .thanks-portrait{height:180px;margin-bottom:10px}.npc-thanks{gap:12px;padding:12px}.npc-thanks>div{width:95px;height:115px}}
+
+.audio-controls{display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap}.audio-controls .subtle{min-height:40px;padding:5px 8px;font-size:12px}header .brand{min-width:0}@media(max-width:540px){.audio-controls{flex-direction:column;gap:0}.audio-controls .subtle{min-height:36px;padding:4px 6px;font-size:11px}}
+
+.npc-completion-art{background:transparent;border-radius:0;object-fit:contain;object-position:center bottom}.repair-thanks-dialog .thanks-portrait{width:220px;max-width:100%;height:220px;margin:0 auto 14px}.npc-thanks>div{width:110px;height:110px;flex:0 0 110px}@media(max-width:480px){.repair-thanks-dialog .thanks-portrait{height:220px}.npc-thanks>div{width:110px;height:110px}}
