@@ -151,13 +151,13 @@ function planTravelRoute(task){return sim.route(task.id);
 
 function mountGuidancePanel(){
  const panel=document.createElement('section');panel.className='guidance-panel';
- panel.innerHTML='<label for="guide-target">指引目的地</label><select id="guide-target">'+activeTasks().map(t=>'<option value="'+t.id+'">'+t.place+'</option>').join('')+'</select><button class="secondary" id="preview-guide">查看目的地</button><dl><div><dt>剩餘道路距離</dt><dd id="guide-route-distance">等待道路資料</dd></div><div><dt>至抵達點直線距離</dt><dd id="guide-air-distance">—</dd></div><div><dt>解鎖半徑</dt><dd>固定 30 公尺</dd></div></dl><p>選定後保持指引，直到你主動切換。建築物及遊戲邊界會阻擋移動。</p><div class="road-legend"><span><i class="legend-road"></i>可走公開道路</span><span><i class="legend-building"></i>建築物阻擋</span><span>虛線：遊戲邊界</span></div>';
+ panel.innerHTML='<label for="guide-target">目的地</label><select id="guide-target">'+activeTasks().map(t=>'<option value="'+t.id+'">'+t.place+'</option>').join('')+'</select><button class="secondary" id="preview-guide">查看位置</button><dl><div><dt id="guide-distance-label">沿路距離</dt><dd id="guide-route-distance">載入中</dd></div></dl>';
  $('.map-panel').append(panel);const select=panel.querySelector('#guide-target');select.value=navigationTargetId||guidanceTask.id;
  select.onchange=()=>{navigationTargetId=select.value;lastGuidanceAt=0;updateRoadGuidance();};
  panel.querySelector('#preview-guide').onclick=()=>{const task=activeTasks().find(t=>t.id===select.value);navigationTargetId=task.id;osmMap?.preview(task);lastGuidanceAt=0;updateRoadGuidance();};
 }
 function updateGuidanceFacts(task,route,result){
  const select=$('#guide-target');if(!select)return;if(document.activeElement!==select)select.value=task.id;
- $('#guide-route-distance').textContent=route?Math.ceil(route.distance)+' 公尺':mode==='sim'?(sim.ready?'找不到相連道路':'等待道路資料'):'尚未開放道路導航';
- $('#guide-air-distance').textContent=result.distance===null?'尚無有效位置':Math.ceil(result.distance)+' 公尺';
+ $('#guide-distance-label').textContent=mode==='sim'?'沿路距離':'直線距離';
+ $('#guide-route-distance').textContent=mode==='sim'?(route?Math.ceil(route.distance)+' 公尺':sim.ready?'道路不通':'載入中'):(result.distance===null?'等待定位':Math.ceil(result.distance)+' 公尺');
 }

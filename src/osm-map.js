@@ -79,7 +79,7 @@ export class OsmMap {
  setStreetScene(scene){
   if(!this.map||this.drawnScene===scene)return;this.drawnScene=scene;this.streetGeometry?.remove();const L=window.L;this.streetGeometry=L.layerGroup().addTo(this.map);
   for(const polygon of scene.graph.buildings||[]){const rings=[polygon.outer,...polygon.holes].map(r=>r.map(p=>[p.lat,p.lng]));L.polygon(rings,{color:'#a98f72',weight:1,fillColor:'#e1c8ad',fillOpacity:.6,interactive:false}).addTo(this.streetGeometry);}
-  for(const edge of scene.graph.edges){const a=scene.graph.nodes.get(edge.a),b=scene.graph.nodes.get(edge.b),points=[[a.lat,a.lng],[b.lat,b.lng]],path=['footway','path','steps','cycleway','pedestrian'].includes(edge.kind);L.polyline(points,{color:'#d0a15b',weight:path?6:11,lineCap:'round',interactive:false}).addTo(this.streetGeometry);L.polyline(points,{color:'#fff0c2',weight:path?3:7,lineCap:'round',interactive:false}).addTo(this.streetGeometry);}
+  for(const edge of scene.graph.edges){const a=scene.graph.nodes.get(edge.a),b=scene.graph.nodes.get(edge.b),points=[[a.lat,a.lng],[b.lat,b.lng]],path=['footway','path','steps','cycleway','pedestrian'].includes(edge.kind);L.polyline(points,{color:'#eadfc8',weight:path?6:11,lineCap:'round',interactive:false}).addTo(this.streetGeometry);L.polyline(points,{color:'#fff8e8',weight:path?3:7,lineCap:'round',interactive:false}).addTo(this.streetGeometry);}
   if(scene.graph.coverage){const c=scene.graph.coverage;L.rectangle([[c.south,c.west],[c.north,c.east]],{color:'#ac9774',weight:1,dashArray:'5 5',fill:false,interactive:false}).addTo(this.streetGeometry);}
   this.streetGeometry.eachLayer(layer=>layer.bringToBack?.());
  }
