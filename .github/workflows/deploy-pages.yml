@@ -36,6 +36,10 @@ jobs:
           (cd gps-preview && npm run build:standalone)
           mkdir -p dist/gps-test
           cp gps-preview/dist/dream-mender.html dist/gps-test/index.html
+          cp gps-preview/dist/sw.js dist/gps-test/sw.js
+          cp gps-preview/dist/dream-mender.html dist/gps-test.html
+          test -s dist/gps-test/index.html
+          test -s dist/gps-test.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
