@@ -25,6 +25,8 @@ export function dreamVectorLayer(L){
   const layer=new Blank({maxZoom:19});layer.simplified=true;return layer;
  }
  const Vector=L.MaplibreGL.extend({
+  onAdd(map){try{L.MaplibreGL.prototype.onAdd.call(this,map);}catch{map.off(L.MaplibreGL.prototype.getEvents.call(this),this);try{this._glMap?.remove();}catch{}this._glMap=null;this.simplified=true;if(this._container){this._container.replaceChildren();this._container.style.background='#f2e8c8';}this.fire('load');}},
+  onRemove(map){if(this.simplified){this._container?.remove();return;}L.MaplibreGL.prototype.onRemove.call(this,map);},
   _initGL(){
    L.MaplibreGL.prototype._initGL.call(this);
    const gl=this.getMaplibreMap();this.fire('loading');

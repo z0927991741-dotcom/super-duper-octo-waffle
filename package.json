@@ -7,7 +7,9 @@
     "start": "node server.mjs",
     "test": "node --test tests/core.test.mjs tests/gps.test.mjs tests/field.test.mjs tests/building-collision.test.mjs",
     "test:e2e": "playwright test",
-    "build:standalone": "node scripts/build-standalone.mjs"
+    "build:standalone": "node scripts/build-standalone.mjs",
+    "build:web": "node scripts/build-standalone.mjs && node scripts/build-web.mjs",
+    "test:web-startup": "python tests/web-startup-browser.py"
   },
   "devDependencies": {
     "@playwright/test": "1.61.1"
