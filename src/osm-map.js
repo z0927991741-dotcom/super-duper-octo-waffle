@@ -16,7 +16,8 @@ export class OsmMap {
   this.map=L.map(host.querySelector('.osm-viewport'),{minZoom:3,maxZoom:19,zoomControl:true,attributionControl:true,zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false});
   this.map.attributionControl.setPrefix(false);
   this.map.attributionControl.addAttribution('<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>');
-  this.tiles=chibiTileLayer(L);
+  this.roadMaskVersion=0;this.tiles=chibiTileLayer(L);
+  this.tiles.on('tileload',()=>{this.roadMaskVersion++;});
   this.tiles.on('loading',()=>{this.loading=true;this.tileErrors=0;this.tileStatus();});
   this.tiles.on('tileerror',()=>{this.tileErrors++;this.tileStatus();});
   this.tiles.on('load',()=>{this.loading=false;this.tileStatus();});
@@ -60,6 +61,33 @@ export class OsmMap {
    this.actor=L.marker(point,{interactive:false,zIndexOffset:1000,icon:L.divIcon({className:'osm-player map-actor',html:'<div class="map-actor-body">'+art+'</div><small>'+ (this.simulation?'模擬角色':'你')+'</small>',iconSize:[48,72],iconAnchor:[24,65]})}).addTo(this.markers);
   }else this.actor.setLatLng(point);
   this.tileStatus();
+ }
+ // Pixel masks use the unpainted OSM road colors, not the illustrated building colors.
+ roadPixel(point){const z=this.tiles?._tileZoom;if(!Number.isFinite(z))return null;const p=this.map.project([point.lat,point.lng],z),x=Math.floor(p.x),y=Math.floor(p.y),tx=Math.floor(x/256),ty=Math.floor(y/256),entry=this.tiles._tiles[tx+':'+ty+':'+z];return entry?.loaded&&entry.el.roadMask?{mask:entry.el.roadMask,index:(y-ty*256)*256+(x-tx*256)}:null;}
+ isRoad(point){const pixel=this.roadPixel(point);return !!pixel?.mask[pixel.index];}
+ nearestRoad(point,maxMeters=120){
+  const z=this.tiles?._tileZoom;if(!Number.isFinite(z))return null;
+  const origin=this.map.project([point.lat,point.lng],z),scale=40075016.686*Math.cos(point.lat*Math.PI/180)/(256*2**z),radius=maxMeters/scale;let best=null;
+  for(const tile of Object.values(this.tiles._tiles)){
+   if(tile.coords.z!==z||!tile.loaded||!tile.el.roadMask)continue;
+   const ox=tile.coords.x*256,oy=tile.coords.y*256,mask=tile.el.roadMask;
+   const minX=Math.max(0,Math.floor(origin.x-radius-ox)),maxX=Math.min(255,Math.ceil(origin.x+radius-ox)),minY=Math.max(0,Math.floor(origin.y-radius-oy)),maxY=Math.min(255,Math.ceil(origin.y+radius-oy));
+   for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){
+    if(!mask[y*256+x])continue;const d=(ox+x+.5-origin.x)**2+(oy+y+.5-origin.y)**2;
+    if(d<=radius*radius&&(!best||d<best.d))best={x:ox+x+.5,y:oy+y+.5,d};
+   }
+  }
+  if(!best)return null;const p=this.map.unproject([best.x,best.y],z);return {lat:p.lat,lng:p.lng};
+ }
+ roadStep(point,x,y,meters){
+  const norm=Math.hypot(x,y);if(!norm||meters<=0)return point;let current={...point},remaining=Math.min(meters,5),angle=Math.atan2(y,x);
+  while(remaining>1e-6){const step=Math.min(.4,remaining);let next=null;
+   for(const offset of [0,Math.PI/12,-Math.PI/12,Math.PI/6,-Math.PI/6,Math.PI/4,-Math.PI/4,Math.PI/3,-Math.PI/3]){
+    const a=angle+offset,candidate={lat:current.lat+Math.sin(a)*step/111195,lng:current.lng+Math.cos(a)*step/(111195*Math.cos(current.lat*Math.PI/180))};
+    if(this.isRoad(candidate)){next=candidate;break;}
+   }
+   if(!next)break;current=next;remaining-=step;
+  }return current;
  }
  animate(now){const el=this.actor?.getElement();if(!el)return;const moving=now<this.motion.until;animatePlayer(el,this.playerId,moving?this.motion.dx:0,moving?this.motion.dy:0,now,matchMedia('(prefers-reduced-motion: reduce)').matches);}
 

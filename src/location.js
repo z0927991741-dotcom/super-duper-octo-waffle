@@ -6,9 +6,24 @@ export class RealLocation {constructor(){this.id=null;this.generation=0;}stop(){
 
 // Simulator stays on connected OSM segments; unavailable geometry never permits free movement.
 export class GeographicSimLocation {
- constructor(start){this.position={...start};this.walker=null;this.loading=false;this.error='';}
- async loadRoads(){if(this.walker||this.loading)return;this.loading=true;this.error='';try{this.walker=new StreetWalker(await loadStreetGraph(),this.position);}catch(error){this.error=error.message;}finally{this.loading=false;}}
- read(){return {...(this.walker?this.walker.read():this.position),onRoad:!!this.walker,accuracy:0,timestamp:Date.now()};}
- move(x,y,seconds){if(this.walker)this.walker.move(x,y,SETTINGS.speedMetersPerSecond*Math.max(0,seconds));return this.read();}
+ constructor(start){this.position={...start};this.walker=null;this.loading=false;this.error='';this.roadMap=null;this.rasterReady=false;this.snapVersion=-1;}
+ attachMap(map){this.roadMap=map;this.snapVersion=-1;this.rasterReady=false;}
+ async loadRoads(){if(this.walker||this.loading)return;this.loading=true;this.error='';try{const graph=await loadStreetGraph();this.walker=new StreetWalker(graph,this.position);}catch(error){this.error=error.message;}finally{this.loading=false;}}
+ prepareRoad(){
+  if(this.walker||!this.roadMap||this.roadMap.destroyed)return;
+  if(this.roadMap.isRoad(this.position)){this.rasterReady=true;return;}
+  // A zoom or missing tile pauses walking; never snap an established walker across a block.
+  if(this.rasterReady)return;
+  if(this.snapVersion===this.roadMap.roadMaskVersion)return;this.snapVersion=this.roadMap.roadMaskVersion;
+  const point=this.roadMap.nearestRoad(this.position);if(point){this.position=point;this.rasterReady=true;}
+ }
+ get ready(){this.prepareRoad();return !!this.walker||this.rasterReady;}
+ read(){this.prepareRoad();return {...(this.walker?this.walker.read():this.position),onRoad:!!this.walker||this.rasterReady,accuracy:0,timestamp:Date.now()};}
+ move(x,y,seconds){
+  this.prepareRoad();const meters=SETTINGS.speedMetersPerSecond*Math.max(0,seconds);
+  if(this.walker){this.walker.move(x,y,meters);this.position=this.walker.read();}
+  else if(this.rasterReady&&this.roadMap&&!this.roadMap.destroyed)this.position=this.roadMap.roadStep(this.position,x,y,meters);
+  return this.read();
+ }
 }
 export function geographicSimulationTasks(tasks){return tasks.map(t=>({...t,test:{...t.official},entranceNode:null,requiresRoad:true}));}

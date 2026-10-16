@@ -10,6 +10,13 @@ export function chibiTileLayer(L){
     const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(image,0,0,256,256);
     try{
      const pixels=ctx.getImageData(0,0,256,256),data=pixels.data,types=new Uint8Array(256*256);
+     const rawRoad=new Uint8Array(256*256),darkInk=new Uint8Array(256*256);
+     for(let i=0;i<data.length;i+=4){const r=data[i],g=data[i+1],b=data[i+2];rawRoad[i/4]=Number((r>=248&&g>=246&&b>=240)||(r>=245&&g>=185&&g<=240&&b<=190));darkInk[i/4]=Number(Math.max(r,g,b)<145);}
+     // Bridge lettering only when it sits between road pixels; never expand into buildings.
+     const roadMask=rawRoad.slice();
+     for(let y=2;y<254;y++)for(let x=2;x<254;x++){const n=y*256+x;if(!darkInk[n])continue;for(const d of [1,2])if((rawRoad[n-d]&&rawRoad[n+d])||(rawRoad[n-d*256]&&rawRoad[n+d*256])){roadMask[n]=1;break;}}
+     canvas.roadMask=roadMask;
+
      for(let i=0;i<data.length;i+=4){
       const r=data[i],g=data[i+1],b=data[i+2];let color,type;
       if(Math.max(r,g,b)<145){color=[102,91,78];type=0;}
