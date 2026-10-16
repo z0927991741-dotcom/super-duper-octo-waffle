@@ -29,15 +29,14 @@ jobs:
       - name: 取得獨立 GPS 網頁測試版
         uses: actions/checkout@v4
         with:
-          ref: f469dd2161795cc994d78c7d79945c288de88dda
+          ref: 86b02f07437be1fb18a8307bf016cb1d5387ebf8
           path: gps-preview
       - name: 建立 GPS 測試入口
         run: |
-          (cd gps-preview && npm run build:standalone)
+          (cd gps-preview && npm run build:web)
           mkdir -p dist/gps-test
-          cp gps-preview/dist/dream-mender.html dist/gps-test/index.html
-          cp gps-preview/dist/sw.js dist/gps-test/sw.js
-          cp gps-preview/dist/dream-mender.html dist/gps-test.html
+          cp -R gps-preview/dist/web/. dist/gps-test/
+          cp gps-preview/dist/gps-test.html dist/gps-test.html
           test -s dist/gps-test/index.html
           test -s dist/gps-test.html
       - uses: actions/configure-pages@v5
