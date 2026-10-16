@@ -125,3 +125,6 @@ header,.explore,.challenge-page,.ending{max-width:600px}.bottom-nav{width:min(10
 .explore.is-real .map{height:clamp(360px,58svh,620px);border:2px solid #d1bc91;border-radius:22px;overflow:hidden}
 .explore.is-sim .map .movement{position:absolute!important;right:16px!important;bottom:72px!important;z-index:1001;min-height:0;padding:0!important;border:0;background:none;display:block}.explore.is-sim .movement>span{display:none}.explore.is-sim #joystick{width:100px;height:100px;position:relative;background:radial-gradient(circle at 40% 35%,#f7f0dcee,#e7dbc0dd);box-shadow:0 4px 15px #6d63313a;backdrop-filter:blur(5px)}.explore.is-sim .joystick-knob{width:49px;height:49px}.osm-status{right:8px;bottom:23px;font-size:11px}.explore.is-sim .osm-status{right:125px;bottom:25px}
 @media(max-width:390px){.explore.is-sim #joystick{width:85px;height:85px}.explore.is-sim .joystick-knob{width:43px;height:43px}.explore.is-sim .osm-status{right:108px}}
+/* Keep the simulator controller above the shared map surface. */
+.explore.is-sim .real-map > .movement{display:block!important;visibility:visible!important;opacity:1;pointer-events:auto;z-index:1100}
+.explore.is-sim .real-map > .movement #joystick{display:grid!important;visibility:visible!important;pointer-events:auto;touch-action:none}
