@@ -9,6 +9,7 @@ const modules=['config','map-detail','roads','field-points','geo','street-snapsh
 const chunks=[];
 const npcImages={};
 for(const id of ['color','gate','book'])for(const kind of ['portrait','sheet']){const file=`./src/assets/npc/${id}-${kind}-cutout.png`;npcImages[file]='data:image/'+(file.endsWith('.png')?'png':'jpeg')+';base64,'+(await readFile(path.join(root,file))).toString('base64');}
+for(const id of ['color','gate','book']){const ext=id==='book'?'png':'jpg',file=`./src/assets/npc/${id}-completion.${ext}`;npcImages[file]='data:image/'+(ext==='jpg'?'jpeg':'png')+';base64,'+(await readFile(path.join(root,file))).toString('base64');}
 for(const id of ['male','female'])for(const kind of ['portrait','sheet']){const file=`./src/assets/player/${id}-${kind}.png`;npcImages[file]='data:image/png;base64,'+(await readFile(path.join(root,file))).toString('base64');}
 for(const name of modules){
  const source=await readFile(path.join(root,'src',name+'.js'),'utf8');

@@ -37,3 +37,7 @@ export function focusNpc(svg,id,page,previous){
  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
  const start=performance.now();const tick=now=>{if(!svg.isConnected)return;const t=Math.min(1,(now-start)/650),ease=1-(1-t)**3;svg.setAttribute('viewBox',target.map((v,i)=>from[i]+(v-from[i])*ease).join(' '));if(t<1)requestAnimationFrame(tick);};requestAnimationFrame(tick);
 }
+
+// User-provided celebration artwork; original files are preserved without cropping.
+export const NPC_COMPLETION_ART={color:'./src/assets/npc/color-completion.jpg',gate:'./src/assets/npc/gate-completion.jpg',book:'./src/assets/npc/book-completion.png'};
+export function npcCompletionArtwork(id){return `<img class="npc-completion-art" src="${NPC_COMPLETION_ART[id]}" alt="${NPCS[id].name}開心感謝修補員" decoding="async">`;}
