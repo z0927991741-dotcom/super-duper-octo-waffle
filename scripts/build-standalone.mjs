@@ -5,7 +5,7 @@ import path from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
 // These local modules use named exports and one-line static imports only.
 // Concatenate in dependency order; fail if a new unsupported import/export is added.
-const modules=['config','map-detail','roads','field-points','geo','street-snapshot','building-collision','street-network','street-plan','road-audit','road-data-tools','location','challenge','storage','joystick','art','camera','navigation','stories','npc','player','map-controls','chibi-map','osm-map','entrance-review','app'];
+const modules=['config','map-detail','roads','field-points','geo','street-snapshot','building-collision','street-network','street-plan','road-audit','road-data-tools','location','challenge','storage','joystick','art','camera','navigation','stories','npc','player','map-controls','chibi-map','vector-style','vector-map','osm-map','entrance-review','app'];
 const chunks=[];
 const npcImages={};
 for(const id of ['color','gate','book'])for(const kind of ['portrait','sheet']){const file=`./src/assets/npc/${id}-${kind}-cutout.png`;npcImages[file]='data:image/'+(file.endsWith('.png')?'png':'jpeg')+';base64,'+(await readFile(path.join(root,file))).toString('base64');}
@@ -30,7 +30,10 @@ const template=await readFile(path.join(root,'index.html'),'utf8');
 const vendorJs=await readFile(path.join(root,'src/vendor/leaflet.js'),'utf8');
 const vendorCss=await readFile(path.join(root,'src/vendor/leaflet.css'),'utf8');
 const vendorLicense=await readFile(path.join(root,'src/vendor/LEAFLET-LICENSE'),'utf8');
-const html=template.replace('<head>',()=>'<head><!-- Leaflet third-party license\n'+vendorLicense+'\n-->').replace('<link rel="stylesheet" href="/src/vendor/leaflet.css">',()=>'<style>'+vendorCss+'</style>').replace('<script src="/src/vendor/leaflet.js"></script>',()=>'<script>'+vendorJs.replace(/<\/script/gi,'<\\/script')+'</script>').replace('<link rel="stylesheet" href="/styles.css">',()=>'<style>'+css.replace(/<\/style/gi,'<\\/style')+'</style>').replace('<script type="module" src="/src/app.js"></script>',()=>'<script>'+script.replace(/<\/script/gi,'<\\/script')+'</script>');
+let html=template.replace('<head>',()=>'<head><!-- Leaflet third-party license\n'+vendorLicense+'\n-->').replace('<link rel="stylesheet" href="/src/vendor/leaflet.css">',()=>'<style>'+vendorCss+'</style>').replace('<script src="/src/vendor/leaflet.js"></script>',()=>'<script>'+vendorJs.replace(/<\/script/gi,'<\\/script')+'</script>').replace('<link rel="stylesheet" href="/styles.css">',()=>'<style>'+css.replace(/<\/style/gi,'<\\/style')+'</style>').replace('<script type="module" src="/src/app.js"></script>',()=>'<script>'+script.replace(/<\/script/gi,'<\\/script')+'</script>');
+for(const file of ['maplibre-gl.js','leaflet-maplibre-gl.js']){const source=await readFile(path.join(root,'src/vendor',file),'utf8');html=html.replace('<script src="/src/vendor/'+file+'"></script>',()=>'<script>'+source.replace(/<\/script/gi,'<\\/script')+'</script>');}
+const maplibreCss=await readFile(path.join(root,'src/vendor/maplibre-gl.css'),'utf8');html=html.replace('<link rel="stylesheet" href="/src/vendor/maplibre-gl.css">',()=>'<style>'+maplibreCss+'</style>');
+const mapLicenses=await Promise.all(['MAPLIBRE-LICENSE','MAPLIBRE-LEAFLET-LICENSE','OPENFREEMAP-STYLE-LICENSE'].map(file=>readFile(path.join(root,'src/vendor',file),'utf8')));html=html.replace('<head>',()=>'<head><!-- Map renderer and style licenses\n'+mapLicenses.join('\n')+'\n-->');
 await mkdir(path.join(root,'dist'),{recursive:true});
 await writeFile(path.join(root,'dist','dream-mender.html'),html);
 console.log('Created dist/dream-mender.html — open directly in a browser.');

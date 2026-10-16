@@ -13,6 +13,8 @@
     "@playwright/test": "1.61.1"
   },
   "dependencies": {
-    "leaflet": "1.9.4"
+    "@maplibre/maplibre-gl-leaflet": "0.1.4",
+    "leaflet": "1.9.4",
+    "maplibre-gl": "5.10.0"
   }
 }

@@ -1,7 +1,7 @@
 import {STORIES} from './stories.js';
 export const NPCS={color:{name:'色彩引路人',greeting:'歡迎來到美術館。我替這裡保管著一些尚未醒來的顏色。'},gate:{name:'古城守夢人',greeting:'旅人，歡迎來到朝陽門。一起聽聽這座城門留下的記憶吧。'},book:{name:'書院說書人',greeting:'歡迎來到書院。散落的書頁裡，藏著這座城市的故事。'}};
 const NPC_FACTS={color:'2022 年，美術館以「南方女神的逆襲」集結 56 名藝術家的作品，也與臺東、高雄交流典藏。看看入口與長窗，你發現對稱的地方了嗎？',gate:'阿猴城門也叫「朝陽門」。看看門額上的名字，以及紅磚、石牆和拱形門洞，找找它們和插畫的差異。',book:'《臺灣通史》記載，屏東書院位於「鳳山阿猴街」，於嘉慶二十年興建。「阿猴」這個舊地名，也出現在我們的旅程裡。'};
-export const NPC_THANKS={color:'謝謝你！散落的色彩回來了，這座城市又多了一點光。',gate:'你守住了這段記憶。往後經過城門，也別忘了抬頭看看它。',book:'書頁終於接起來了。謝謝你，讓這裡的故事可以繼續被讀到。'};
+export const NPC_THANKS={color:'謝謝你！散落的色彩回來了，這座城市又多了一點光。',gate:'謝謝你，修補員！城門的星光又亮起來了。你守住了這段記憶，也替歸來的旅人留下了一盞燈。',book:'書頁終於接起來了。謝謝你，讓這裡的故事可以繼續被讀到。'};
 export function npcDialogue(task){const npc=NPCS[task.id],story=STORIES[task.id];return [{title:'夢境中的相遇',text:npc.greeting},{title:story.title,text:NPC_FACTS[task.id],sourceName:story.sourceName,sourceUrl:story.sourceUrl},{title:'一起修補這段記憶',text:`先觀看 ${task.length} 次圖案閃爍，再依序點擊。答錯可以重新觀看，不必重新走到這裡。`}];}
 const patrolTimes=new Map();
 export function rememberNpc(stage,id){const time=stage?.querySelector('.npc-walker')?.getAnimations()[0]?.currentTime;if(typeof time==='number')patrolTimes.set(id,time);}

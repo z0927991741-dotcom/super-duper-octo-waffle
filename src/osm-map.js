@@ -1,4 +1,4 @@
-import {chibiTileLayer} from './chibi-map.js';
+import {dreamVectorLayer} from './vector-map.js';
 import {playerArtwork,animatePlayer} from './player.js';
 import {TASKS,officialReady,entranceReady} from './config.js';
 import {positionIssue} from './geo.js';
@@ -17,7 +17,8 @@ export class OsmMap {
   this.map=L.map(host.querySelector('.osm-viewport'),{minZoom:3,maxZoom:19,zoomControl:true,attributionControl:true,zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false});
   this.map.attributionControl.setPrefix(false);
   this.map.attributionControl.addAttribution('<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>');
-  this.tiles=chibiTileLayer(L);
+  this.map.attributionControl.addAttribution('<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> · <a href="https://openmaptiles.org" target="_blank" rel="noopener">OpenMapTiles</a>');
+  this.tiles=dreamVectorLayer(L);
   this.tiles.on('loading',()=>{this.loading=true;this.tileErrors=0;this.tileStatus();});
   this.tiles.on('tileerror',()=>{this.tileErrors++;this.tileStatus();});
   this.tiles.on('load',()=>{this.loading=false;this.initialTilesLoaded=true;this.tileStatus();});
@@ -78,8 +79,10 @@ export class OsmMap {
  }
  setStreetScene(scene){
   if(!this.map||this.drawnScene===scene)return;this.drawnScene=scene;this.streetGeometry?.remove();const L=window.L;this.streetGeometry=L.layerGroup().addTo(this.map);
-  for(const polygon of scene.graph.buildings||[]){const rings=[polygon.outer,...polygon.holes].map(r=>r.map(p=>[p.lat,p.lng]));L.polygon(rings,{color:'#a98f72',weight:1,fillColor:'#e1c8ad',fillOpacity:.6,interactive:false}).addTo(this.streetGeometry);}
+  if(!this.tiles.simplified)this.tiles.setStreetScene(scene);
+  if(this.tiles.simplified){for(const polygon of scene.graph.buildings||[]){const rings=[polygon.outer,...polygon.holes].map(r=>r.map(p=>[p.lat,p.lng]));L.polygon(rings,{color:'#a98f72',weight:1,fillColor:'#e1c8ad',fillOpacity:.6,interactive:false}).addTo(this.streetGeometry);}
   for(const edge of scene.graph.edges){const a=scene.graph.nodes.get(edge.a),b=scene.graph.nodes.get(edge.b),points=[[a.lat,a.lng],[b.lat,b.lng]],path=['footway','path','steps','cycleway','pedestrian'].includes(edge.kind);L.polyline(points,{color:'#eadfc8',weight:path?6:11,lineCap:'round',interactive:false}).addTo(this.streetGeometry);L.polyline(points,{color:'#fff8e8',weight:path?3:7,lineCap:'round',interactive:false}).addTo(this.streetGeometry);}
+  }
   if(scene.graph.coverage){const c=scene.graph.coverage;L.rectangle([[c.south,c.west],[c.north,c.east]],{color:'#ac9774',weight:1,dashArray:'5 5',fill:false,interactive:false}).addTo(this.streetGeometry);}
   this.streetGeometry.eachLayer(layer=>layer.bringToBack?.());
  }
@@ -97,7 +100,7 @@ export class OsmMap {
  tileStatus(){
   if(this.destroyed)return;
   const issue=positionIssue(this.position);
-  this.status.textContent=issue?issue+'；定位有效後顯示玩家位置。':this.tileErrors?'地圖未能完整載入，請確認網路；定位判定仍獨立運作。':this.loading?'正在載入 OpenStreetMap…':this.simulation?'Q 版街道・角色沿 OSM 道路行走；圓圈半徑 30 公尺。':'Q 版街道參考・不提供步行導航；小圓為定位誤差；景點圈半徑 30 公尺。';
+  this.status.textContent=issue?issue+'；定位有效後顯示玩家位置。':this.tiles?.simplified?'此裝置不支援向量底圖，顯示道路簡圖；移動與抵達判定照常。':this.tileErrors?'底圖未能完整載入，請確認網路；定位判定仍獨立運作。':this.loading?'正在載入 OpenStreetMap…':this.simulation?'Q 版街道・角色沿 OSM 道路行走；圓圈半徑 30 公尺。':'Q 版街道參考・不提供步行導航；小圓為定位誤差；景點圈半徑 30 公尺。';
  }
  destroy(){this.destroyed=true;this.observer?.disconnect();this.map?.remove();}
 }
