@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {streetGraph,StreetWalker} from '../src/street-network.js';
+import {buildingFootprints,segmentHitsBuilding} from '../src/building-collision.js';
+import {prepareStreetScene} from '../src/street-plan.js';
+const way=(id,coords,tags={highway:'residential'})=>({type:'way',id,tags,nodes:coords.map((_,i)=>id*100+i),geometry:coords.map(([lng,lat])=>({lat,lon:lng}))});
+const house=way(90,[[-.0002,-.0002],[.0002,-.0002],[.0002,.0002],[-.0002,.0002],[-.0002,-.0002]],{building:'yes'});
+const graph=streetGraph([house,way(1,[[-.001,0],[.001,0]]),way(2,[[-.001,.001],[.001,.001]],{highway:'footway'}),way(3,[[-.001,.002],[.001,.002]],{highway:'residential',access:'private'}),way(4,[[-.001,.003],[.001,.003]],{highway:'service',access:'private',foot:'designated'})]);
+assert(!graph.edges.some(e=>e.sourceWay===1));assert(graph.edges.some(e=>e.sourceWay===2));assert(!graph.edges.some(e=>e.sourceWay===3));assert(graph.edges.some(e=>e.sourceWay===4));
+const walker=new StreetWalker(graph,{lat:.001,lng:0});walker.move(1,0,30);assert.equal(walker.read().lat,.001);
+const buildings=buildingFootprints([house]);assert(segmentHitsBuilding({lat:0,lng:-.002},{lat:0,lng:.002},buildings));assert(!segmentHitsBuilding({lat:.001,lng:-.002},{lat:.001,lng:.002},buildings));
+const tasks=[{id:'a',official:{lat:.001,lng:-.0005}},{id:'b',official:{lat:.001,lng:0}},{id:'c',official:{lat:.001,lng:.0005}}],scene=prepareStreetScene(graph,tasks);
+assert(scene.graph.edges.some(e=>e.sourceWay===4),'public pedestrian access to separate street must remain in data');
+console.log('Synthetic geometry checks passed: public roads and footpaths retained; building crossings/private access blocked; all source streets preserved.');

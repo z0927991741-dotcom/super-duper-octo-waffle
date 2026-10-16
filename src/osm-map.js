@@ -17,8 +17,7 @@ export class OsmMap {
   this.map=L.map(host.querySelector('.osm-viewport'),{minZoom:3,maxZoom:19,zoomControl:true,attributionControl:true,zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false});
   this.map.attributionControl.setPrefix(false);
   this.map.attributionControl.addAttribution('<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>');
-  this.roadMaskVersion=0;this.roadAtlas=new Map();this.roadAtlasZoom=null;this.tiles=chibiTileLayer(L);
-  this.tiles.on('tileload',event=>{this.roadMaskVersion++;if(!event.tile.roadMask)return;const c=event.coords;if(this.roadAtlasZoom===null)this.roadAtlasZoom=c.z;if(c.z===this.roadAtlasZoom)this.roadAtlas.set(c.x+':'+c.y,{x:c.x,y:c.y,mask:event.tile.roadMask.slice()});});
+  this.tiles=chibiTileLayer(L);
   this.tiles.on('loading',()=>{this.loading=true;this.tileErrors=0;this.tileStatus();});
   this.tiles.on('tileerror',()=>{this.tileErrors++;this.tileStatus();});
   this.tiles.on('load',()=>{this.loading=false;this.initialTilesLoaded=true;this.tileStatus();});
@@ -77,82 +76,12 @@ export class OsmMap {
   }else this.actor.setLatLng(point);
   this.tileStatus();
  }
- // Pixel masks use the unpainted OSM road colors, not the illustrated building colors.
- roadPixel(point){const z=this.roadAtlasZoom;if(!Number.isFinite(z))return null;const p=this.map.project([point.lat,point.lng],z),x=Math.floor(p.x),y=Math.floor(p.y),tx=Math.floor(x/256),ty=Math.floor(y/256),entry=this.roadAtlas.get(tx+':'+ty);return entry?{mask:entry.mask,index:(y-ty*256)*256+(x-tx*256)}:null;}
- isRoad(point){const pixel=this.roadPixel(point);return !!pixel?.mask[pixel.index];}
-
- nearestRoad(point,maxMeters=120){
-  const z=this.roadAtlasZoom;if(!Number.isFinite(z))return null;
-  const origin=this.map.project([point.lat,point.lng],z),scale=40075016.686*Math.cos(point.lat*Math.PI/180)/(256*2**z),radius=maxMeters/scale;let best=null;
-  for(const tile of this.roadAtlas.values()){
-   const ox=tile.x*256,oy=tile.y*256,mask=tile.mask;
-   const minX=Math.max(0,Math.floor(origin.x-radius-ox)),maxX=Math.min(255,Math.ceil(origin.x+radius-ox)),minY=Math.max(0,Math.floor(origin.y-radius-oy)),maxY=Math.min(255,Math.ceil(origin.y+radius-oy));
-   for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){
-    if(!mask[y*256+x])continue;const d=(ox+x+.5-origin.x)**2+(oy+y+.5-origin.y)**2;
-    if(d<=radius*radius&&(!best||d<best.d))best={x:ox+x+.5,y:oy+y+.5,d};
-   }
-  }
-  if(!best)return null;const p=this.map.unproject([best.x,best.y],z);return {lat:p.lat,lng:p.lng};
- }
- reachableRoadTargets(tasks,origin,maxMeters=100){
-  const z=this.roadAtlasZoom;if(z===null||!this.isRoad(origin))return {};const signature=JSON.stringify([maxMeters,tasks.map(t=>[t.id,t.official])]);
-  const start=this.map.project([origin.lat,origin.lng],z),sx=Math.floor(start.x),sy=Math.floor(start.y),key=(x,y)=>x+':'+y;
-  if(this.reachableTargets?.signature===signature&&this.reachableTargets.version===this.roadMaskVersion&&this.reachableTargets.visited.has(key(sx,sy)))return this.reachableTargets.targets;
-  const pass=(x,y)=>{const tx=Math.floor(x/256),ty=Math.floor(y/256),tile=this.roadAtlas.get(tx+':'+ty);return !!tile?.mask[(y-ty*256)*256+x-tx*256];};
-  const refs=tasks.map(task=>({id:task.id,p:this.map.project([task.official.lat,task.official.lng],z),best:null})),queue=[[sx,sy]],visited=new Set([key(sx,sy)]);
-  for(let head=0;head<queue.length&&head<70000;head++){
-   const [x,y]=queue[head];for(const ref of refs){const d=(x+.5-ref.p.x)**2+(y+.5-ref.p.y)**2;if(!ref.best||d<ref.best.d)ref.best={x:x+.5,y:y+.5,d};}
-   for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const nx=x+dx,ny=y+dy,k=key(nx,ny);if(visited.has(k)||!pass(nx,ny)||(dx&&dy&&(!pass(x+dx,y)||!pass(x,y+dy))))continue;visited.add(k);queue.push([nx,ny]);}
-  }
-  const targets={};for(const ref of refs){if(!ref.best)continue;const p=this.map.unproject([ref.best.x,ref.best.y],z),task=tasks.find(t=>t.id===ref.id);if(this.map.distance([p.lat,p.lng],[task.official.lat,task.official.lng])<=maxMeters)targets[ref.id]={lat:p.lat,lng:p.lng};}
-  this.reachableTargets={signature,version:this.roadMaskVersion,visited,targets};return targets;
- }
- simulationStart(reference,fixedTarget){
-  if(this.spawnSearchVersion===this.roadMaskVersion)return this.spawnSearchResult||null;
-  this.spawnSearchVersion=this.roadMaskVersion;
-  const z=this.roadAtlasZoom;if(z===null)return null;const center=this.map.project([reference.lat,reference.lng],z),scale=40075016.686*Math.cos(reference.lat*Math.PI/180)/(256*2**z),anchors=[];
-  for(const tile of this.roadAtlas.values())for(let i=0;i<tile.mask.length;i++){
-   if(!tile.mask[i])continue;const x=tile.x*256+i%256,y=tile.y*256+Math.floor(i/256),distance=Math.hypot(x+.5-center.x,y+.5-center.y)*scale;
-   if(distance<=120)anchors.push({x,y,distance});
-  }
-  anchors.sort((a,b)=>a.distance-b.distance);const checked=new Set();
-  for(const anchor of anchors){
-   if(checked.has(anchor.x+':'+anchor.y))continue;const p=this.map.unproject([anchor.x+.5,anchor.y+.5],z);
-   this.reachableRoadTargets([{id:'start',official:reference}],{lat:p.lat,lng:p.lng},250);
-   const visited=this.reachableTargets?.visited;if(!visited)continue;let best=null;
-   for(const key of visited){checked.add(key);const [x,y]=key.split(':').map(Number),q=this.map.unproject([x+.5,y+.5],z),distance=this.map.distance([q.lat,q.lng],[reference.lat,reference.lng]);
-    if(distance<110||distance>200||fixedTarget&&this.map.distance([q.lat,q.lng],[fixedTarget.lat,fixedTarget.lng])<80)continue;
-    const score=Math.abs(distance-140);if(!best||score<best.score)best={lat:q.lat,lng:q.lng,score};
-   }
-   if(best){this.spawnSearchResult={lat:best.lat,lng:best.lng};return this.spawnSearchResult;}
-  }this.spawnSearchResult=null;return null;
- }
-
- roadStep(point,x,y,meters){
-  const norm=Math.hypot(x,y);if(!norm||meters<=0)return point;let current={...point},remaining=Math.min(meters,5),angle=Math.atan2(y,x);
-  while(remaining>1e-6){const step=Math.min(.25,remaining);let next=null;
-   for(const offset of [0,Math.PI/12,-Math.PI/12,Math.PI/6,-Math.PI/6,Math.PI/4,-Math.PI/4,Math.PI/3,-Math.PI/3,Math.PI*5/12,-Math.PI*5/12,Math.PI/2,-Math.PI/2]){
-    const a=angle+offset,candidate={lat:current.lat+Math.sin(a)*step/111195,lng:current.lng+Math.cos(a)*step/(111195*Math.cos(current.lat*Math.PI/180))};
-    if(this.isRoad(candidate)&&this.isRoad({lat:current.lat,lng:candidate.lng})&&this.isRoad({lat:candidate.lat,lng:current.lng})){next=candidate;break;}
-   }
-   if(!next)break;current=next;remaining-=step;
-  }return current;
- }
- rasterRoute(from,to){
-  if(!this.isRoad(from)||!this.isRoad(to)||this.roadAtlasZoom===null)return null;
-  const z=this.roadAtlasZoom,a=this.map.project([from.lat,from.lng],z),b=this.map.project([to.lat,to.lng],z),sx=Math.floor(a.x),sy=Math.floor(a.y),tx=Math.floor(b.x),ty=Math.floor(b.y);
-  const key=(x,y)=>x+':'+y,pass=(x,y)=>{const bx=Math.floor(x/256),by=Math.floor(y/256),tile=this.roadAtlas.get(bx+':'+by);return !!tile?.mask[(y-by*256)*256+x-bx*256];};
-  const queue=[[sx,sy]],seen=new Map([[key(sx,sy),null]]);let found=null;
-  for(let head=0;head<queue.length&&head<45000;head++){
-   const [x,y]=queue[head];if(x===tx&&y===ty){found=key(x,y);break;}
-   for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const nx=x+dx,ny=y+dy,k=key(nx,ny);if(seen.has(k)||!pass(nx,ny)||(dx&&dy&&(!pass(x+dx,y)||!pass(x,y+dy))))continue;seen.set(k,key(x,y));queue.push([nx,ny]);}
-  }
-  if(!found)return null;const pixels=[];for(let k=found;k!==null;k=seen.get(k))pixels.push(k.split(':').map(Number));pixels.reverse();
-  // Keep bends rather than simplifying across buildings.
-  const kept=pixels.filter((p,i)=>i===0||i===pixels.length-1||p[0]-pixels[i-1][0]!==pixels[i+1][0]-p[0]||p[1]-pixels[i-1][1]!==pixels[i+1][1]-p[1]);
-  const points=kept.map(p=>{const q=this.map.unproject([p[0]+.5,p[1]+.5],z);return {lat:q.lat,lng:q.lng};});
-  let distance=0;for(let i=1;i<points.length;i++)distance+=this.map.distance([points[i-1].lat,points[i-1].lng],[points[i].lat,points[i].lng]);
-  return {points,distance,street:'依地圖道路前進',source:'raster'};
+ setStreetScene(scene){
+  if(!this.map||this.drawnScene===scene)return;this.drawnScene=scene;this.streetGeometry?.remove();const L=window.L;this.streetGeometry=L.layerGroup().addTo(this.map);
+  for(const polygon of scene.graph.buildings||[]){const rings=[polygon.outer,...polygon.holes].map(r=>r.map(p=>[p.lat,p.lng]));L.polygon(rings,{color:'#a98f72',weight:1,fillColor:'#e1c8ad',fillOpacity:.6,interactive:false}).addTo(this.streetGeometry);}
+  for(const edge of scene.graph.edges){const a=scene.graph.nodes.get(edge.a),b=scene.graph.nodes.get(edge.b),points=[[a.lat,a.lng],[b.lat,b.lng]],path=['footway','path','steps','cycleway','pedestrian'].includes(edge.kind);L.polyline(points,{color:'#bda580',weight:path?5:10,lineCap:'round',interactive:false}).addTo(this.streetGeometry);L.polyline(points,{color:'#fff8df',weight:path?3:7,lineCap:'round',interactive:false}).addTo(this.streetGeometry);}
+  if(scene.graph.coverage){const c=scene.graph.coverage;L.rectangle([[c.south,c.west],[c.north,c.east]],{color:'#ac9774',weight:1,dashArray:'5 5',fill:false,interactive:false}).addTo(this.streetGeometry);}
+  this.streetGeometry.eachLayer(layer=>layer.bringToBack?.());
  }
  setGuidance(route,task,message){
   if(!this.map)return;
