@@ -7,7 +7,7 @@ export class WalkingMusic {
  observeGPS(position){
   if(positionIssue(position)){this.gpsMovingUntil=0;this.previousGPS=null;return;}
   let moving=Number.isFinite(position.speed)&&position.speed>=.35&&position.speed<=4;
-  const previous=this.previousGPS;if(!Number.isFinite(position.speed)&&previous){const seconds=(position.timestamp-previous.timestamp)/1000,distance=distanceMeters(previous,position);moving=seconds>=.5&&seconds<=10&&distance>=Math.max(2,position.accuracy*.2)&&distance/seconds>=.35&&distance/seconds<=4;}
+  const previous=this.previousGPS;if(!Number.isFinite(position.speed)&&previous){const seconds=(position.timestamp-previous.timestamp)/1000,distance=distanceMeters(previous,position),threshold=Math.max(2,position.accuracy*.2);if(seconds>=0&&seconds<=10&&distance<threshold)return;moving=seconds>=.5&&seconds<=10&&distance>=threshold&&distance/seconds>=.35&&distance/seconds<=4;}
   this.previousGPS=position;this.gpsMovingUntil=moving?performance.now()+2500:0;
  }
  update(moving,allowed=true){
