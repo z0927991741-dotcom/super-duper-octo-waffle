@@ -1,5 +1,5 @@
 // Repaint OSM raster tiles in the game's illustrated palette without moving geometry.
-// Use a label-free OSM-derived base: only game landmarks carry names. No tile prefetch or persistent cache.
+// Keep the original OSM labels; overzoom the overview tiles so detailed address numbers are not introduced.
 export function chibiTileLayer(L){
  const Layer=L.TileLayer.extend({
   createTile(coords,done){
@@ -13,7 +13,7 @@ export function chibiTileLayer(L){
 
      for(let i=0;i<data.length;i+=4){
       const r=data[i],g=data[i+1],b=data[i+2];let color,type;
-      if(Math.max(r,g,b)<145){color=[224,214,193];type=0;}
+      if(Math.max(r,g,b)<145){color=[102,91,78];type=0;}
       else if(b>r+8&&b>g-12){color=[172,214,224];type=1;}
       else if(g>r+6&&g>b+6){color=[185,211,155];type=2;}
       else if(r>245&&g>242&&b>237){color=[255,251,224];type=3;}
@@ -45,5 +45,5 @@ export function chibiTileLayer(L){
    image.src=this.getTileUrl(coords);return canvas;
   }
  });
- return new Layer('https://basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png',{maxZoom:19,keepBuffer:0,updateWhenIdle:true,attribution:'<a href="https://carto.com/attributions" target="_blank" rel="noopener">© CARTO</a>'});
+ return new Layer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,maxNativeZoom:16,keepBuffer:0,updateWhenIdle:true});
 }
