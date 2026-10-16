@@ -1,4 +1,4 @@
-import {prepareStreetScene,routeOnStreets} from './street-plan.js';
+import {prepareStreetScene,routeOnStreets,streetDistance} from './street-plan.js';
 import {StreetWalker,loadStreetGraph} from './street-network.js';
 import {SETTINGS,TASKS} from './config.js';
 import {RoadWalker} from './roads.js';
@@ -7,11 +7,12 @@ export class RealLocation {constructor(){this.id=null;this.generation=0;}stop(){
 
 // Simulator stays on connected OSM segments; unavailable geometry never permits free movement.
 export class GeographicSimLocation {
- constructor(start){this.position={...start};this.walker=null;this.loading=false;this.error='';this.roadMap=null;this.rasterReady=false;this.snapVersion=-1;this.arrivalTargets={};this.targetsLocked=false;this.restoreTargets();}
+ constructor(start){this.position={...start};this.spawnPlaced=false;this.walker=null;this.loading=false;this.error='';this.roadMap=null;this.rasterReady=false;this.snapVersion=-1;this.arrivalTargets={};this.targetsLocked=false;this.restoreTargets();}
  attachMap(map){this.roadMap=map;this.snapVersion=-1;this.rasterReady=false;}
- async loadRoads(){if(this.walker||this.loading||this.targetsLocked)return;this.loading=true;this.error='';try{const graph=await loadStreetGraph();if(this.targetsLocked||Object.keys(this.arrivalTargets).length)return;const scene=prepareStreetScene(graph,TASKS);this.scene=scene;this.arrivalTargets=scene.targets;this.targetsLocked=true;this.saveTargets();this.walker=new StreetWalker(scene.graph,this.position);}catch(error){this.error=error.message;}finally{this.loading=false;}}
+ async loadRoads(){if(this.walker||this.loading||this.targetsLocked)return;this.loading=true;this.error='';try{const graph=await loadStreetGraph();if(this.targetsLocked||Object.keys(this.arrivalTargets).length)return;const scene=prepareStreetScene(graph,TASKS);this.scene=scene;this.arrivalTargets=scene.targets;this.targetsLocked=true;this.saveTargets();const spawn=[...scene.graph.nodes.values()].filter(p=>streetDistance(p,TASKS[0].official)>=110&&streetDistance(p,TASKS[0].official)<=200).sort((a,b)=>Math.abs(streetDistance(a,TASKS[0].official)-140)-Math.abs(streetDistance(b,TASKS[0].official)-140))[0];if(!spawn)throw Error('起點附近的道路尚未就緒');this.walker=new StreetWalker(scene.graph,spawn);this.position=this.walker.read();this.spawnPlaced=true;}catch(error){this.error=error.message;}finally{this.loading=false;}}
  prepareRoad(){
   if(this.walker||!this.roadMap||this.roadMap.destroyed)return;
+  if(!this.spawnPlaced){if(!this.roadMap.initialTilesLoaded)return;const spawn=this.roadMap.simulationStart(TASKS[0].official,this.arrivalTargets.color);if(!spawn)return;this.position=spawn;this.spawnPlaced=true;this.rasterReady=true;return;}
   if(this.roadMap.isRoad(this.position)){this.rasterReady=true;return;}
   // A zoom or missing tile pauses walking; never snap an established walker across a block.
   if(this.rasterReady)return;
@@ -26,19 +27,6 @@ export class GeographicSimLocation {
   this.prepareRoad();
   if(this.rasterReady&&this.roadMap&&!this.roadMap.destroyed&&this.roadMap.initialTilesLoaded){const reachable=this.roadMap.reachableRoadTargets(tasks,this.position);let changed=false;for(const task of tasks)if(!this.arrivalTargets[task.id]&&reachable[task.id]){this.arrivalTargets[task.id]={...reachable[task.id]};changed=true;}this.targetsLocked=tasks.every(t=>this.arrivalTargets[t.id]);if(changed)this.saveTargets();}
   return this.arrivalTargets;
- }
- followPath(points,index,meters){
-  let cursor=index,remaining=meters,blocked=false;
-  while(cursor<points.length&&remaining>1e-6){
-   const from=this.read(),to=points[cursor],dx=(to.lng-from.lng)*Math.cos(from.lat*Math.PI/180),dy=to.lat-from.lat,distance=Math.hypot(dx,dy)*111195;
-   if(distance<.08){cursor++;continue;}
-   const step=Math.min(remaining,distance,.25),next={lat:from.lat+(to.lat-from.lat)*step/distance,lng:from.lng+(to.lng-from.lng)*step/distance};
-   if(this.walker){this.walker.move(dx,dy,step);this.position=this.walker.read();}
-   else if(this.roadMap?.isRoad(next))this.position=next;else{blocked=true;break;}
-   if(Math.hypot(this.read().lat-from.lat,this.read().lng-from.lng)<1e-12){blocked=true;break;}
-   remaining-=step;if(step>=distance-.02)cursor++;
-  }
-  return {index:cursor,blocked,finished:cursor>=points.length};
  }
 
  get sourceLabel(){return this.scene?(this.scene.source?.kind==='packaged'?'內建道路':'已固定道路快照'):'地圖道路備援';}

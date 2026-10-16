@@ -64,7 +64,7 @@ export class OsmMap {
  setPosition(position){
   const issue=positionIssue(position),key=JSON.stringify([position,issue]);if(this.lastKey===key)return;this.lastKey=key;
   const previous=this.position;this.position=position;if(!this.map)return;
-  if(!position||issue){this.markers.clearLayers();this.actor=null;this.accuracyCircle=null;this.motion={dx:0,dy:0,until:0};this.tileStatus();return;}
+  if(!position||issue||(this.simulation&&!position.onRoad)){this.markers.clearLayers();this.actor=null;this.accuracyCircle=null;this.motion={dx:0,dy:0,until:0};this.tileStatus();return;}
   if(previous){const dx=position.lng-previous.lng,dy=position.lat-previous.lat;if(Math.hypot(dx,dy)>1e-10)this.motion={dx,dy,until:performance.now()+(this.simulation?220:900)};}
   const L=window.L,point=[position.lat,position.lng];
   if(this.follow&&(!this.simulation||this.initialTilesLoaded)){const p=this.map.latLngToContainerPoint(point),size=this.map.getSize();if(p.x<size.x*.25||p.x>size.x*.75||p.y<size.y*.25||p.y>size.y*.75)this.show(position);}
@@ -94,9 +94,9 @@ export class OsmMap {
   if(!best)return null;const p=this.map.unproject([best.x,best.y],z);return {lat:p.lat,lng:p.lng};
  }
  reachableRoadTargets(tasks,origin,maxMeters=100){
-  const z=this.roadAtlasZoom;if(z===null||!this.isRoad(origin))return {};
+  const z=this.roadAtlasZoom;if(z===null||!this.isRoad(origin))return {};const signature=JSON.stringify([maxMeters,tasks.map(t=>[t.id,t.official])]);
   const start=this.map.project([origin.lat,origin.lng],z),sx=Math.floor(start.x),sy=Math.floor(start.y),key=(x,y)=>x+':'+y;
-  if(this.reachableTargets?.version===this.roadMaskVersion&&this.reachableTargets.visited.has(key(sx,sy)))return this.reachableTargets.targets;
+  if(this.reachableTargets?.signature===signature&&this.reachableTargets.version===this.roadMaskVersion&&this.reachableTargets.visited.has(key(sx,sy)))return this.reachableTargets.targets;
   const pass=(x,y)=>{const tx=Math.floor(x/256),ty=Math.floor(y/256),tile=this.roadAtlas.get(tx+':'+ty);return !!tile?.mask[(y-ty*256)*256+x-tx*256];};
   const refs=tasks.map(task=>({id:task.id,p:this.map.project([task.official.lat,task.official.lng],z),best:null})),queue=[[sx,sy]],visited=new Set([key(sx,sy)]);
   for(let head=0;head<queue.length&&head<70000;head++){
@@ -104,7 +104,16 @@ export class OsmMap {
    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const nx=x+dx,ny=y+dy,k=key(nx,ny);if(visited.has(k)||!pass(nx,ny)||(dx&&dy&&(!pass(x+dx,y)||!pass(x,y+dy))))continue;visited.add(k);queue.push([nx,ny]);}
   }
   const targets={};for(const ref of refs){if(!ref.best)continue;const p=this.map.unproject([ref.best.x,ref.best.y],z),task=tasks.find(t=>t.id===ref.id);if(this.map.distance([p.lat,p.lng],[task.official.lat,task.official.lng])<=maxMeters)targets[ref.id]={lat:p.lat,lng:p.lng};}
-  this.reachableTargets={version:this.roadMaskVersion,visited,targets};return targets;
+  this.reachableTargets={signature,version:this.roadMaskVersion,visited,targets};return targets;
+ }
+ simulationStart(reference,fixedTarget){
+  const anchor=this.nearestRoad(reference,100);if(!anchor)return null;
+  this.reachableRoadTargets([{id:'start',official:reference}],anchor,250);
+  const visited=this.reachableTargets?.visited;if(!visited)return null;let best=null;
+  for(const key of visited){const [x,y]=key.split(':').map(Number),p=this.map.unproject([x+.5,y+.5],this.roadAtlasZoom),distance=this.map.distance([p.lat,p.lng],[reference.lat,reference.lng]);
+   if(distance<110||distance>200||fixedTarget&&this.map.distance([p.lat,p.lng],[fixedTarget.lat,fixedTarget.lng])<80)continue;
+   const score=Math.abs(distance-140);if(!best||score<best.score)best={lat:p.lat,lng:p.lng,score};
+  }return best?{lat:best.lat,lng:best.lng}:null;
  }
  roadStep(point,x,y,meters){
   const norm=Math.hypot(x,y);if(!norm||meters<=0)return point;let current={...point},remaining=Math.min(meters,5),angle=Math.atan2(y,x);
