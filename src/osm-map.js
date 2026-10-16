@@ -24,7 +24,9 @@ export class OsmMap {
   this.markers=L.layerGroup().addTo(this.map);
   for(const task of tasks){
    if(officialReady(task))this.landmark(task.official,task.place+'・政府參考點','#967251',task);
-   if(task.fieldPoint){this.landmark(task.fieldPoint,task.name+'・私人測試點','#7061a8',task);L.circle([task.fieldPoint.lat,task.fieldPoint.lng],{radius:task.radiusMeters,color:'#7061a8',fillOpacity:.08}).addTo(this.map);}
+   if(task.fieldPoint)this.landmark(task.fieldPoint,task.name+'・私人測試點','#7061a8',task);
+   const target=task.fieldPoint||(entranceReady(task)?task.entrance:officialReady(task)?task.official:null);
+   if(target){const reference=!simulation&&!task.fieldPoint&&!entranceReady(task);const label=reference?'30 公尺景點參考範圍・入口待確認':'30 公尺抵達範圍';L.circle([target.lat,target.lng],{radius:task.radiusMeters,color:reference?'#b17c35':'#9b6baf',weight:2.5,fillColor:reference?'#efca76':'#c9a7e2',fillOpacity:.2,dashArray:reference?'6 5':null,className:'arrival-radius'}).bindTooltip(label).addTo(this.map);}
    if(officialReady(task)&&entranceReady(task))this.landmark(task.entrance,task.place+'・安全入口','#3f8250');
   }
   const points=tasks.map(t=>t.fieldPoint||t.official).filter(Boolean);
@@ -64,7 +66,7 @@ export class OsmMap {
  tileStatus(){
   if(this.destroyed)return;
   const issue=positionIssue(this.position);
-  this.status.textContent=issue?issue+'；定位有效後顯示玩家位置。':this.tileErrors?'地圖未能完整載入，請確認網路；定位判定仍獨立運作。':this.loading?'正在載入 OpenStreetMap…':this.simulation?'Q 版街道地圖・虛擬位置；不代表可通行路線。':'Q 版街道參考・不提供步行導航；圓圈表示定位誤差。';
+  this.status.textContent=issue?issue+'；定位有效後顯示玩家位置。':this.tileErrors?'地圖未能完整載入，請確認網路；定位判定仍獨立運作。':this.loading?'正在載入 OpenStreetMap…':this.simulation?'Q 版街道・角色沿 OSM 道路行走；圓圈半徑 30 公尺。':'Q 版街道參考・不提供步行導航；小圓為定位誤差；景點圈半徑 30 公尺。';
  }
  destroy(){this.destroyed=true;this.observer?.disconnect();this.map?.remove();}
 }

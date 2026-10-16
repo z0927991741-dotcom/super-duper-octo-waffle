@@ -20,6 +20,8 @@ console.log('Private GPS anchor, arrival validation and isolated saves passed');
 const {GeographicSimLocation,geographicSimulationTasks}=await import('../src/location.js');
 const {TASKS}=await import('../src/config.js');
 const sim=new GeographicSimLocation(TASKS[0].official),tasks=geographicSimulationTasks(TASKS);
+const {StreetWalker,streetGraph}=await import('../src/street-network.js');
+sim.walker=new StreetWalker(streetGraph([{type:'way',id:1,tags:{highway:'residential'},nodes:[1,2],geometry:[{lat:TASKS[0].official.lat,lon:TASKS[0].official.lng-.001},{lat:TASKS[0].official.lat,lon:TASKS[0].official.lng+.001}]}]),TASKS[0].official);
 assert.equal(arrival(tasks[0],sim.read(),'sim').allowed,true);
 assert.equal(arrival(tasks[0],sim.move(1,0,2),'sim').allowed,false);
 assert.equal(arrival(tasks[0],sim.move(-1,0,2),'sim').allowed,true);
