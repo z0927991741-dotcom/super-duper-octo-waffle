@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
   FrameLayout root=new FrameLayout(this);root.setBackgroundColor(0xfff6f0dd);
   root.setOnApplyWindowInsetsListener((v,insets)->{v.setPadding(insets.getSystemWindowInsetLeft(),insets.getSystemWindowInsetTop(),insets.getSystemWindowInsetRight(),insets.getSystemWindowInsetBottom());return insets;});
   web=new WebView(this);root.addView(web,new FrameLayout.LayoutParams(-1,-1));setContentView(root);root.requestApplyInsets();
-  WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setGeolocationEnabled(true);settings.setUserAgentString(settings.getUserAgentString()+" DreamMenderWeb/0.23.0 (+https://github.com/z0927991741-dotcom/super-duper-octo-waffle)");settings.setAllowFileAccess(false);settings.setAllowContentAccess(true);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setMediaPlaybackRequiresUserGesture(true);
+  WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);settings.setGeolocationEnabled(true);settings.setUserAgentString(settings.getUserAgentString()+" DreamMenderWeb/0.23.1 (+https://github.com/z0927991741-dotcom/super-duper-octo-waffle)");settings.setAllowFileAccess(false);settings.setAllowContentAccess(true);settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);settings.setMediaPlaybackRequiresUserGesture(true);
   web.addJavascriptInterface(new DownloadFiles(),"DreamNativeDownloads");
   web.setWebViewClient(new WebViewClient(){
    @Override public WebResourceResponse shouldInterceptRequest(WebView view,WebResourceRequest r){

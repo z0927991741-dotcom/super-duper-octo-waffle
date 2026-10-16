@@ -1,6 +1,7 @@
 {
   "name": "dream-mender-web",
-  "version": "0.23.0",
+  "version": "0.23.1",
   "main": "main.cjs",
-  "private": true
+  "private": true,
+  "productName": "夢境修補員"
 }
