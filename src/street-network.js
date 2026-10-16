@@ -1,3 +1,4 @@
+import {STREET_SNAPSHOT} from './street-snapshot.js';
 // Geometry and shared node IDs come directly from OSM, never inferred from tile colors.
 const NON_WALKABLE=/^(motorway|motorway_link|trunk|trunk_link|construction|proposed|raceway)$/;
 export function streetGraph(elements){
@@ -42,12 +43,23 @@ export class StreetWalker {
  }
 }
 let networkPromise;
+export function cachedStreetGraph(){
+ if(STREET_SNAPSHOT.elements?.length){const graph=streetGraph(STREET_SNAPSHOT.elements);graph.source={kind:'packaged',capturedAt:STREET_SNAPSHOT.capturedAt};return graph;}
+ try{const cached=JSON.parse(localStorage.getItem('dream-mender:osm-streets:v2')||'null');if(cached?.version===1&&Array.isArray(cached.elements)&&cached.elements.length){const graph=streetGraph(cached.elements);graph.source={kind:'browser-cache',capturedAt:cached.capturedAt};return graph;}}catch{}
+ return null;
+}
 export function loadStreetGraph(){
- if(networkPromise)return networkPromise;
+ if(networkPromise)return networkPromise;const cached=cachedStreetGraph();if(cached)return Promise.resolve(cached);
  const query='[out:json][timeout:20];way["highway"]["area"!="yes"](22.670,120.484,22.684,120.499);out geom;';
  networkPromise=(async()=>{
   for(const endpoint of ['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter']){
-   try{const response=await fetch(endpoint+'?data='+encodeURIComponent(query),{signal:AbortSignal.timeout(26000),credentials:'omit',referrerPolicy:'no-referrer'});if(!response.ok)throw Error('道路服務暫時無法使用');const data=await response.json();return streetGraph(data.elements||[]);}catch{}
+   try{const response=await fetch(endpoint+'?data='+encodeURIComponent(query),{signal:AbortSignal.timeout(26000),credentials:'omit',referrerPolicy:'no-referrer'});if(!response.ok)throw Error('道路服務暫時無法使用');const data=await response.json(),graph=streetGraph(data.elements||[]);const capturedAt=new Date().toISOString();graph.source={kind:'live',capturedAt};try{localStorage.setItem('dream-mender:osm-streets:v2',JSON.stringify({version:1,capturedAt,osm3s:data.osm3s||null,source:endpoint,elements:data.elements}));}catch{}return graph;}catch{}
   }throw Error('道路資料載入失敗，請檢查網路後重試');
  })().catch(error=>{networkPromise=null;throw error;});return networkPromise;
+}
+
+export function exportStreetSnapshot(){
+ const data=JSON.parse(localStorage.getItem('dream-mender:osm-streets:v2')||'null');
+ if(!data?.elements?.length)throw Error('目前尚未取得完整 OSM 道路資料；地圖備援仍可操作。');
+ streetGraph(data.elements);const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='dream-mender-osm-roads.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }

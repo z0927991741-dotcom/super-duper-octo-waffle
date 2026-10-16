@@ -1,0 +1,11 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {streetGraph} from '../src/street-network.js';
+import {prepareStreetScene} from '../src/street-plan.js';
+import {TASKS} from '../src/config.js';
+const input=process.argv[2];if(!input)throw Error('Usage: node scripts/prepare-streets.mjs verified-osm-export.json');
+const raw=JSON.parse(await readFile(input,'utf8'));
+if(!Array.isArray(raw.elements)||!raw.elements.length||!raw.osm3s?.timestamp_osm_base)throw Error('An original Overpass export with timestamp_osm_base is required');
+const graph=streetGraph(raw.elements),scene=prepareStreetScene(graph,TASKS);
+const snapshot={version:1,status:'packaged',source:'https://www.openstreetmap.org/copyright',license:'ODbL-1.0',capturedAt:raw.osm3s.timestamp_osm_base,elements:raw.elements};
+await writeFile(new URL('../src/street-snapshot.js',import.meta.url),'// OpenStreetMap contributors, ODbL 1.0. Road snapshot, not a safety survey.\nexport const STREET_SNAPSHOT='+JSON.stringify(snapshot)+';\n');
+console.log(JSON.stringify({nodes:scene.graph.nodes.size,edges:scene.graph.edges.length,simulationTargets:scene.targets,connected:true}));

@@ -16,13 +16,13 @@ export class OsmMap {
   this.map=L.map(host.querySelector('.osm-viewport'),{minZoom:3,maxZoom:19,zoomControl:true,attributionControl:true,zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false});
   this.map.attributionControl.setPrefix(false);
   this.map.attributionControl.addAttribution('<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>');
-  this.roadMaskVersion=0;this.tiles=chibiTileLayer(L);
-  this.tiles.on('tileload',()=>{this.roadMaskVersion++;});
+  this.roadMaskVersion=0;this.roadAtlas=new Map();this.roadAtlasZoom=null;this.tiles=chibiTileLayer(L);
+  this.tiles.on('tileload',event=>{this.roadMaskVersion++;if(!event.tile.roadMask)return;const c=event.coords;if(this.roadAtlasZoom===null)this.roadAtlasZoom=c.z;if(c.z===this.roadAtlasZoom)this.roadAtlas.set(c.x+':'+c.y,{x:c.x,y:c.y,mask:event.tile.roadMask.slice()});});
   this.tiles.on('loading',()=>{this.loading=true;this.tileErrors=0;this.tileStatus();});
   this.tiles.on('tileerror',()=>{this.tileErrors++;this.tileStatus();});
-  this.tiles.on('load',()=>{this.loading=false;this.tileStatus();});
+  this.tiles.on('load',()=>{this.loading=false;this.initialTilesLoaded=true;this.tileStatus();});
   this.map.on('dragstart',()=>{this.follow=false;});
-  this.markers=L.layerGroup().addTo(this.map);this.arrivalCircles=new Map();this.arrivalLinks=new Map();
+  this.markers=L.layerGroup().addTo(this.map);this.arrivalCircles=new Map();this.arrivalLinks=new Map();this.arrivalDots=new Map();
   for(const task of tasks){
    if(officialReady(task))this.landmark(task.official,task.place+'・政府參考點','#967251',task);
    if(task.fieldPoint)this.landmark(task.fieldPoint,task.name+'・私人測試點','#7061a8',task);
@@ -55,9 +55,10 @@ export class OsmMap {
    if(task.simRoadTarget&&!this.arrivalLinks.has(task.id)){
     circle.setTooltipContent('30 公尺模擬抵達範圍・已外移至道路側');
     const link=window.L.polyline([[task.official.lat,task.official.lng],[task.test.lat,task.test.lng]],{color:'#9b6baf',weight:2,dashArray:'3 5',interactive:false}).addTo(this.map);
-    window.L.circleMarker([task.test.lat,task.test.lng],{radius:4,color:'#9b6baf',fillOpacity:1}).bindTooltip('模擬抵達點・非正式入口').addTo(this.map);
+    this.arrivalDots.set(task.id,window.L.circleMarker([task.test.lat,task.test.lng],{radius:4,color:'#9b6baf',fillOpacity:1}).bindTooltip('模擬抵達點・非正式入口').addTo(this.map));
     this.arrivalLinks.set(task.id,link);
    }
+   if(task.simRoadTarget){this.arrivalLinks.get(task.id)?.setLatLngs([[task.official.lat,task.official.lng],[task.test.lat,task.test.lng]]);this.arrivalDots.get(task.id)?.setLatLng([task.test.lat,task.test.lng]);}
   }
  }
  setPosition(position){
@@ -66,7 +67,7 @@ export class OsmMap {
   if(!position||issue){this.markers.clearLayers();this.actor=null;this.accuracyCircle=null;this.motion={dx:0,dy:0,until:0};this.tileStatus();return;}
   if(previous){const dx=position.lng-previous.lng,dy=position.lat-previous.lat;if(Math.hypot(dx,dy)>1e-10)this.motion={dx,dy,until:performance.now()+(this.simulation?220:900)};}
   const L=window.L,point=[position.lat,position.lng];
-  if(this.follow){const p=this.map.latLngToContainerPoint(point),size=this.map.getSize();if(p.x<size.x*.25||p.x>size.x*.75||p.y<size.y*.25||p.y>size.y*.75)this.show(position);}
+  if(this.follow&&(!this.simulation||this.initialTilesLoaded)){const p=this.map.latLngToContainerPoint(point),size=this.map.getSize();if(p.x<size.x*.25||p.x>size.x*.75||p.y<size.y*.25||p.y>size.y*.75)this.show(position);}
   if(!this.accuracyCircle)this.accuracyCircle=L.circle(point,{radius:position.accuracy,color:'#9b7656',weight:1,fillOpacity:.12,interactive:false,className:'osm-accuracy'}).addTo(this.markers);
   else this.accuracyCircle.setLatLng(point).setRadius(position.accuracy);
   if(!this.actor){
@@ -76,14 +77,14 @@ export class OsmMap {
   this.tileStatus();
  }
  // Pixel masks use the unpainted OSM road colors, not the illustrated building colors.
- roadPixel(point){const z=this.tiles?._tileZoom;if(!Number.isFinite(z))return null;const p=this.map.project([point.lat,point.lng],z),x=Math.floor(p.x),y=Math.floor(p.y),tx=Math.floor(x/256),ty=Math.floor(y/256),entry=this.tiles._tiles[tx+':'+ty+':'+z];return entry?.loaded&&entry.el.roadMask?{mask:entry.el.roadMask,index:(y-ty*256)*256+(x-tx*256)}:null;}
+ roadPixel(point){const z=this.roadAtlasZoom;if(!Number.isFinite(z))return null;const p=this.map.project([point.lat,point.lng],z),x=Math.floor(p.x),y=Math.floor(p.y),tx=Math.floor(x/256),ty=Math.floor(y/256),entry=this.roadAtlas.get(tx+':'+ty);return entry?{mask:entry.mask,index:(y-ty*256)*256+(x-tx*256)}:null;}
  isRoad(point){const pixel=this.roadPixel(point);return !!pixel?.mask[pixel.index];}
+
  nearestRoad(point,maxMeters=120){
-  const z=this.tiles?._tileZoom;if(!Number.isFinite(z))return null;
+  const z=this.roadAtlasZoom;if(!Number.isFinite(z))return null;
   const origin=this.map.project([point.lat,point.lng],z),scale=40075016.686*Math.cos(point.lat*Math.PI/180)/(256*2**z),radius=maxMeters/scale;let best=null;
-  for(const tile of Object.values(this.tiles._tiles)){
-   if(tile.coords.z!==z||!tile.loaded||!tile.el.roadMask)continue;
-   const ox=tile.coords.x*256,oy=tile.coords.y*256,mask=tile.el.roadMask;
+  for(const tile of this.roadAtlas.values()){
+   const ox=tile.x*256,oy=tile.y*256,mask=tile.mask;
    const minX=Math.max(0,Math.floor(origin.x-radius-ox)),maxX=Math.min(255,Math.ceil(origin.x+radius-ox)),minY=Math.max(0,Math.floor(origin.y-radius-oy)),maxY=Math.min(255,Math.ceil(origin.y+radius-oy));
    for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){
     if(!mask[y*256+x])continue;const d=(ox+x+.5-origin.x)**2+(oy+y+.5-origin.y)**2;
@@ -101,6 +102,30 @@ export class OsmMap {
    }
    if(!next)break;current=next;remaining-=step;
   }return current;
+ }
+ rasterRoute(from,to){
+  if(!this.isRoad(from)||!this.isRoad(to)||this.roadAtlasZoom===null)return null;
+  const z=this.roadAtlasZoom,a=this.map.project([from.lat,from.lng],z),b=this.map.project([to.lat,to.lng],z),sx=Math.floor(a.x),sy=Math.floor(a.y),tx=Math.floor(b.x),ty=Math.floor(b.y);
+  const key=(x,y)=>x+':'+y,pass=(x,y)=>{const bx=Math.floor(x/256),by=Math.floor(y/256),tile=this.roadAtlas.get(bx+':'+by);return !!tile?.mask[(y-by*256)*256+x-bx*256];};
+  const queue=[[sx,sy]],seen=new Map([[key(sx,sy),null]]);let found=null;
+  for(let head=0;head<queue.length&&head<45000;head++){
+   const [x,y]=queue[head];if(x===tx&&y===ty){found=key(x,y);break;}
+   for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){const nx=x+dx,ny=y+dy,k=key(nx,ny);if(seen.has(k)||!pass(nx,ny)||(dx&&dy&&(!pass(x+dx,y)||!pass(x,y+dy))))continue;seen.set(k,key(x,y));queue.push([nx,ny]);}
+  }
+  if(!found)return null;const pixels=[];for(let k=found;k!==null;k=seen.get(k))pixels.push(k.split(':').map(Number));pixels.reverse();
+  // Keep bends rather than simplifying across buildings.
+  const kept=pixels.filter((p,i)=>i===0||i===pixels.length-1||p[0]-pixels[i-1][0]!==pixels[i+1][0]-p[0]||p[1]-pixels[i-1][1]!==pixels[i+1][1]-p[1]);
+  const points=kept.map(p=>{const q=this.map.unproject([p[0]+.5,p[1]+.5],z);return {lat:q.lat,lng:q.lng};});
+  let distance=0;for(let i=1;i<points.length;i++)distance+=this.map.distance([points[i-1].lat,points[i-1].lng],[points[i].lat,points[i].lng]);
+  return {points,distance,street:'依地圖道路前進',source:'raster'};
+ }
+ setGuidance(route,task,message){
+  if(!this.map)return;
+  if(!this.routeNote){this.routeNote=document.createElement('p');this.routeNote.className='route-note';this.routeNote.setAttribute('role','status');this.host.append(this.routeNote);}
+  this.routeNote.textContent=message;
+  if(!route?.points?.length){this.routeLine?.remove();this.routeLine=null;return;}
+  const points=route.points.map(p=>[p.lat,p.lng]);
+  if(this.routeLine)this.routeLine.setLatLngs(points);else this.routeLine=window.L.polyline(points,{color:'#ae7540',weight:5,opacity:.85,dashArray:'5 7',interactive:false,className:'sim-route'}).addTo(this.map);
  }
  animate(now){const el=this.actor?.getElement();if(!el)return;const moving=now<this.motion.until;animatePlayer(el,this.playerId,moving?this.motion.dx:0,moving?this.motion.dy:0,now,matchMedia('(prefers-reduced-motion: reduce)').matches);}
 

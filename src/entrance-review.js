@@ -1,0 +1,19 @@
+import {positionIssue} from './geo.js';
+const ENTRANCE_DRAFT_KEY='dream-mender:entrance-drafts:v1';
+export function readEntranceDrafts(storage){try{const data=JSON.parse(storage.getItem(ENTRANCE_DRAFT_KEY)||'{}');return data&&typeof data==='object'&&!Array.isArray(data)?data:{};}catch{return {};}}
+export function openEntranceReview(tasks,storage,getPosition){
+ const drafts=readEntranceDrafts(storage),dialog=document.createElement('dialog');dialog.className='entrance-review';
+ dialog.innerHTML='<form><h2>正式入口現場紀錄</h2><p>景點參考點與安全入口分開保存。這裡的紀錄只供查核，儲存後不會自行解鎖正式任務。</p><label>景點<select name="task">'+tasks.map(t=>'<option value="'+t.id+'">'+t.place+'</option>').join('')+'</select></label><label>入口緯度<input name="lat" type="number" step="any" min="-90" max="90" required></label><label>入口經度<input name="lng" type="number" step="any" min="-180" max="180" required></label><button type="button" id="capture-entrance" class="secondary">使用目前 GPS</button><label>拍攝日期<input name="surveyedAt" type="date" required></label><label>現場照片連結或官方入口資料網址<input name="evidence" type="url" placeholder="https://…" required></label><label>位置與通路說明<textarea name="notes" rows="3" placeholder="例如入口旁可停留處、與行車道的分隔"></textarea></label><label class="entrance-check"><input name="publicAccess" type="checkbox" required>已確認這裡可公開通行</label><label class="entrance-check"><input name="safeStop" type="checkbox" required>已確認可在行車道外安全停留操作</label><p class="entrance-feedback" role="status"></p><div class="entrance-actions"><button type="submit" class="primary">保存待查核紀錄</button><button type="button" id="export-entrances" class="secondary">下載入口紀錄</button><button type="button" id="close-entrances" class="subtle">關閉</button></div></form>';
+ document.body.append(dialog);dialog.showModal();dialog.onclose=()=>dialog.remove();
+ const form=dialog.querySelector('form'),f=form.elements,feedback=dialog.querySelector('.entrance-feedback');let captured=null;
+ function load(){const draft=drafts[f.task.value]||{};for(const key of ['lat','lng','surveyedAt','evidence','notes'])f[key].value=draft[key]??'';for(const key of ['publicAccess','safeStop'])f[key].checked=!!draft[key];captured=draft.captured||null;feedback.textContent=draft.status?'已保存待查核，正式任務尚未啟用。':'';}
+ f.task.onchange=load;load();
+ for(const key of ['lat','lng'])f[key].oninput=()=>captured=null;
+ dialog.querySelector('#capture-entrance').onclick=()=>{const point=getPosition(),issue=positionIssue(point);if(issue){feedback.textContent=issue+'；請先關閉此視窗並啟用 GPS。';return;}captured={...point};f.lat.value=point.lat;f.lng.value=point.lng;feedback.textContent='已記錄目前 GPS，精度 ±'+Math.round(point.accuracy)+' 公尺；請補上日期與現場證據。';};
+ form.onsubmit=event=>{event.preventDefault();const lat=Number(f.lat.value),lng=Number(f.lng.value);if(!Number.isFinite(lat)||Math.abs(lat)>90||!Number.isFinite(lng)||Math.abs(lng)>180||!/^https:\/\//.test(f.evidence.value)){feedback.textContent='請填入有效座標與 HTTPS 證據網址。';return;}
+  drafts[f.task.value]={status:'pending-review',lat,lng,surveyedAt:f.surveyedAt.value,evidence:f.evidence.value,notes:f.notes.value,publicAccess:f.publicAccess.checked,safeStop:f.safeStop.checked,captured,recordedAt:new Date().toISOString()};
+  try{storage.setItem(ENTRANCE_DRAFT_KEY,JSON.stringify(drafts));feedback.textContent='已保存待查核紀錄；正式景點座標與任務鎖定保持不變。';}catch{feedback.textContent='無法保存，請允許網站儲存資料。';}
+ };
+ dialog.querySelector('#export-entrances').onclick=()=>{const data={schema:'dream-mender-entrance-review-v1',status:'pending-review',officialReferences:tasks.map(t=>({id:t.id,place:t.place,official:t.official,source:t.source})),candidates:drafts};const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='dream-mender-entrance-review.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+ dialog.querySelector('#close-entrances').onclick=()=>dialog.close();
+}
