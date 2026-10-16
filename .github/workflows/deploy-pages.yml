@@ -29,7 +29,7 @@ jobs:
       - name: 取得獨立 GPS 網頁測試版
         uses: actions/checkout@v4
         with:
-          ref: 3446b76e32ecadd09fe1dee7b34103307870a362
+          ref: b03ca0bb6bb54ac4a8ac038e4a889191e158bf22
           path: gps-preview
       - name: 建立 GPS 測試入口
         run: |
